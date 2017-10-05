@@ -1,0 +1,46 @@
+Es un juego online multijugador de estrategia en tiempo real basado en el manejo de recursos de un planeta.
+
+La partida tiene una interfaz simple con gráficos para cada planeta y sus recursos.
+
+Los usuarios deben estar registrados e identificados para poder jugar.
+
+Las partidas no tienen límite de tiempo.
+
+A cada jugador se le asigna un planeta. Todos los planetas de la partida se encuentran a la misma distancia unos de
+otros.
+
+Los planetas tienen tres recursos:
+- Población: es el recurso principal. Si llega a 0 el jugador pierde.
+- Escudo: se representa en porcentaje. Indica la protección que tiene la población contra ataques de misiles. La
+relación de nivel de escudo y muerte de población es lineal.
+- Misiles: es el medio por el cual un jugador ataca a otro planeta. Se genera por progreso. Puede atacar un planeta
+por vez. Siempre acierta. El daño producido a la población depende del nivel del escudo al momento de impactar.
+
+Para generar los recursos, se deben designar porcentajes de población a tener hijos (generar población), regenerar el
+escudo, o fabricar misiles. La suma de los tres porcentajes siempre debe sumar el 100% de la población.
+
+Al iniciar la partida la población estará 100% dedicada a tener hijos por defecto.
+Cualquier usuario es capaz de crear una partida.Al momento de crear una partida el usuario ingresa constantes aplicables a todos los planetas de la partida, a detallar:
+- Población inicial
+- Población requerida para tener un hijo en una unidad de tiempo
+- Población requerida para fabricar un misil en una unidad de tiempo
+- Población requerida para aumentar 1% al escudo en una unidad de tiempo
+- Tiempo que tarda un misil en llegar a un planeta
+- Daño que produce un misil al escudo
+- Daño que produce un misil a la población si el escudo está a 0%
+
+Luego de ingresadas las constantes se ingresa a un lobby, en el cual se espera que otros jugadores se unan.
+
+También está la opción de agregar bots (jugadores controlados por el sistema) que pueden ser ofensivos o defensivos.
+
+Una vez iniciada la partida no se pueden unir más jugadores ni bots.
+
+Es posible que un usuario juegue varias partidas simultáneamente con una misma cuenta.
+
+Los usuarios pueden ver la cantidad de recursos de los demás jugadores, pero no de qué forma están asignados.
+
+Se puede personalizar el nombre del planeta.
+
+El juego termina una vez que queda un solo planeta con población.
+
+Al crear una partida se pueden elegir configuraciones de constantes predefinidas (juego rápido, etc) o personalizadas

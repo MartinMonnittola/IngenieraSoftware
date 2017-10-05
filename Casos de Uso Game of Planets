@@ -1,0 +1,68 @@
+Registrar usuario - Unirse a partida			--> Marcos
+
+Unirse a partida - Eliminar Jugador				--> Juan
+
+Unirse a partida - Poner un Bot en la partida	--> Fede
+
+Unirse a partida - Ver estado de misiles lanzado	--> Leo
+
+Registrar usuario - Unirse a partida			--> Patricio
+
+
+------/* LISTA DE CASOS DE USO DE NOSOTROS */------
+
+
+10. Registrar Usuario.
+11. Logear Usario.
+12. Cerrar Sesion
+	Pantalla de registro
+	Pantalla de Login
+	Form de login
+	Form de registro
+	View de login
+	View de registro
+
+
+1.Unirse a partida
+9.Listar(buscar) partidas.
+Crear Partida
+	Pantalla de Home: lista de partidas (con botón para unirse) + botón de crear partida
+	Pantalla de crear partida
+	Pantalla para unirse y poner nombre al planeta
+	Form para crear partida
+	Form para unirse
+	View para home
+	View para crear partida
+	View para unirse
+	Model Partida
+	Model Planeta
+	
+
+
+14. Ver recursos de planeta enemigo.
+15. Actualizar(generar) recursos.
+Cambiar Distribucion de la Poblacion
+
+
+Enviar Misil
+4.Ver estado de misiles lanzados.
+5.Impactar Misil.
+
+
+2.Notificar al perdedor
+8.Notificar al ganador.
+
+
+3.Poner un Bot en la Partida.
+6.Operar Bot Ofensivo
+7.Operar Bot Defen.
+
+
+
+
+
+
+
+========================== PREGUNTAR ESTOS CASOS ============================
+
+Invitar jugador a la sala.
