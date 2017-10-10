@@ -1,68 +1,70 @@
-Registrar usuario - Unirse a partida			--> Marcos
-
-Unirse a partida - Eliminar Jugador				--> Juan
-
-Unirse a partida - Poner un Bot en la partida	--> Fede
-
-Unirse a partida - Ver estado de misiles lanzado	--> Leo
-
-Registrar usuario - Unirse a partida			--> Patricio
-
-
-------/* LISTA DE CASOS DE USO DE NOSOTROS */------
+------/* LISTA DE CASOS DE USO */------
 
 
 10. Registrar Usuario.
+	Template de registro - 1
+	Form de registro - 1
+	View de registro - 1
 11. Logear Usario.
 12. Cerrar Sesion
-	Pantalla de registro
-	Pantalla de Login
-	Form de login
-	Form de registro
-	View de login
-	View de registro
+	Template de Login - 1
+	Form de login - 1
+	View de login - 1
 
 
 1.Unirse a partida
 9.Listar(buscar) partidas.
 Crear Partida
-	Pantalla de Home: lista de partidas (con botón para unirse) + botón de crear partida
-	Pantalla de crear partida
-	Pantalla para unirse y poner nombre al planeta
-	Form para crear partida
-	Form para unirse
-	View para home
-	View para crear partida
-	View para unirse
-	Model Partida
-	Model Planeta
-	
+	Template de Home: lista de partidas (con botón para unirse) + botón de crear partida - 2
+	Template de crear partida - 1
+	Template para unirse y poner nombre al planeta - 2
+	Form para crear partida - 1
+	Form para unirse - 1
+	View para home - 1
+	View para crear partida - 1
+	View para unirse - 2
+	Model Planeta - 2
+	Model Partida - 2
 
 
 14. Ver recursos de planeta enemigo.
+	Template de partida en curso - 6
+	JavaScript de partida en curso - 4
+	Ajax de partida en curso - 6
+	View HTML de partida en curso - 3
+	View BdD de estado de partida - 3
 15. Actualizar(generar) recursos.
+    Métodos de clase planeta - 4
+    Métodos de clase misil - 2
 Cambiar Distribucion de la Poblacion
+	View para cambiar distribución - 
+	Form para cambiar distribución - 
 
 
 Enviar Misil
+	View
+	Métodos de clase Misil
 4.Ver estado de misiles lanzados.
+	View
+	Métodos de clase Misil
 5.Impactar Misil.
+	View
+	Métodos de clase Misil
 
 
-2.Notificar al perdedor
+2.Notificar al perdedor.
+	View
+	Métodos de clase Notificación
 8.Notificar al ganador.
+	View
+	Métodos de clase Notificación
 
 
 3.Poner un Bot en la Partida.
+	View (agregar a view de Crear partida)
+	Form (agregar a form de Crear partida)
 6.Operar Bot Ofensivo
+	Métodos de modelo Bot Ofensivo
 7.Operar Bot Defen.
+	Métodos de clase Bot Defensivo
 
-
-
-
-
-
-
-========================== PREGUNTAR ESTOS CASOS ============================
-
-Invitar jugador a la sala.
