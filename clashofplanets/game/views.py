@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
+from game.forms import *
 
 def signupView(request): # Sign Up View (Allow Users to register on system)
     if request.method == 'POST':
