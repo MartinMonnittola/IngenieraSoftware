@@ -13,6 +13,5 @@ urlpatterns = [
     url(r'^$', homeView, name='home'),
     url(r'^login/$', login, {'template_name': 'login.html'}),
     url(r'^logout/$', logout, {'next_page': settings.LOGOUT_REDIRECT_URL}),
-    url(r'^$',index,name='index'),
-    url(r'game',include('game.urls'))
+    url(r'^join/$',joinView, name='join')
 ]

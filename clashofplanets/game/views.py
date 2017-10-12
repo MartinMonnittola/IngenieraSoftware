@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from game.forms import *
 from django.http import HttpResponse
+from game.models import *
+from django.contrib.auth.decorators import login_required
 
 
 def signupView(request): # Sign Up View (Allow Users to register on system)
@@ -24,3 +26,16 @@ def homeView(request):
     template = loader.get_template('home.html')
     context = {}
     return HttpResponse(template.render(context, request))
+
+@login_required
+def joinView(request):
+    if request.method == 'POST':
+        form = JoinForm(request.POST)
+        if form.is_valid():
+            planet = Planet(game_id=form.id_partida, name=form.planet_name, player_id=request.user.id)
+            planet.save()
+            return HttpResponseRedirect('/lobby/')
+    else:
+        form = JoinForm()
+
+    return render(request, 'joinform.html', {'form': form})
