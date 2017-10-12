@@ -10,6 +10,7 @@ app_name = 'game'
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^signup/$', signupView, name='signup'),
+    url(r'^$', homeView, name='home'),
     url(r'^login/$', login, {'template_name': 'login.html'}),
     url(r'^logout/$', logout, {'next_page': settings.LOGOUT_REDIRECT_URL}),
 ]
