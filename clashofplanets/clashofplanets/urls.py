@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.conf import settings
 from django.contrib import admin
 from game.views import *
@@ -12,6 +12,6 @@ urlpatterns = [
     url(r'^signup/$', signupView, name='signup'),
     url(r'^login/$', login, {'template_name': 'login.html'}),
     url(r'^logout/$', logout, {'next_page': settings.LOGOUT_REDIRECT_URL}),
-    url(r'^$',views.index,name='index'),
+    url(r'^$',index,name='index'),
     url(r'game',include('game.urls'))
 ]

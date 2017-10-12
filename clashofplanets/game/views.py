@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from game.forms import *
-
-# Create your views here.
 from django.http import HttpResponse
+
+
 def signupView(request): # Sign Up View (Allow Users to register on system)
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -21,5 +21,3 @@ def signupView(request): # Sign Up View (Allow Users to register on system)
 
 def index(request):
     return HttpResponse("Bienvenido a Clash of Planets.")
-
-def
