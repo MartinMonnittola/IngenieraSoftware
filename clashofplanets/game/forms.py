@@ -19,3 +19,10 @@ class SignUpForm(UserCreationForm):
         super(SignUpForm, self).__init__(*args, **kwargs)
         self.fields['password1'].help_text = 'Required. It should be more than 8 characters not entirely numerical.'
         self.fields['password2'].help_text = 'Required. Write your password again.'
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')        
+        if email and User.objects.filter(email=email).exclude(username=username).exists():
+            raise forms.ValidationError(u'Email addresses must be unique.')
+        return email
