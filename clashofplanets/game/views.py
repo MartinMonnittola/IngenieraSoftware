@@ -1,3 +1,5 @@
+from django.http import HttpResponse, HttpResponseRedirect
+from django.template import loader
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from game.forms import *
@@ -18,6 +20,7 @@ def signupView(request): # Sign Up View (Allow Users to register on system)
         form = SignUpForm()
     return render(request, 'register.html', {'form': form})
 
-
-def index(request):
-    return HttpResponse("Bienvenido a Clash of Planets.")
+def homeView(request):
+    template = loader.get_template('home.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
