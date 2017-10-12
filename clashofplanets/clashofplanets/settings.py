@@ -120,3 +120,7 @@ STATIC_URL = '/game/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "game/static"),
 ]
+
+LOGIN_REDIRECT_URL = '/game_rooms/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
