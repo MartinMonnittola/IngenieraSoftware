@@ -28,12 +28,17 @@ def homeView(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+
 @login_required
 def joinView(request):
     if request.method == 'POST':
         form = JoinForm(request.POST)
+        print "aca"
+        print form.errors
         if form.is_valid():
-            id_partida = form.cleaned_data.get("id_partida")
+            id_partida = request.POST["game_id"]
+            print "hola"
+            print id_partida
             partida = Partida.objects.get(pk=id_partida)
             currentPlaying = Planet.objects.filter(gameroom=id_partida).count()
             if currentPlaying+1 > partida.max_players:
@@ -46,6 +51,7 @@ def joinView(request):
                 planet = Planet(gameroom_id=id_partida, name=planet_name, player_id=userId)
                 planet.save()
                 return HttpResponseRedirect('/lobby/')
+        print "no es valido"
     else:
         form = JoinForm()
     return render(request, 'joinform.html', {'form': form})

@@ -1,8 +1,33 @@
 {% extends "base.html" %}
 {% block main_content %}
-    <form action="/join/" method="post">
+    <form action="{% url "join" %}" method="post">
         {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Submit" />
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Choice</th>
+                    <th>Game ID</th>
+                    <th>Currently in</th>
+                    <th>Max Players</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for par in form.part %}
+                        <td><input type="radio" name="game_id" id="game_{{ par.id }}" value="{{ par.id }}"></td>
+                        <td>{{ par.id }}</td>
+                        <td>{{ par.currents }}</td>
+                        <td>{{ par.max_players }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {{ form.non_field_errors }}
+        <div class="fieldWrapper">
+            {{ form.planet_name.errors }}
+            {{ form.planet_name.label_tag }}
+            {{ form.planet_name }}
+        </div>
+        <br>
+        <input type="submit" class="btn-success" value="Join" />
     </form>
 {% endblock %}

@@ -18,6 +18,10 @@ class Partida(models.Model):
     max_players = models.IntegerField(default=2)
     playing = models.BooleanField(default=False)
 
+    def __str__(self):
+        return "Partida " + self.id.__str__()
+
+
     """ 
     Crea una partida en estado de espera. 
     """
@@ -86,34 +90,6 @@ class Partida(models.Model):
     def initial_poblation_has_not_value_negative_or_zero(self): 
       self.assertGreater(self.time_poblation, 0) 
     """
-
-  """
-  Metodos para realizar el testeo de la aplicacion.
-  """
-  """
-  def hurt_has_not_value_negative_or_zero(self):
-    self.assertGreater(self.hurt_to_shield, 0)
-    self.assertGreater(self.hurt_to_poblation, 0)
-  """
-  """
-  def const_has_not_value_negative_or_zero(self):
-    self.assertGreater(self.const_misil, 0)
-    self.assertGreater(self.const_poblation, 0)
-    self.assertGreater(self.const_shield, 0)
-  """
-  """
-  """
-
-  """
-  def time_misil_has_not_value_negative_or_zero(self):
-    self.assertGreater(self.time_misil, 0)
-  """
-  """
-  """
-  """
-  def initial_poblation_has_not_value_negative_or_zero(self):
-    self.assertGreater(self.time_poblation, 0)
-  """
 
 """
 Modelo usado para almacenar datos de cada planeta
