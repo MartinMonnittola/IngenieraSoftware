@@ -62,3 +62,7 @@ def gameRoomsView(request):
     template = loader.get_template('gamerooms.html')
     context = {}
     return HttpResponse(template.render(context,request))
+def gameInstructionsView(request): # game instructions View
+    template = loader.get_template('game_instructions.html')
+    context={}
+    return HttpResponse(template.render(context, request))
