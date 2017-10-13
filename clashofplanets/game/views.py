@@ -35,7 +35,7 @@ def joinView(request):
             id_partida = form.cleaned_data.get("id_partida")
             planet_name = form.cleaned_data.get("planet_name")
             userId = request.user.id
-            planet = Planet(game_id=id_partida, name=planet_name, player_id=userId)
+            planet = Planet(gameroom_id=id_partida, name=planet_name, player_id=userId)
             planet.save()
             return HttpResponseRedirect('/lobby/')
     else:
