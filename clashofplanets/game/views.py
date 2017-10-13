@@ -41,3 +41,10 @@ def joinView(request):
     else:
         form = JoinForm()
     return render(request, 'joinform.html', {'form': form})
+
+
+@login_required
+def gameRoomsView(request):
+    template = loader.get_template('gamerooms.html')
+    context = {}
+    return HttpResponse(template.render(context,request))
