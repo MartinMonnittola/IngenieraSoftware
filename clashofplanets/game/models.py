@@ -70,15 +70,15 @@ class Game(models.Model):
 
     """ 
     def  __str__(self): 
-      representation = (('User: %d '  % self.user) +  
-                       ('initial_poblation: %d '  % self.initial_poblation) +  
-                       ('const_misil: %d '  % self.const_misil) + 
-                       ('const_shield: %d ' % self.const_shield) + 
-                       ('const_poblation: %d ' % self.poblation) + 
-                       ('time_misil: %d '  % self.time_misil) + 
-                       ('hurt_to_poblation: %d '  % self.hurt_to_poblation) + 
-                       ('hurt_to_poblation: %d '  % self.hurt_to_poblation)) 
-      return representation 
+        representation = (('User: %d '  % self.user) +  
+                          ('initial_poblation: %d '  % self.initial_poblation) +  
+                          ('const_misil: %d '  % self.const_misil) + 
+                          ('const_shield: %d ' % self.const_shield) + 
+                          ('const_poblation: %d ' % self.poblation) + 
+                          ('time_misil: %d '  % self.time_misil) + 
+                          ('hurt_to_poblation: %d '  % self.hurt_to_poblation) + 
+                          ('hurt_to_poblation: %d '  % self.hurt_to_poblation)) 
+        return representation 
     """
 
     """ 
@@ -86,27 +86,27 @@ class Game(models.Model):
     """
     """ 
     def hurt_has_not_value_negative_or_zero(self): 
-      self.assertGreater(self.hurt_to_shield, 0) 
-      self.assertGreater(self.hurt_to_poblation, 0) 
+        self.assertGreater(self.hurt_to_shield, 0) 
+        self.assertGreater(self.hurt_to_poblation, 0) 
     """
     """ 
     def const_has_not_value_negative_or_zero(self): 
-      self.assertGreater(self.const_misil, 0) 
-      self.assertGreater(self.const_poblation, 0) 
-      self.assertGreater(self.const_shield, 0) 
+        self.assertGreater(self.const_misil, 0) 
+        self.assertGreater(self.const_poblation, 0) 
+        self.assertGreater(self.const_shield, 0) 
     """
     """ 
     """
 
     """ 
     def time_misil_has_not_value_negative_or_zero(self): 
-      self.assertGreater(self.time_misil, 0) 
+        self.assertGreater(self.time_misil, 0) 
     """
     """ 
     """
     """ 
     def initial_poblation_has_not_value_negative_or_zero(self): 
-      self.assertGreater(self.time_poblation, 0) 
+        self.assertGreater(self.initial_poblation, 0) 
     """
 
 """
