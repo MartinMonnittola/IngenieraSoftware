@@ -38,12 +38,14 @@ class Game(models.Model):
     """
     def createPartida():
     """
+
     """
     Desactiva un planeta y elimina sus recursos
     """
     """
     def deactivatePlanet(planet):
     """
+
     """
     Comienza una partida 
     """
@@ -56,10 +58,10 @@ class Game(models.Model):
     """
     def joinPartida(partida, user):
     """
+
     """
     Retorna la representacion del objeto en forma de string
     """
-
     """
     def  __str__(self):
         representation = (('User: %d '  % self.user) + 
@@ -81,21 +83,19 @@ class Game(models.Model):
       self.assertGreater(self.hurt_to_shield, 0)
       self.assertGreater(self.hurt_to_poblation, 0)
     """
+
     """
     def const_has_not_value_negative_or_zero(self):
       self.assertGreater(self.const_misil, 0)
       self.assertGreater(self.const_poblation, 0)
       self.assertGreater(self.const_shield, 0)
     """
-    """
-    """
 
     """
     def time_misil_has_not_value_negative_or_zero(self):
       self.assertGreater(self.time_misil, 0)
     """
-    """
-    """
+
     """
     def initial_poblation_has_not_value_negthenative_or_zero(self):
       self.assertGreater(self.initial_poblation, 0)
