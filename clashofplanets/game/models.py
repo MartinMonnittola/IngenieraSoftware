@@ -107,11 +107,11 @@ class Planet(models.Model):
                                       validators=[MinValueValidator(0)])
 
   @classmethod
-  def create(cls, player, gameroom, name, init_population):
+  def create(cls, player, gameroom, name):
     new_planet = cls(player=player,
                      gameroom=gameroom,
                      name=name,
-                     population_amm=init_population)
+                     population_amm=gameroom.init_population)
     return new_planet
 
   
