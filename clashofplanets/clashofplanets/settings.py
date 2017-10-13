@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'game',
+    'game'
 ]
 
 MIDDLEWARE = [
@@ -45,7 +45,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'clashofplanets.urls'
@@ -120,3 +120,7 @@ STATIC_URL = '/game/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "game/static"),
 ]
+
+LOGIN_REDIRECT_URL = '/game_rooms/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
