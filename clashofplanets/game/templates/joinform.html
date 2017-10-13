@@ -1,4 +1,8 @@
 {% extends "base.html" %}
-{% block content %}
-    Hola
+{% block main_content %}
+    <form action="/join/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit" />
+    </form>
 {% endblock %}

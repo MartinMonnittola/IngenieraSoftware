@@ -32,10 +32,12 @@ def joinView(request):
     if request.method == 'POST':
         form = JoinForm(request.POST)
         if form.is_valid():
-            planet = Planet(game_id=form.id_partida, name=form.planet_name, player_id=request.user.id)
+            id_partida = form.cleaned_data.get("id_partida")
+            planet_name = form.cleaned_data.get("planet_name")
+            userId = request.user.id
+            planet = Planet(game_id=id_partida, name=planet_name, player_id=userId)
             planet.save()
             return HttpResponseRedirect('/lobby/')
     else:
         form = JoinForm()
-
     return render(request, 'joinform.html', {'form': form})

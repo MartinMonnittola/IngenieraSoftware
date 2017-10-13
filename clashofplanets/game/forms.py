@@ -27,6 +27,7 @@ class SignUpForm(UserCreationForm):
             raise forms.ValidationError(u'Email addresses must be unique.')
         return email
 
+
 class JoinForm(forms.Form):
     id_partida = forms.IntegerField(label="Game ID")
     planet_name = forms.CharField(label="Planet Name")
