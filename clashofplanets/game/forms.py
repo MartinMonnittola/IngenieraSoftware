@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from game.models import *
 
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
@@ -26,3 +27,11 @@ class SignUpForm(UserCreationForm):
         if email and User.objects.filter(email=email).exclude(username=username).exists():
             raise forms.ValidationError(u'Email addresses must be unique.')
         return email
+
+
+class JoinForm(forms.Form):
+    partidas = Partida.objects.filter(playing=False)
+    for p in partidas:
+        p.currents = Planet.objects.filter(gameroom=p.id).count()
+
+    planet_name = forms.CharField(label="Planet Name")
