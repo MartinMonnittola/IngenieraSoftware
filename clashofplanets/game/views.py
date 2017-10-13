@@ -41,7 +41,6 @@ def joinView(request):
             elif partida.playing == True:
                 messages.error(request, 'This game is currently on a match, join another.')
             else:
-                print "habilitado"
                 planet_name = form.cleaned_data.get("planet_name")
                 userId = request.user.id
                 planet = Planet(gameroom_id=id_partida, name=planet_name, player_id=userId)
