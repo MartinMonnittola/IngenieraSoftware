@@ -6,20 +6,38 @@ from django.core.validators import MinValueValidator
 """ 
 Modelo usado para almacenar los datos de la partida en espera o en curso. 
 """
-class Partida(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # User creador de la partida
-    initial_poblation = models.IntegerField(default=0)
-    const_misil = models.IntegerField(default=0, blank=False)
-    const_shield = models.IntegerField(default=0, blank=False)
-    const_poblation = models.IntegerField(default=0, blank=False)
-    time_misil = models.IntegerField(default=0, blank=False)  # Tiempo de viaje del misil
-    hurt_to_poblation = models.IntegerField(default=0, blank=False)  # Dano a la poblacion por misil
-    hurt_to_shield = models.IntegerField(default=0, blank=False)  # Dano a la escudo por misil
+class Game(models.Model):
+
+    # User creador de la partida.
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             verbose_name="User creator")
+    initial_poblation =  models.IntegerField(default=1,
+                                help_text="please enter values greater than 0.")
+    const_misil = models.IntegerField(default=1, blank=False,
+                                help_text="please enter values greater than 0.")
+    const_shield = models.IntegerField(default=1, blank=False,
+                                help_text="please enter values greater than 0.")
+    const_poblation = models.IntegerField(default=1, blank=False,
+                                help_text="please enter values greater than 0.")
+    # Tiempo de viaje del misil.         
+    time_misil = models.IntegerField(default=1, blank=False,
+                    help_text="Please enter a number of minutes greater than 0")
+    # Dano a la poblacion por misil.
+    hurt_to_poblation = models.IntegerField(default=1, blank=False,
+                    help_text="Please enter a percentage greater than 0")
+    # Dano a la escudo por misil.
+    hurt_to_shield = models.IntegerField(default=1, blank=False,
+                           help_text="Please enter a percentage greater than 0")
     max_players = models.IntegerField(default=2)
     playing = models.BooleanField(default=False)
 
     def __str__(self):
         return "Partida " + self.id.__str__()
+
+
+    class Meta:
+        ordering = ["user"]
+        verbose_name_plural = "Games"
 
 
     """ 
@@ -156,3 +174,4 @@ class Planet(models.Model):
                       ('shield_distr: %d ' % self.shield_distr) +
                       ('missile_distr: %d ' % self.missile_distr))
     return representation
+
