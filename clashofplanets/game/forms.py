@@ -30,8 +30,8 @@ class SignUpForm(UserCreationForm):
 
 
 class JoinForm(forms.Form):
-    part = Partida.objects.filter(playing=False)
-    for p in part:
+    partidas = Partida.objects.filter(playing=False)
+    for p in partidas:
         p.currents = Planet.objects.filter(gameroom=p.id).count()
-        print p.currents
+
     planet_name = forms.CharField(label="Planet Name")

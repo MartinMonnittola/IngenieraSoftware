@@ -12,7 +12,8 @@
                 </tr>
             </thead>
             <tbody>
-                {% for par in form.part %}
+                {% for par in form.partidas %}
+                    <tr>
                         <td><input type="radio" name="game_id" id="game_{{ par.id }}" value="{{ par.id }}"></td>
                         <td>{{ par.id }}</td>
                         <td>{{ par.currents }}</td>
