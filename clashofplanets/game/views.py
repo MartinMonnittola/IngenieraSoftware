@@ -6,6 +6,7 @@ from game.forms import *
 from django.http import HttpResponse
 from game.models import *
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 def signupView(request): # Sign Up View (Allow Users to register on system)
@@ -33,11 +34,19 @@ def joinView(request):
         form = JoinForm(request.POST)
         if form.is_valid():
             id_partida = form.cleaned_data.get("id_partida")
-            planet_name = form.cleaned_data.get("planet_name")
-            userId = request.user.id
-            planet = Planet(gameroom_id=id_partida, name=planet_name, player_id=userId)
-            planet.save()
-            return HttpResponseRedirect('/lobby/')
+            partida = Partida.objects.get(pk=id_partida)
+            currentPlaying = Planet.objects.filter(gameroom=id_partida).count()
+            if currentPlaying+1 > partida.max_players:
+                messages.error(request, 'This game have passed the limit of players.')
+            elif partida.playing == True:
+                messages.error(request, 'This game is currently on a match, join another.')
+            else:
+                print "habilitado"
+                planet_name = form.cleaned_data.get("planet_name")
+                userId = request.user.id
+                planet = Planet(gameroom_id=id_partida, name=planet_name, player_id=userId)
+                planet.save()
+                return HttpResponseRedirect('/lobby/')
     else:
         form = JoinForm()
     return render(request, 'joinform.html', {'form': form})
