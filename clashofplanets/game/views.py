@@ -39,7 +39,7 @@ def joinView(request):
             currentPlaying = Planet.objects.filter(gameroom=id_partida).count()
             if currentPlaying+1 > partida.max_players:
                 messages.error(request, 'This game have passed the limit of players.')
-            elif partida.playing == True:
+            elif partida.playing:
                 messages.error(request, 'This game is currently on a match, join another.')
             else:
                 planet_name = form.cleaned_data.get("planet_name")
