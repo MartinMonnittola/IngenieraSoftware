@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block main_content %}
+
+<body>
+    <script src="{% static "/js/main.js" %}?v=00001" type="text/javascript"/></script>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 text-center">
+                <h4 class="bigcenter">List of Open Game Rooms</h4>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="container">
+        <div class="row" id="games">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">Game ID</th>
+                        <th class="text-center">Game Room Name</th>
+                        <th class="text-center">Players Connected</th>
+                        <th class="text-center">Max Players Allowed</th>
+                    </tr>
+                </thead>
+                <tbody id="openGames" class="openGamesC text-center">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <div class="cardb">
+                <form method="post" onsubmit="myButton.disabled=true; return true;">
+                    {% csrf_token %}
+                    <p>Planet name</p>
+                    <input id="planet_name" type="text" name="planet_name">
+                    <p>Game Id</p>
+                    <input id="room_num" type="text" name="room_num">
+                    <br>
+                    <input class="button-primary btn btn-space" type="submit" id="join" value="join game">
+                </form>
+                <p id="JoinError" style="color: #ef3245"></p>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="cardr">
+                <form method="post" onsubmit="myButton.disabled = true; return true;">
+                    {% csrf_token %}
+                    <p>Room Name</p>
+                    <input id="room_nameC" type="text" name="room_field">
+                    <p>Planet name</p>
+                    <input id="planet_nameC" type="text" name="player_field">
+                    <p>Max Players</p>
+                    <input id="max_playersC" type="text" name="var_field">
+                    <br>
+                    <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                    <br>
+                    <input class="button-primary btn btn-space" type="submit" value="create game" id="red">
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}

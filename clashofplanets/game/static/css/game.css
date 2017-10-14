@@ -18,6 +18,7 @@ html {
 body {
 	padding: 100px 0px 100px 0px;
     font-family: 'Roboto', sans-serif; /* 1 */
+    font-size: 14px;
     color: #FFFFFF;
     background-color: #050F1A;
 }
@@ -33,12 +34,12 @@ ul.openGamesC{
 
 #red{
   color: #FFF;
-  background-color: #f24f60;
-  border-color: #f24f60;
+  background-color: #4f9cf2;
+  border-color: #4f9cf2;
 }
 #red:hover{
-  background-color: #ef3245;
-  border-color: #ef3245;
+  background-color: rgb(72, 97, 239);
+  border-color: rgb(72, 97, 239);
 }
 
 .cardb h1{
@@ -52,12 +53,13 @@ ul.openGamesC{
     text-align: center;
     box-shadow: 0 2em 4em 0 #3aa84f;
     transition: 0.5s;
-    background: rgb(32, 86, 60);
+    background: rgba(32, 86, 60, 0.85);
     padding: 0.6em;
+    animation: pulseb 2s infinite;
 }
 
 .cardb:hover {
-    box-shadow: 0 4em 8em 0 #20563c;
+    animation: none;
 }
 
 .cardr h1{
@@ -65,14 +67,15 @@ ul.openGamesC{
 }
 .cardr {
     text-align: center;
-    box-shadow: 0 2em 4em 0 #f76574;
+    box-shadow: 0 2em 4em 0 #659af7;
     transition: 0.5s;
-    background: rgba(242,130,141,0.6);
+    background: rgba(36, 108, 153, 0.85);
     padding: 0.6em;
+    animation: pulsea 2s infinite;
 }
 
 .cardr:hover {
-    box-shadow: 0 4em 8em 0 #ed4455;
+    animation: none;
 }
 
 /* FOOTER
@@ -167,11 +170,11 @@ input[type="url"],
 input[type="password"],
 textarea,
 select {
-  height: 38px;
-  padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
+  height: 30px;
+  margin-bottom: 10px;
   background-color: #fff;
   border: 1px solid #D1D1D1;
-  border-radius: 4px;
+  border-radius: 1px;
   box-shadow: none;
   box-sizing: border-box; }
 /* Removes awkward default styles on some inputs for iOS */
@@ -216,3 +219,85 @@ label > .label-body {
   display: inline-block;
   margin-left: .5rem;
   font-weight: normal; }
+
+  /* Pulse 1 Animation
+  –––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+  @-webkit-keyframes pulse {
+   0% {
+     -webkit-box-shadow: 0 0 0 0 rgba(96, 145, 230, 0.3);
+   }
+   70% {
+       -webkit-box-shadow: 0 0 0 10px rgba(96, 145, 230, 0.3);
+   }
+   100% {
+       -webkit-box-shadow: 0 0 0 0 rgba(96, 145, 230, 0.3);
+   }
+ }
+ @keyframes pulsea {
+   0% {
+     -moz-box-shadow: 0 0 0 0 rgba(96, 145, 230, 0.3);
+     box-shadow: 0 0 0 0 rgba(96, 145, 230, 0.5);
+   }
+   70% {
+       -moz-box-shadow: 0 0 0 10px rgba(96, 145, 230, 0.3);
+       box-shadow: 0 0 0 10px rgba(96, 145, 230, 0.5);
+   }
+   100% {
+       -moz-box-shadow: 0 0 0 0 rgba(96, 145, 230, 0.3);
+       box-shadow: 0 0 0 0 rgba(96, 145, 230, 0.3);
+   }
+ }
+
+ /* Pulse 2 Animation
+ –––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+ @-webkit-keyframes pulseb {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 rgba(32, 86, 60, 0.3);
+  }
+  70% {
+      -webkit-box-shadow: 0 0 0 10px rgba(32, 86, 60, 0.3);
+  }
+  100% {
+      -webkit-box-shadow: 0 0 0 0 rgba(32, 86, 60, 0.3);
+  }
+}
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(32, 86, 60, 0.3);
+    box-shadow: 0 0 0 0 rgba(32, 86, 60, 0.3);
+  }
+  70% {
+      -moz-box-shadow: 0 0 0 10px rgba(32, 86, 60, 0.3);
+      box-shadow: 0 0 0 10px rgba(32, 86, 60, 0.3);
+  }
+  100% {
+      -moz-box-shadow: 0 0 0 0 rgba(32, 86, 60, 0.3);
+      box-shadow: 0 0 0 0 rgba(32, 86, 60, 0.3);
+  }
+}
+
+table {
+    background-color: #050F1A;;
+    color: white;
+    border-collapse: collapse;
+    width:auto;
+}
+
+table th {
+    padding: 10px;
+}
+
+table td {
+    padding: 2px 10px;
+    white-space:nowrap;
+}
+
+table td:nth-child(odd), table th:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+table tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05);
+}

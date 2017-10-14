@@ -1,158 +1,46 @@
-from django.db import models
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator
+from django.db import models
 
+# Create your models here.
 
-""" 
-Modelo usado para almacenar los datos de la partida en espera o en curso. 
-"""
-class Partida(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # User creador de la partida
-    initial_poblation = models.IntegerField(default=0)
-    const_misil = models.IntegerField(default=0, blank=False)
-    const_shield = models.IntegerField(default=0, blank=False)
-    const_poblation = models.IntegerField(default=0, blank=False)
-    time_misil = models.IntegerField(default=0, blank=False)  # Tiempo de viaje del misil
-    hurt_to_poblation = models.IntegerField(default=0, blank=False)  # Dano a la poblacion por misil
-    hurt_to_shield = models.IntegerField(default=0, blank=False)  # Dano a la escudo por misil
-    max_players = models.IntegerField(default=2)
-    playing = models.BooleanField(default=False)
+class Room(models.Model):
+	creator = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Room Creator')
+	room_name = models.CharField(max_length=20, verbose_name='Room Name')
+	room_num = models.IntegerField(verbose_name='Room Number')
+	pub_date = models.DateTimeField(verbose_name='Date added')
+	game_started = models.BooleanField(default=0,verbose_name='Game started (True/False)')
+	max_players = models.IntegerField(default=0, verbose_name='Room players limit')
+	connected_players = models.IntegerField(default=0, verbose_name='Amount of players online')
+	bot_players = models.IntegerField(default=0, verbose_name='Amount of bot players')
+	missile_delay = models.IntegerField(default=2, verbose_name='Missile Delay')
+	init_population = models.IntegerField(default=0, verbose_name='Initial Population')
+	const_population = models.IntegerField(default=1, verbose_name='Population Generation Constant')
+	const_shield = models.IntegerField(default=1, verbose_name='Shield Generation Constant')
+	const_missile = models.IntegerField(default=1, verbose_name='Missile Generation Constant')
+	population_damage_per_missile = models.IntegerField(default=1, verbose_name='Population damage per missile')
+	shield_damage_per_missile = models.IntegerField(default=1, verbose_name='Shield damage per missile')
 
-    def __str__(self):
-        return "Partida " + self.id.__str__()
+	def __str__(self):
+		return self.room_name
 
-
-    """ 
-    Crea una partida en estado de espera. 
-    """
-    """ 
-    def createPartida(): 
-    """
-    """ 
-    Desactiva un planeta y elimina sus recursos 
-    """
-    """ 
-    def deactivatePlanet(planet): 
-    """
-    """ 
-     Comienza una partida  
-    """
-    """ 
-    def startPartida(partida): 
-    """
-
-    """ 
-    """
-    """ 
-    def joinPartida(partida, user): 
-    """
-    """ 
-    Retorna la representacion del objeto en forma de string 
-    """
-
-    """ 
-    def  __str__(self): 
-      representation = (('User: %d '  % self.user) +  
-                       ('initial_poblation: %d '  % self.initial_poblation) +  
-                       ('const_misil: %d '  % self.const_misil) + 
-                       ('const_shield: %d ' % self.const_shield) + 
-                       ('const_poblation: %d ' % self.poblation) + 
-                       ('time_misil: %d '  % self.time_misil) + 
-                       ('hurt_to_poblation: %d '  % self.hurt_to_poblation) + 
-                       ('hurt_to_poblation: %d '  % self.hurt_to_poblation)) 
-      return representation 
-    """
-
-    """ 
-    Metodos para realizar el testeo de la aplicacion. 
-    """
-    """ 
-    def hurt_has_not_value_negative_or_zero(self): 
-      self.assertGreater(self.hurt_to_shield, 0) 
-      self.assertGreater(self.hurt_to_poblation, 0) 
-    """
-    """ 
-    def const_has_not_value_negative_or_zero(self): 
-      self.assertGreater(self.const_misil, 0) 
-      self.assertGreater(self.const_poblation, 0) 
-      self.assertGreater(self.const_shield, 0) 
-    """
-    """ 
-    """
-
-    """ 
-    def time_misil_has_not_value_negative_or_zero(self): 
-      self.assertGreater(self.time_misil, 0) 
-    """
-    """ 
-    """
-    """ 
-    def initial_poblation_has_not_value_negative_or_zero(self): 
-      self.assertGreater(self.time_poblation, 0) 
-    """
-
-"""
-Modelo usado para almacenar datos de cada planeta
-"""
 class Planet(models.Model):
+	player = models.ForeignKey(User, on_delete=models.CASCADE)
+	gameroom = models.ForeignKey(Room, on_delete=models.CASCADE)
+	name = models.CharField(max_length=20, null=False)
+	seed = models.BigIntegerField(default=0)
+	population_qty = models.IntegerField(default=0, verbose_name='Population Amout')
+	missiles_qty = models.IntegerField(default=0, verbose_name='Missile Amount')
+	shield_qty = models.IntegerField(default=0, verbose_name='Shield Amount')
+	population_distr = models.IntegerField(default=100, verbose_name='Planet Population %')
+	shield_distr = models.IntegerField(default=0, verbose_name='Planet Shield %')
+  	missiles_distr = models.IntegerField(default=0, verbose_name='Planet Missile %')
 
-  player = models.ForeignKey(User, on_delete=models.CASCADE)
-  gameroom = models.ForeignKey(Partida, on_delete=models.CASCADE)
-# bot = models.ForeignKey(Bot)
-  name = models.CharField(max_length=200, blank=False)
-  population_amm = models.IntegerField(default=5000, blank=False,
-                                       validators=[MinValueValidator(0)])
-  missile_amm = models.IntegerField(default=0, blank=False)
-  shield_perc = models.IntegerField(default=0, blank=False)
-  population_distr = models.IntegerField(default=100, blank=False,
-                                         validators=[MinValueValidator(0)])
-  shield_distr = models.IntegerField(default=0, blank=False,
-                                     validators=[MinValueValidator(0)])
-  missile_distr = models.IntegerField(default=0, blank=False,
-                                      validators=[MinValueValidator(0)])
+	def __str__(self):
+		return self.name
 
-  @classmethod
-  def create(cls, player, gameroom, name):
-    new_planet = cls(player=player,
-                     gameroom=gameroom,
-                     name=name,
-                     population_amm=gameroom.init_population)
-    return new_planet
-
-  
-  def assign_perc_rate(self, perc_pop, perc_shield, perc_missile):
-    if ((perc_pop + perc_shield + perc_missile) == 100):
-      self.population_distr = perc_pop
-      self.shield_distr = perc_shield
-      self.missile_distr = perc_missile
-    else:
-      raise NameError('Porcentajes erroneos')
-
-
-  def decrease_shield(self, ammount):
-    if (self.shield_perc >= ammount):
-      self.shield_perc =- ammount
-    else:
-      self.shield_perc = 0
-
-
-  def decreace_population(self, ammount):
-    if (self.population_amm >= ammount):
-      self.population_amm =- ammount
-    else:
-      self.population_amm = 0  
-
-  """
-  Retorna la representacion del objeto en forma de string
-  """
-  def  __str__(self):
-    representation = (('player: %d ' % self.player) + 
-                      ('gameroom: %d ' % self.gameroom) + 
-                      ('name: %d ' % self.name) +
-                      ('population_amm: %d ' % self.population_amm) +
-                      ('missile_amm: %d ' % self.missile_amm) +
-                      ('shield_perc: %d ' % self.shield_perc) +
-                      ('population_distr: %d ' % self.population_distr) +
-                      ('shield_distr: %d ' % self.shield_distr) +
-                      ('missile_distr: %d ' % self.missile_distr))
-    return representation
+	@classmethod
+  	def create(cls, player, gameroom, name, seed):
+	    new_planet = cls(player=player,gameroom=gameroom,name=name,population_qty=gameroom.init_population,seed=seed)
+	    return new_planet

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block main_content %}
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col">
+            <h1>Welcome to {{game.room_name}}
+                {% if request.user.is_authenticated %}
+                    <span class="text-primary" > {{request.user.username}}</span>!
+                {% endif %}
+            </h1>
+        </div>
+    </div>
+    <div class="row text-center">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center">Planet ID</th>
+                        <th class="text-center">Planet Name</th>
+                        <th class="text-center">Planet Owner</th>
+                        <th class="text-center">Planet Seed</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    {% for planet in planets %}
+                        <tr>
+                            <td>{{planet.id}}</td>
+                            <td>{{planet.name}}</td>
+                            <td>{{planet.player}}</td>
+                            <td>{{planet.seed}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+    <div class="row text-center">
+        <div class="col">
+            {% if request.user == game.creator %}
+            <!-- solo el creador de la sala puede comenzar el juego-->
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="submit" value="start game">
+            </form>
+            {% endif %}
+        </div>
+        <div class="col">
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="submit" value="back to lobby">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
