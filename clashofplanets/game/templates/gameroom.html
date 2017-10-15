@@ -47,7 +47,7 @@
             {% endif %}
         </div>
         <div class="col">
-            <form action="" method="post">
+            <form action="{% url 'game_rooms' %}" method="post">
                 {% csrf_token %}
                 <input type="submit" value="back to lobby">
             </form>

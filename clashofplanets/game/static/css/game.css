@@ -82,6 +82,31 @@ ul.openGamesC{
     animation: none;
 }
 
+
+table {
+    background-color: #050F1A;;
+    color: white;
+    border-collapse: collapse;
+    width:auto;
+}
+
+table th {
+    padding: 10px;
+}
+
+table td {
+    padding: 2px 10px;
+    white-space:nowrap;
+}
+
+table td:nth-child(odd), table th:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+table tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
 /* FOOTER
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .footer {
@@ -282,26 +307,5 @@ label > .label-body {
   }
 }
 
-table {
-    background-color: #050F1A;;
-    color: white;
-    border-collapse: collapse;
-    width:auto;
-}
-
-table th {
-    padding: 10px;
-}
-
-table td {
-    padding: 2px 10px;
-    white-space:nowrap;
-}
-
-table td:nth-child(odd), table th:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-table tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.05);
-}
+/* RANGE SLIDER
+–––––––––––––––––––––––––––––––––––––––––––––––––– */

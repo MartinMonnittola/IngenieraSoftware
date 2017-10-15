@@ -12,6 +12,8 @@ from game.models import *
 from django.utils import timezone
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from random import randint
 import random
 import math
@@ -80,11 +82,9 @@ def make_player(request): #join game
         game_room_num=request.POST.get('num')
         gamelist = Room.objects.filter(room_num=game_room_num) #for more help, seek Django QuerySet API
         g=get_object_or_404(gamelist) #isolates the already existing game
-
         if not gamelist: #game doesn't exist, stop joining
             data={'gameNumber':-1} #gameNumber = -1 indicates game doesn't exist
             return HttpResponse(json.dumps(data),content_type='application/json')
-
         if (int(g.game_started)==0) and (g.connected_players < g.max_players): #game hasn't started
             seed=randint(1,90001) #seed will be used for randomization
             p=Planet.create(request.user, g, planet_name, seed)
@@ -107,23 +107,6 @@ def make_player(request): #join game
         return HttpResponseRedirect('%s' % game_num) #Redirects to game room
 
 @login_required
-def delete_planet(request,pk): # player leaves room
-    if (request.method=='POST'):
-        planet_owner_id = request.user
-        if (int(g.game_started)==0):
-            if (g.creator == planet_owner_id):
-                p = Planet.objects.get(pk=id)
-                p.delete()
-                g.delete()
-            else:
-                p = Planet.objects.filter(pk=id)
-                p.delete()
-        else:
-            p = Planet.objects.filter(pk=id)
-            p.delete()
-    return HttpResponseRedirect('game_rooms/')
-
-@login_required
 def make_game(request):
     #create game
     if (request.method=='POST' and request.is_ajax()):
@@ -137,6 +120,7 @@ def make_game(request):
             roomnums.append(int(game.room_num)) #create an array of all existing game_num's
         new_num=1+max(roomnums) #simply add 1 to largest current game_num and this is our new game_num
         g=Room.objects.create(creator=request.user, room_name=room_name, room_num=new_num,pub_date=timezone.now(),game_started=0,max_players=max_players)
+        g.connected_players += 1
         g.save() #creates game
         seed=randint(1,90001)
         p=Planet.create(request.user, g, planet_name, seed)
