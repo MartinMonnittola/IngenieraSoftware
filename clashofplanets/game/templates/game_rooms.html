@@ -15,7 +15,7 @@
     </div>
     <br>
     <div class="container">
-        <div class="row" id="games">
+        <div class="row games" id="games">
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -40,7 +40,7 @@
                     <p>Game Id</p>
                     <input id="room_num" type="text" name="room_num">
                     <br>
-                    <input class="button-primary btn btn-space" type="submit" id="join" value="join game">
+                    <input class="button-primary btn btn-space" type="submit" value="join game" id="join">
                 </form>
                 <p id="JoinError" style="color: #ef3245"></p>
             </div>
@@ -55,8 +55,6 @@
                     <input id="planet_nameC" type="text" name="player_field">
                     <p>Max Players</p>
                     <input id="max_playersC" type="text" name="var_field">
-                    <br>
-                    <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
                     <br>
                     <input class="button-primary btn btn-space" type="submit" value="create game" id="red">
                 </form>

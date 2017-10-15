@@ -80,11 +80,10 @@ def make_player(request): #join game
         game_room_num=request.POST.get('num')
         gamelist = Room.objects.filter(room_num=game_room_num) #for more help, seek Django QuerySet API
         g=get_object_or_404(gamelist) #isolates the already existing game
-        
+
         if not gamelist: #game doesn't exist, stop joining
             data={'gameNumber':-1} #gameNumber = -1 indicates game doesn't exist
             return HttpResponse(json.dumps(data),content_type='application/json')
-
 
         if (int(g.game_started)==0) and (g.connected_players < g.max_players): #game hasn't started
             seed=randint(1,90001) #seed will be used for randomization
@@ -94,7 +93,7 @@ def make_player(request): #join game
             p.save() #creates planet with game among other things
             request.session['id']=seed #to identify planet
             request.session['gameEntry']=int(game_room_num) #Adds a cookie/session to indicate a legit entry
-            data={'gameNumber':game_num}
+            data={'gameNumber':game_room_num}
             return HttpResponse(json.dumps(data),content_type='application/json')
         elif (int(g.game_started)==0) and (g.connected_players == g.max_players):
             # game is full
@@ -109,13 +108,20 @@ def make_player(request): #join game
 
 @login_required
 def delete_planet(request,pk): # player leaves room
-    if (request.method=='POST' and request.is_ajax()):
+    if (request.method=='POST'):
+        planet_owner_id = request.user
         if (int(g.game_started)==0):
-            p = Planet.objects.get(pk=id)
-            p.delete()
-            return HttpResponse(json.dumps(data),content_type='application/json')
+            if (g.creator == planet_owner_id):
+                p = Planet.objects.get(pk=id)
+                p.delete()
+                g.delete()
+            else:
+                p = Planet.objects.filter(pk=id)
+                p.delete()
         else:
-            return HttpResponse(json.dumps(data),content_type='application/json')
+            p = Planet.objects.filter(pk=id)
+            p.delete()
+    return HttpResponseRedirect('game_rooms/')
 
 @login_required
 def make_game(request):

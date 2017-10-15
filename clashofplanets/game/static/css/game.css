@@ -9,6 +9,10 @@ html {
   -webkit-text-size-adjust: 100%; /* 2 */
 }
 
+.games {
+    padding-bottom: 40px;
+}
+
 .navbar-nav > li{
   padding-left:10px;
   padding-right:10px;
