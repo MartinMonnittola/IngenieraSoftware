@@ -11,75 +11,95 @@ class Game(models.Model):
     # User creador de la partida.
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              verbose_name="User creator")
+
+    # Poblacion inicial al comenzar la partida.
     initial_poblation =  models.IntegerField(default=1,
                                 help_text="please enter values greater than 0.")
+
+    # Procentaje de poblacion asignado al recurso misil.
     const_misil = models.IntegerField(default=1, blank=False,
                                 help_text="please enter values greater than 0.")
+
+    # Procentaje de poblacion asignado al recurso escudo.
     const_shield = models.IntegerField(default=1, blank=False,
                                 help_text="please enter values greater than 0.")
+
+    # Procentaje de poblacion asignado al recurso poblacion.
     const_poblation = models.IntegerField(default=1, blank=False,
                                 help_text="please enter values greater than 0.")
+
     # Tiempo de viaje del misil.         
     time_misil = models.IntegerField(default=1, blank=False,
                     help_text="Please enter a number of minutes greater than 0")
+
     # Dano a la poblacion por misil.
     hurt_to_poblation = models.IntegerField(default=1, blank=False,
                     help_text="Please enter a percentage greater than 0")
+
     # Dano a la escudo por misil.
     hurt_to_shield = models.IntegerField(default=1, blank=False,
                            help_text="Please enter a percentage greater than 0")
+
+    # Numero maximo de jugadores.
     max_players = models.IntegerField(default=2)
+
+    # Estado de la partida.
     playing = models.BooleanField(default=False)
-
-    def __str__(self):
-        return "Partida " + self.id.__str__()
-
 
     class Meta:
         ordering = ["user"]
         verbose_name_plural = "Games"
 
-
     """ 
     Crea una partida en estado de espera. 
     """
-    """ 
-    def createPartida(): 
-    """
-    """ 
-    Desactiva un planeta y elimina sus recursos 
-    """
-    """ 
-    def deactivatePlanet(planet): 
-    """
-    """ 
-     Comienza una partida  
-    """
-    """ 
-    def startPartida(partida): 
-    """
+    @classmethod
+    def createGame(Gm, initial_poblation, const_misil,
+                  const_shield, const_poblation,
+                  time_misil, hurt_to_poblation,
+                  hurt_to_shield, max_players, user):
+        game = Gm(initial_poblation=initial_poblation, const_misil=const_misil,
+                  const_shield=const_shield, const_poblation=const_poblation,
+                  time_misil=time_misil, hurt_to_poblation=hurt_to_poblation,
+                  hurt_to_shield=hurt_to_shield, max_players=max_players,
+                  playing=False, user=user)
+        return game
 
     """ 
+    Desactiva un planeta y elimina sus recursos.
     """
-    """ 
-    def joinPartida(partida, user): 
-    """
-    """ 
-    Retorna la representacion del objeto en forma de string 
-    """
+    def deactivatePlanet(planet_id):
+        planet = Planet.objects.get(pk=planet_id)
+        user = planet.player
+        planet.delete()
+        # Notificamo al usuario de la eliminacion de su planeta.
+        #user.notify_devastation()
 
     """ 
+    Marca como iniciada una partida.
+    """
+    def startPartida():
+        self.playing = True
+
+    """ 
+    Unirse a una partida.
+    """
+    def joinGame(user, name): 
+       planet = Planet.create(Planet, user, self, name)        
+
+    """ 
+    Retorna la representacion del objeto en forma de string. 
+    """
     def  __str__(self): 
-        representation = (('User: %d '  % self.user) +  
-                          ('initial_poblation: %d '  % self.initial_poblation) +  
-                          ('const_misil: %d '  % self.const_misil) + 
-                          ('const_shield: %d ' % self.const_shield) + 
-                          ('const_poblation: %d ' % self.poblation) + 
-                          ('time_misil: %d '  % self.time_misil) + 
-                          ('hurt_to_poblation: %d '  % self.hurt_to_poblation) + 
-                          ('hurt_to_poblation: %d '  % self.hurt_to_poblation)) 
+        representation = (('User: %d, '  % self.user.id) +  
+                          ('initial_poblation: %d, '  % self.initial_poblation) +  
+                          ('const_misil: %d, '  % self.const_misil) + 
+                          ('const_shield: %d, ' % self.const_shield) + 
+                          ('const_poblation: %d, ' % self.const_poblation) + 
+                          ('time_misil: %d, '  % self.time_misil) + 
+                          ('hurt_to_poblation: %d, '  % self.hurt_to_poblation) + 
+                          ('hurt_to_poblation: %d'  % self.hurt_to_poblation)) 
         return representation 
-    """
 
     """ 
     Metodos para realizar el testeo de la aplicacion. 
@@ -115,7 +135,7 @@ Modelo usado para almacenar datos de cada planeta
 class Planet(models.Model):
 
   player = models.ForeignKey(User, on_delete=models.CASCADE)
-  gameroom = models.ForeignKey(Partida, on_delete=models.CASCADE)
+  gameroom = models.ForeignKey(Game, on_delete=models.CASCADE)
 # bot = models.ForeignKey(Bot)
   name = models.CharField(max_length=200, blank=False)
   population_amm = models.IntegerField(default=5000, blank=False,

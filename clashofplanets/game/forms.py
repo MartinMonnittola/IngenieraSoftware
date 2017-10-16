@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from game.models import *
 
+
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
     last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
@@ -28,10 +29,36 @@ class SignUpForm(UserCreationForm):
             raise forms.ValidationError(u'Email addresses must be unique.')
         return email
 
-
 class JoinForm(forms.Form):
-    partidas = Partida.objects.filter(playing=False)
+    partidas = Game.objects.filter(playing=False)
     for p in partidas:
         p.currents = Planet.objects.filter(gameroom=p.id).count()
 
     planet_name = forms.CharField(label="Planet Name")
+
+
+
+"""
+Formulario para la creacion de partidas.
+"""
+class CreateGame(forms.ModelForm):
+
+    class Meta:
+        model = Game
+        widgets = {'user': forms.HiddenInput()}
+        exclude = ['playing']
+
+    def save(self, *args, **kwargs):
+        const_poblation = self.cleaned_data.get('const_poblation')
+        const_misil = self.cleaned_data.get('const_misil')
+        const_shield = self.cleaned_data.get('const_shield')
+        if ((const_poblation + const_misil + const_shield) == 100):
+            nuevo_game = super(CreateGame, self).save(*args, **kwargs)
+            nuevo_game.const_poblation = const_poblation
+            nuevo_game.const_shield = const_shield
+            nuevo_game.const_misil = const_misil
+            nuevo_game.save()
+        else:
+            raise forms.ValidationError(
+                                  u'Los pocentajes ingresados son incorrectos.')
+
