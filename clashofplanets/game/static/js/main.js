@@ -30,31 +30,23 @@ function listGames(){
 		type : 'POST',
 		data : { csrfmiddlewaretoken : csrftoken2 },
 		ifModified: true,
-		url : "GetGames/",
+		url : "get_games/",
     success : function(json) {
 		if(status!="notmodified"){
 			//console.log(json);
-			var cGames= $('#openGames').text();
-			//Must do a manual check for changes since AJAX xhr statuses can only check for not notmodified (which isn't working)
 			var glist = json.games;
-			var clist ="";
-			for (var i = 0; i<glist.length; i++) {
-				clist = clist + "" + glist[i];
-			}
             //alert(clist);
-			if(clist!=cGames){
-				$('#openGames').empty();
-				for (var i = 0; i < glist.length; i++) {
-					var num=glist[i];
-					buildListElementItem = $(
-                        '<tr>'
-                        +'<td>' + glist[i].id +'</td>'
-                        +'<td>' + glist[i].name+'</td>'
-                        +'<td>' + glist[i].connected_players +'</td>'
-                        +'<td>' + glist[i].max_players +'</td>'
-                        +'</tr>');
-                        $("#openGames").append(buildListElementItem);
-				}
+			$('#openGames').empty();
+			for (var i = 0; i < glist.length; i++) {
+				var num=glist[i];
+				buildListElementItem = $(
+                    '<tr>'
+                    +'<td>' + glist[i].id +'</td>'
+                    +'<td>' + glist[i].name+'</td>'
+                    +'<td>' + glist[i].connected_players +'</td>'
+                    +'<td>' + glist[i].max_players +'</td>'
+                    +'</tr>');
+                    $("#openGames").append(buildListElementItem);
 			}
 		}
     setTimeout(listGames(), 2000);

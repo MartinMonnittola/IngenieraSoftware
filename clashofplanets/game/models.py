@@ -6,9 +6,11 @@ from django.db import models
 # Create your models here.
 
 class Room(models.Model):
+	"""
+	Room Class: Contains all the information about a game lobby (pre-game status).
+	"""
 	creator = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Room Creator')
 	room_name = models.CharField(max_length=20, verbose_name='Room Name')
-	room_num = models.IntegerField(verbose_name='Room Number')
 	pub_date = models.DateTimeField(verbose_name='Date added')
 	game_started = models.BooleanField(default=0,verbose_name='Game started (True/False)')
 	max_players = models.IntegerField(default=0, verbose_name='Room players limit')
@@ -26,6 +28,10 @@ class Room(models.Model):
 		return self.room_name
 
 class Planet(models.Model):
+	"""
+	Planet Class: Contains all the information about each player's planet
+	that will be generated after starting the game (in-game status).
+	"""
 	player = models.ForeignKey(User, on_delete=models.CASCADE)
 	gameroom = models.ForeignKey(Room, on_delete=models.CASCADE)
 	name = models.CharField(max_length=20, null=False)

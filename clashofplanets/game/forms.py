@@ -28,13 +28,36 @@ class SignUpForm(UserCreationForm):
             raise forms.ValidationError(u'Email addresses must be unique.')
         return email
 
-class gameForm(forms.Form):
+class gameForm(forms.ModelForm):
     planet_name = forms.CharField(label='Your planet name', max_length=20)
     game = forms.IntegerField()
     class Meta:
         model = Room
-        fields = (
-        'room_name', 'max_players', 'bot_players', 'missile_delay',
+        fields = ('id','room_name', 'max_players', 'bot_players', 'missile_delay',
         'init_population', 'const_population', 'const_shield',
         'const_missile', 'population_damage_per_missile',
         'shield_damage_per_missile',)
+
+
+class CreateGame(forms.ModelForm):
+    """
+    Form that allow players to create game rooms.
+    """
+
+    class Meta:
+        model = Room
+        widgets = {'user': forms.HiddenInput()}
+        exclude = ['playing']
+
+    def save(self, *args, **kwargs):
+        const_poblation = self.cleaned_data.get('const_poblation')
+        const_misil = self.cleaned_data.get('const_misil')
+        const_shield = self.cleaned_data.get('const_shield')
+        if ((const_poblation + const_misil + const_shield) == 100):
+            nuevo_game = super(CreateGame, self).save(*args, **kwargs)
+            nuevo_game.const_poblation = const_poblation
+            nuevo_game.const_shield = const_shield
+            nuevo_game.const_misil = const_misil
+            nuevo_game.save()
+        else:
+            raise forms.ValidationError(u'Los pocentajes ingresados son incorrectos.')

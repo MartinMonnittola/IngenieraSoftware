@@ -76,7 +76,7 @@ def game_closed(request):
 def gameRoom(request, game_room_num):
     test=request.session['gameEntry']
     if test==int(game_room_num):
-        g=Room.objects.filter(room_num=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
+        g=Room.objects.filter(id=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
         planets = Planet.objects.filter(gameroom=g) #Using g, we can find the players in the game properly since game compares id's
         game=get_object_or_404(g)
         template = loader.get_template('gameroom.html')
@@ -93,7 +93,7 @@ def make_player(request): #join game
     	form = gameForm(request.POST) #gets the values submitted in the template
         planet_name=request.POST.get('pname')
         game_room_num=request.POST.get('num')
-        gamelist = Room.objects.filter(room_num=game_room_num) #for more help, seek Django QuerySet API
+        gamelist = Room.objects.filter(id=game_room_num) #for more help, seek Django QuerySet API
         g=get_object_or_404(gamelist) #isolates the already existing game
         if not gamelist: #game doesn't exist, stop joining
             data={'gameNumber':-1} #gameNumber = -1 indicates game doesn't exist
@@ -127,20 +127,17 @@ def make_game(request):
         planet_name=request.POST.get('pname')
         room_name=request.POST.get('rname')
         max_players=request.POST.get('max_players')
-        gamelist = Room.objects.all() #gets all existing gamesu
-        roomnums=[0]
-        for game in gamelist:
-            roomnums.append(int(game.room_num)) #create an array of all existing game_num's
-        new_num=1+max(roomnums) #simply add 1 to largest current game_num and this is our new game_num
-        g=Room.objects.create(creator=request.user, room_name=room_name, room_num=new_num,pub_date=timezone.now(),game_started=0,max_players=max_players)
+        gamelist = Room.objects.all() #gets all existing game rooms
+        g=Room.objects.create(creator=request.user, room_name=room_name,pub_date=timezone.now(),game_started=0,max_players=max_players)
         g.connected_players += 1
         g.save() #creates game
+        game_id = g.id
         seed=randint(1,90001)
         p=Planet.create(request.user, g, planet_name, seed)
         p.save() #creates player
         request.session['id']=seed #to identify player
-        request.session['gameEntry']=int(new_num)
-        data={'gameNumber': new_num}
+        request.session['gameEntry']=int(game_id)
+        data={'gameNumber': game_id}
     else:
         print("ohno")
         form = gameForm()
@@ -150,7 +147,7 @@ def make_game(request):
 def send_players(request):
 	if (request.method=='POST' and request.is_ajax()):
 		game_num=request.POST.get('game_num')
-		g=Room.objects.filter(room_num=int(game_num))
+		g=Room.objects.filter(id=game_num)
 		planets = Planet.objects.filter(gameroom=g) #players in game
 		plist=[]
 		for planet in planets:
@@ -167,7 +164,7 @@ def send_games(request):
         for tmpgame in games:
             game_name = tmpgame.room_name
             game_max_players = tmpgame.max_players
-            game_id = tmpgame.room_num
+            game_id = tmpgame.id
             game_connected_players = tmpgame.connected_players
             record = {
                 'name': game_name,
@@ -181,7 +178,7 @@ def send_games(request):
 
 #in game
 def start_game(request, game_num):
-	g=Room.objects.filter(room_num=game_num).first()
+	g=Room.objects.filter(id=game_num).first()
 	planets = Planet.objects.filter(game=g).order_by('seed') #players in game, sorted
 	if int(g.game_started)==0: #first person to press start game
 		g.game_started=1
