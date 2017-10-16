@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', homeView, name='home'),
     url(r'^signup/$', signupView, name='signup'),
-    url(r'^login/$', login, {'template_name': 'login.html'}),
+    url(r'^login/$', Login.as_view(), name='login'),
     url(r'^logout/$', logout, {'next_page': settings.LOGOUT_REDIRECT_URL}),
     url(r'^game_instructions/$', gameInstructionsView, name='game_instructions'),
     url(r'^game_rooms/$', gameRoomsListView, name='game_rooms'), #Game Room List (Lobby)

@@ -13,13 +13,26 @@ from django.utils import timezone
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic.edit import FormView
+from django.contrib.auth.forms import AuthenticationForm
 from random import randint
 import random
 import math
 import json
 
 # Create your views here.
+class Login(FormView):
+    template_name = 'login.html'
+    form_class = AuthenticationForm
+    success_url =  reverse_lazy('game_rooms')
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return super(Login, self).dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        login(self.request, form.get_user())
+        return super(Login, self).form_valid(form)
 
 def homeView(request): # Main View
     template = loader.get_template('home.html')
