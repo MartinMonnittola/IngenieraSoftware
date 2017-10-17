@@ -36,8 +36,8 @@ def joinView(request):
         if form.is_valid():
             id_game = request.POST["game_id"]
             game = Game.objects.get(pk=id_game)
-            currentPlaying = Planet.objects.filter(gameroom=id_game).count()
-            if currentPlaying+1 > game.max_players:
+            game.currentPlaying = Planet.objects.filter(gameroom=id_game).count()
+            if game.currentPlaying+1 > game.max_players:
                 messages.error(request, 'This game have passed the limit of players.')
             elif game.playing:
                 messages.error(request, 'This game is currently on a match, join another.')

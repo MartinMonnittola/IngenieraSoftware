@@ -32,9 +32,6 @@ class SignUpForm(UserCreationForm):
 
 class JoinForm(forms.Form):
     games = Game.objects.filter(playing=False)
-    for g in games:
-        g.currents = Planet.objects.filter(gameroom=g.id).count()
-
     planet_name = forms.CharField(label="Planet Name")
 
 
