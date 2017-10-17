@@ -78,17 +78,18 @@ class Game(models.Model):
     """ 
     Marca como iniciada una partida.
     """
-    def startPartida():
+    def startPartida(self):
         self.playing = True
 
     """ 
     Unirse a una partida.
     """
-    def joinGame(user, name): 
-       planet = Planet.create(Planet, user, self, name)        
+    def joinGame(self,user, name):
+        planet = Planet.create(user, self, name)
+        planet.save()
 
     """ 
-    Retorna la representacion del objeto en forma de string. 
+    Retorna la representacion del objeto en forma de string.
     """
     def  __str__(self): 
         representation = (('User: %d, '  % self.user.id) +  
@@ -150,11 +151,11 @@ class Planet(models.Model):
                                       validators=[MinValueValidator(0)])
 
   @classmethod
-  def create(cls, player, gameroom, name):
-    new_planet = cls(player=player,
+  def create(self, player, gameroom, name):
+    new_planet = self(player=player,
                      gameroom=gameroom,
                      name=name,
-                     population_amm=gameroom.init_population)
+                     population_amm=gameroom.initial_poblation)
     return new_planet
 
   

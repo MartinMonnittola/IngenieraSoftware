@@ -34,29 +34,20 @@ def joinView(request):
     if request.method == 'POST':
         form = JoinForm(request.POST)
         if form.is_valid():
-            id_partida = request.POST["game_id"]
-            partida = Partida.objects.get(pk=id_partida)
-            currentPlaying = Planet.objects.filter(gameroom=id_partida).count()
-            if currentPlaying+1 > partida.max_players:
+            id_game = request.POST["game_id"]
+            game = Game.objects.get(pk=id_game)
+            currentPlaying = Planet.objects.filter(gameroom=id_game).count()
+            if currentPlaying+1 > game.max_players:
                 messages.error(request, 'This game have passed the limit of players.')
-            elif partida.playing:
+            elif game.playing:
                 messages.error(request, 'This game is currently on a match, join another.')
             else:
                 planet_name = form.cleaned_data.get("planet_name")
-                userId = request.user.id
-                planet = Planet(gameroom_id=id_partida, name=planet_name, player_id=userId)
-                planet.save()
+                game.joinGame(request.user,planet_name)
                 return HttpResponseRedirect('/lobby/')
     else:
         form = JoinForm()
-    return render(request, 'joinform.html', {'form': form})
-
-
-@login_required
-def gameRoomsView(request):
-    template = loader.get_template('gamerooms.html')
-    context = {}
-    return HttpResponse(template.render(context,request))
+    return render(request, 'gamerooms.html', {'form': form})
 
 
 def gameInstructionsView(request): # game instructions View

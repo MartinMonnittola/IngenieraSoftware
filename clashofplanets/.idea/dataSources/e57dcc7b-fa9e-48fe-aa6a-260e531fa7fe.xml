@@ -19,7 +19,7 @@
     <table id="13" parent="2" name="django_content_type"/>
     <table id="14" parent="2" name="django_migrations"/>
     <table id="15" parent="2" name="django_session"/>
-    <table id="16" parent="2" name="game_partida"/>
+    <table id="16" parent="2" name="game_game"/>
     <table id="17" parent="2" name="game_planet"/>
     <table id="18" parent="2" name="sqlite_master">
       <System>1</System>
@@ -455,17 +455,17 @@ model</ColNames>
       <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="108" parent="16" name="hurt_to_poblation">
+    <column id="108" parent="16" name="time_misil">
       <Position>5</Position>
       <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="109" parent="16" name="hurt_to_shield">
+    <column id="109" parent="16" name="hurt_to_poblation">
       <Position>6</Position>
       <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="110" parent="16" name="user_id">
+    <column id="110" parent="16" name="hurt_to_shield">
       <Position>7</Position>
       <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
@@ -480,12 +480,12 @@ model</ColNames>
       <DataType>bool|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="113" parent="16" name="time_misil">
+    <column id="113" parent="16" name="user_id">
       <Position>10</Position>
       <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="114" parent="16" name="game_partida_user_id_d596a6f9">
+    <index id="114" parent="16" name="game_game_user_id_e48d69d8">
       <ColNames>user_id</ColNames>
       <ColumnCollations></ColumnCollations>
     </index>
@@ -518,7 +518,7 @@ model</ColNames>
       <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="121" parent="17" name="gameroom_id">
+    <column id="121" parent="17" name="player_id">
       <Position>4</Position>
       <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
@@ -543,17 +543,17 @@ model</ColNames>
       <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="126" parent="17" name="player_id">
+    <column id="126" parent="17" name="gameroom_id">
       <Position>9</Position>
       <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="127" parent="17" name="game_planet_gameroom_id_ba48142c">
-      <ColNames>gameroom_id</ColNames>
+    <index id="127" parent="17" name="game_planet_player_id_9fb375b6">
+      <ColNames>player_id</ColNames>
       <ColumnCollations></ColumnCollations>
     </index>
-    <index id="128" parent="17" name="game_planet_player_id_9fb375b6">
-      <ColNames>player_id</ColNames>
+    <index id="128" parent="17" name="game_planet_gameroom_id_ba48142c">
+      <ColNames>gameroom_id</ColNames>
       <ColumnCollations></ColumnCollations>
     </index>
     <key id="129" parent="17">
@@ -561,13 +561,13 @@ model</ColNames>
       <Primary>1</Primary>
     </key>
     <foreign-key id="130" parent="17">
-      <ColNames>gameroom_id</ColNames>
-      <RefTableName>game_partida</RefTableName>
+      <ColNames>player_id</ColNames>
+      <RefTableName>auth_user</RefTableName>
       <RefColNames>id</RefColNames>
     </foreign-key>
     <foreign-key id="131" parent="17">
-      <ColNames>player_id</ColNames>
-      <RefTableName>auth_user</RefTableName>
+      <ColNames>gameroom_id</ColNames>
+      <RefTableName>game_game</RefTableName>
       <RefColNames>id</RefColNames>
     </foreign-key>
     <column id="132" parent="18" name="type">

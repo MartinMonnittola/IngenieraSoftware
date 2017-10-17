@@ -29,10 +29,11 @@ class SignUpForm(UserCreationForm):
             raise forms.ValidationError(u'Email addresses must be unique.')
         return email
 
+
 class JoinForm(forms.Form):
-    partidas = Game.objects.filter(playing=False)
-    for p in partidas:
-        p.currents = Planet.objects.filter(gameroom=p.id).count()
+    games = Game.objects.filter(playing=False)
+    for g in games:
+        g.currents = Planet.objects.filter(gameroom=g.id).count()
 
     planet_name = forms.CharField(label="Planet Name")
 
