@@ -40,6 +40,9 @@ class Game(models.Model):
     hurt_to_shield = models.IntegerField(default=1, blank=False,
                            help_text="Please enter a percentage greater than 0")
 
+    # Numero actual de jugadores
+    currentPlaying = models.IntegerField(default=0)
+
     # Numero maximo de jugadores.
     max_players = models.IntegerField(default=2)
 
@@ -55,6 +58,22 @@ class Game(models.Model):
 
     """ 
     Crea una partida en estado de espera. 
+    Entrada: Gm, Clase Game.
+             initial_poblation, numero que indica la poblacion inicial.
+             const_misil, pocentaje que indica el pocentaje de pobladores
+                          asignado al recurso misil.
+             const_shield, pocentaje que indica el pocentaje de pobladores
+                          asignado al recurso escudo.
+             const_poblation, pocentaje que indica el pocentaje de pobladores
+                          asignado al recurso poblacion.
+             time_misil, tiempo que tarda el misil en llegar al planeta atacado.
+             hurt_to_poblation, numero que indica el porcentaje de dano a la
+                                poblacion.
+             hurt_to_shield, numero que indica el porcentaje de dano a la
+                             escudo.
+             max_players, maximo numero de jugadores.
+             user, usuario creador de la partida.
+    Salida: El Game creado.
     """
     @classmethod
     def createGame(Gm, initial_poblation, const_misil,
@@ -69,69 +88,60 @@ class Game(models.Model):
         return game
 
     """ 
-    Desactiva un planeta y elimina sus recursos.
+    Desactiva un planeta y elimina sus recursos. Se puede ejecutar antes de
+    empezar la patida o en el tanscurso de esta.
+    Entrada: planet_id, clave primaria del planeta.
+    Salida:  succesfull, bool que indica si elimino el planeta.
     """
-    def deactivatePlanet(planet_id):
-        planet = Planet.objects.get(pk=planet_id)
-        user = planet.player
-        planet.delete()
-        # Notificamo al usuario de la eliminacion de su planeta.
-        #user.notify_devastation()
+    def deactivatePlanet(self, planet_id):
+        try:
+            planet = Planet.objects.get(pk=planet_id)
+            user = planet.player
+            planet.delete()
+            # Notificamo al usuario de la eliminacion de su planeta.
+            #user.notify_devastation()
+            succesfull = True
+        except Planet.DoesNotExist:
+            succesfull = False
+        return succesfull
 
     """ 
     Marca como iniciada una partida.
     """
-    def startPartida(self):
+
+    def startGame(self):
         self.playing = True
 
     """ 
     Unirse a una partida.
+    Entrada: user_id, el id del usuario.
+             name, el nombre del planeta.
+    Salida:  succesfull, bool que indica si el usuario se unio a la partida.
     """
-    def joinGame(self,user, name):
-        planet = Planet.create(user, self, name)
-        planet.save()
+
+    def joinGame(self, user_id, name):
+        try:
+           user = User.objects.get(pk=user_id)
+           planet = Planet.create(user, self, name)
+           succesfull = True
+        except User.DoesNotExist:
+            succesfull = False
+        return succesfull
 
     """ 
     Retorna la representacion del objeto en forma de string.
     """
     def  __str__(self): 
-        representation = (('User: %d, '  % self.user.id) +  
-                          ('initial_poblation: %d, '  % self.initial_poblation) +  
-                          ('const_misil: %d, '  % self.const_misil) + 
-                          ('const_shield: %d, ' % self.const_shield) + 
-                          ('const_poblation: %d, ' % self.const_poblation) + 
-                          ('time_misil: %d, '  % self.time_misil) + 
-                          ('hurt_to_poblation: %d, '  % self.hurt_to_poblation) + 
-                          ('hurt_to_poblation: %d'  % self.hurt_to_poblation)) 
+        representation = (('User: %d, '  % self.user.id) +
+                         ('initial_poblation: %d, '  % self.initial_poblation) +  
+                         ('const_misil: %d, '  % self.const_misil) + 
+                         ('const_shield: %d, ' % self.const_shield) + 
+                         ('const_poblation: %d, ' % self.const_poblation) + 
+                         ('time_misil: %d, '  % self.time_misil) + 
+                         ('hurt_to_poblation: %d, '  % self.hurt_to_poblation) + 
+                         ('hurt_to_poblation: %d'  % self.hurt_to_poblation)) 
         return representation 
 
-    """ 
-    Metodos para realizar el testeo de la aplicacion. 
-    """
-    """ 
-    def hurt_has_not_value_negative_or_zero(self): 
-        self.assertGreater(self.hurt_to_shield, 0) 
-        self.assertGreater(self.hurt_to_poblation, 0) 
-    """
-    """ 
-    def const_has_not_value_negative_or_zero(self): 
-        self.assertGreater(self.const_misil, 0) 
-        self.assertGreater(self.const_poblation, 0) 
-        self.assertGreater(self.const_shield, 0) 
-    """
-    """ 
-    """
-
-    """ 
-    def time_misil_has_not_value_negative_or_zero(self): 
-        self.assertGreater(self.time_misil, 0) 
-    """
-    """ 
-    """
-    """ 
-    def initial_poblation_has_not_value_negative_or_zero(self): 
-        self.assertGreater(self.initial_poblation, 0) 
-    """
 
 """
 Modelo usado para almacenar datos de cada planeta
