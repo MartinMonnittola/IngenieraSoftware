@@ -266,11 +266,11 @@ label > .label-body {
  @keyframes pulsea {
    0% {
      -moz-box-shadow: 0 0 0 0 rgba(96, 145, 230, 0.3);
-     box-shadow: 0 0 0 0 rgba(96, 145, 230, 0.5);
+     box-shadow: 0 0 0 0 rgba(96, 145, 230, 0.3);
    }
    70% {
        -moz-box-shadow: 0 0 0 10px rgba(96, 145, 230, 0.3);
-       box-shadow: 0 0 0 10px rgba(96, 145, 230, 0.5);
+       box-shadow: 0 0 0 10px rgba(96, 145, 230, 0.3);
    }
    100% {
        -moz-box-shadow: 0 0 0 0 rgba(96, 145, 230, 0.3);

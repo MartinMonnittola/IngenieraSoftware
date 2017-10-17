@@ -32,30 +32,49 @@
     </div>
     <div class="row">
         <div class="col-6">
-            <div class="cardb">
+            <div class="cardb">        
+                <h2>Join Game</h2>
+                <hr>
                 <form method="post" onsubmit="myButton.disabled=true; return true;">
                     {% csrf_token %}
-                    <p>Planet name</p>
-                    <input id="planet_name" type="text" name="planet_name">
-                    <p>Game Id</p>
-                    <input id="room_num" type="text" name="room_num">
+                    {% for field in join_form %}
+                    <p>
+                        {{ field.label_tag }}
+                        <br>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small style="color: grey">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    </p>
+                    {% endfor %}
                     <br>
-                    <input class="button-primary btn btn-space" type="submit" value="join game" id="join">
+                <input class="button-primary btn btn-space" type="submit" value="join game" id="join">
                 </form>
                 <p id="JoinError" style="color: #ef3245"></p>
             </div>
         </div>
         <div class="col-6">
             <div class="cardr">
-                <form method="post" onsubmit="myButton.disabled = true; return true;">
+                <h2>Create Game</h2>
+                <hr>
+                <form method="post" onsubmit="myButton.disabled=true; return true;">
                     {% csrf_token %}
-                    <p>Room Name</p>
-                    <input id="room_nameC" type="text" name="room_field">
-                    <p>Planet name</p>
-                    <input id="planet_nameC" type="text" name="player_field">
-                    <p>Max Players</p>
-                    <input id="max_playersC" type="text" name="max_players_field">
-                    <br>
+                    {% for field in game_form %}
+                    <p>
+                        {{ field.label_tag }}
+                        <br>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small style="color: grey">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    </p>
+                    {% endfor %}
                     <input class="button-primary btn btn-space" type="submit" value="create game" id="red">
                 </form>
             </div>

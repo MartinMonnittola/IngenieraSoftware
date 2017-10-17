@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.edit import FormView
+from django.views.generic import TemplateView
 from django.contrib.auth.forms import AuthenticationForm
 from random import randint
 import random
@@ -58,13 +59,21 @@ def gameInstructionsView(request): # game instructions View
     context={}
     return HttpResponse(template.render(context, request))
 
-@login_required
-def gameRoomsListView(request): # Rooms Views
-    latest_game_list = Room.objects.filter(game_started=0).order_by('-pub_date')
-    template = loader.get_template('game_rooms.html')
-    context = {'latest_game_list': latest_game_list,}
-    request.session['gameEntry']="na"
-    return HttpResponse(template.render(context, request))
+class gameRoomsListView(TemplateView):
+    template_name = 'game_rooms.html'
+    def get(self, request, *args, **kwargs):
+        latest_game_list = Room.objects.filter(game_started=0).order_by('-pub_date')
+        game_form = gameForm(self.request.GET or None)
+        join_form = joinForm(self.request.GET or None)
+        context = {
+            'latest_game_list': latest_game_list, 
+            'game_form': game_form,
+            'join_form': join_form,
+        }
+        request.session['gameEntry']="na"
+        return self.render_to_response(context)
+    def post(self, request, *args, **kwargs):
+        return HttpResponseRedirect('/game_rooms/')
 
 @login_required
 def game_closed(request):
@@ -123,15 +132,21 @@ def make_player(request): #join game
 def make_game(request):
     #create game
     if (request.method=='POST' and request.is_ajax()):
+
+        # form related stuff
         form = gameForm(request.POST) #gets the name submitted in the template
         planet_name=request.POST.get('pname')
         room_name=request.POST.get('rname')
         max_players=request.POST.get('max_players')
         gamelist = Room.objects.all() #gets all existing game rooms
+        
+        #creates game
         g=Room.objects.create(creator=request.user, room_name=room_name,pub_date=timezone.now(),game_started=0,max_players=max_players)
         g.connected_players += 1
-        g.save() #creates game
+        g.save()
         game_id = g.id
+        
+        # create planet
         seed=randint(1,90001)
         p=Planet.create(request.user, g, planet_name, seed)
         p.save() #creates player
@@ -192,3 +207,5 @@ def start_game(request, game_num):
 		'game': game_num,
 	}
 	return HttpResponse(template.render(context,request))
+
+

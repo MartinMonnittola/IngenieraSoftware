@@ -14,8 +14,8 @@ urlpatterns = [
     url(r'^login/$', Login.as_view(), name='login'),
     url(r'^logout/$', logout, {'next_page': settings.LOGOUT_REDIRECT_URL}),
     url(r'^game_instructions/$', gameInstructionsView, name='game_instructions'),
-    url(r'^game_rooms/$', gameRoomsListView, name='game_rooms'), #Game Room List (Lobby)
-    url(r'^game_rooms/make_game/$', make_game, name='make_game'), #make game, generate room_num
+    url(r'^game_rooms/$', gameRoomsListView.as_view(), name='game_rooms'), #Game Room List (Lobby)
+    url(r'^game_rooms/make_game/$', make_game, name='make_game'), #make game,
     url(r'^game_rooms/make_player/$', make_player, name='make_player'), #makes player and game
     url(r'^game_rooms/(?P<game_room_num>[0-9]+)/$', gameRoom, name='game_room'), #Actual game room, directed from make_player
     url(r'^game_rooms/gameclosed/$', game_closed, name='game_closed'),

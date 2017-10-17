@@ -11,10 +11,10 @@ class Room(models.Model):
 	Room Class: Contains all the information about a game lobby (pre-game status).
 	"""
 	creator = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Room Creator')
-	room_name = models.CharField(max_length=20, verbose_name='Room Name')
+	room_name = models.CharField(max_length=20, verbose_name='Room Name', default='Default Name')
 	pub_date = models.DateTimeField(verbose_name='Date added')
 	game_started = models.BooleanField(default=0,verbose_name='Game started (True/False)')
-	max_players = models.IntegerField(default=0, verbose_name='Room players limit', validators=[MinValueValidator(2)])
+	max_players = models.IntegerField(default=0, verbose_name='Room players limit', blank=True, validators=[MinValueValidator(2)])
 	connected_players = models.IntegerField(default=0, verbose_name='Amount of players online', validators=[MinValueValidator(0)])
 	bot_players = models.IntegerField(default=2, verbose_name='Amount of bot players', validators=[MinValueValidator(2)])
 	missile_delay = models.IntegerField(default=1, verbose_name='Missile Delay', validators=[MinValueValidator(1)])
@@ -35,8 +35,8 @@ class Planet(models.Model):
 	"""
 	player = models.ForeignKey(User, on_delete=models.CASCADE)
 	gameroom = models.ForeignKey(Room, on_delete=models.CASCADE)
-	name = models.CharField(max_length=20, null=False)
-	seed = models.BigIntegerField(default=0)
+	name = models.CharField(max_length=20,verbose_name='Planet name')
+	seed = models.BigIntegerField(default=0,verbose_name='Planet seed')
 	population_qty = models.IntegerField(default=5000, verbose_name='Population Amout', validators=[MinValueValidator(0)])
 	missiles_qty = models.IntegerField(default=0, verbose_name='Missile Amount', validators=[MinValueValidator(0)])
 	shield_perc = models.IntegerField(default=0, verbose_name='Shield Amount', validators=[MinValueValidator(0)])
