@@ -43,6 +43,9 @@ class Game(models.Model):
     # Numero maximo de jugadores.
     max_players = models.IntegerField(default=2)
 
+    # Numero actual de jugadores
+    currentPlaying = models.IntegerField(default=0)
+
     # Estado de la partida.
     playing = models.BooleanField(default=False)
 
