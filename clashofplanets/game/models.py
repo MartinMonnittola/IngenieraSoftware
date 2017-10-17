@@ -40,6 +40,9 @@ class Game(models.Model):
     hurt_to_shield = models.IntegerField(default=1, blank=False,
                            help_text="Please enter a percentage greater than 0")
 
+    # Numero actual de jugadores
+    currentPlaying = models.IntegerField(default=0)
+
     # Numero maximo de jugadores.
     max_players = models.IntegerField(default=2)
 
