@@ -42,6 +42,7 @@ def joinView(request):
             elif game.playing:
                 messages.error(request, 'This game is currently on a match, join another.')
             else:
+                game.currentPlaying = game.currentPlaying + 1
                 planet_name = form.cleaned_data.get("planet_name")
                 game.joinGame(request.user,planet_name)
                 return HttpResponseRedirect('/lobby/')
