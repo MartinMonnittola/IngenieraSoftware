@@ -102,7 +102,7 @@ class Game(models.Model):
     """ 
     Marca como iniciada una partida.
     """
-    def startPartida(self):
+    def startGame(self):
         self.playing = True
 
     """ 
@@ -111,10 +111,10 @@ class Game(models.Model):
              name, el nombre del planeta.
     Salida:  succesfull, bool que indica si el usuario se unio a la partida.
     """
-    def joinGame(user_id, name):
+    def joinGame(self, user_id, name):
         try:
            user = User.objects.get(pk=user_id)
-           planet = Planet.create(Planet, user, self, name)
+           planet = Planet.create(user, self, name)
            succesfull = True
         except User.DoesNotExist:
             succesfull = False
