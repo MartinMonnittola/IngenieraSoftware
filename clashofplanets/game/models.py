@@ -93,7 +93,7 @@ class Game(models.Model):
     Entrada: planet_id, clave primaria del planeta.
     Salida:  succesfull, bool que indica si elimino el planeta.
     """
-    def deactivatePlanet(self, planet_id):
+    def desactivatePlanet(self, planet_id):
         try:
             planet = Planet.objects.get(pk=planet_id)
             user = planet.player
@@ -122,9 +122,12 @@ class Game(models.Model):
     def joinGame(self, user_id, name):
         try:
            user = User.objects.get(pk=user_id)
-           planet = Planet.create(user, self, name)
-           succesfull = True
-        except User.DoesNotExist:
+           if not Planet.objects.filter(player=user, gameroom=self).exists():
+               planet = Planet.create(user, self, name)
+               succesfull = True
+           else:
+               succesfull = False
+        except (User.DoesNotExist, Planet.DoesNotExist):
             succesfull = False
         return succesfull
 
