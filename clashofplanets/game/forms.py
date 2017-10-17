@@ -38,6 +38,11 @@ class gameForm(forms.ModelForm):
         'const_missile', 'population_damage_per_missile',
         'shield_damage_per_missile',)
 
+    def __init__(self, *args, **kwargs):
+        super(gameForm, self).__init__(*args, **kwargs)
+        self.fields['room_name'].required = True
+        self.fields['room_name'].widget.attrs['required'] = 'required'
+
 
 class CreateGame(forms.ModelForm):
     """
