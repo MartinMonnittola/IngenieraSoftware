@@ -7,6 +7,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from game.models import *
 
+# Create your forms here.
+
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
     last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
@@ -32,6 +34,7 @@ class gameForm(forms.ModelForm):
     planet_name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_nameC', 'required': True}))
     room_name = forms.CharField(widget=forms.TextInput(attrs={'id':'room_nameC', 'required': True}))
     max_players = forms.IntegerField(widget=forms.NumberInput(attrs={'id':'max_playersC', 'required': True}))
+
     class Meta:
         model = Room
         fields = ('room_name', 'max_players') # bot_players - #game_mode
@@ -42,6 +45,7 @@ class gameForm(forms.ModelForm):
 class joinForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_name', 'required': True}))
     room_id = forms.CharField(widget=forms.TextInput(attrs={'id':'room_num', 'required': True}))
+
     class Meta:
         model = Planet
         fields = ('name',)
