@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.utils import timezone
 
 # Create your models here.
 
@@ -28,6 +30,77 @@ class Room(models.Model):
 	def __str__(self):
 		return self.room_name
 
+	@classmethod
+	def create(cls, owner, name, max_players):
+		"""
+		Create Game room:
+		Function that allow players to create their own game rooms to play the game with other players.
+		INPUT: Game attrributes such as creator name, game room name, game model
+		OUTPUT: A Game room object.
+		"""
+		room = cls(pub_date=timezone.now(),room_name=name,max_players=max_players,game_started=False,creator=owner)
+		return room
+
+	def joinGame(self, user_id, name):
+		"""
+		Join Game:
+		Procedure that allow players to join game rooms.
+		INPUT: The gameroom itself, the user who wants to join, and the planet name.
+		OUTPUT: Boolean for succesfull or not join game action.
+		"""
+		try:
+			user = User.objects.get(pk=user_id)
+			planet = Planet.create(user, self, name)
+			self.connected_players += 1
+			succesfull = True
+		except User.DoesNotExist:
+			succesfull = False
+		return succesfull
+
+	def startGame(self):
+		"""
+		Start Game:
+		Procedure that allow players start the game from the game room they are into.
+		INPUT: The gameroom itself, the user who wants to join, and the planet name.
+		OUTPUT: Boolean for succesfull or not join game action.
+		"""
+		self.game_started = True
+
+	def deactivatePlanet(self, user_id):
+		"""
+		Deactivate Planet:
+		Procedure that allows the system to delete planets.
+		INPUT: The planet object id.
+		OUTPUT: Boolean for succesfull or not delete planet object.
+		"""
+		try:
+			planet = Planet.objects.get(player=user_id)
+			user = planet.player
+			planet.delete()
+			# Notificamo al usuario de la eliminacion de su planeta.
+			#user.notify_devastation()
+			succesfull = True
+		except Planet.DoesNotExist:
+			succesfull = False
+		return succesfull
+
+	def delete(self, user_id):
+		"""
+		Delete Room:
+		Procedure that allows the game room owner to delete the room.
+		INPUT: Owner user id.
+		OUTPUT: Boolean for succesfull or not delete game room object.
+		"""
+		try:
+			room = Room.objects.get(owner=user_id)
+			room_owner = room.owner
+			room.deactivatePlanet(room_owner)
+			room.delete()
+			succesfull = True
+		except Room.DoesNotExist:
+			succesfull = False
+		return succesfull
+
 class Planet(models.Model):
 	"""
 	Planet Class: Contains all the information about each player's planet
@@ -49,8 +122,14 @@ class Planet(models.Model):
 
 	@classmethod
   	def create(cls, player, gameroom, name, seed):
-	    new_planet = cls(player=player,gameroom=gameroom,name=name,population_qty=gameroom.init_population,seed=seed)
-	    return new_planet
+		"""
+		Create Planet:
+		Function that allow players to create their planets.
+		INPUT: Planet attributes such as player owner, gameroom they belong to, name of the planet and a random seed.
+		OUTPUT: A Planet Object.
+		"""
+		new_planet = cls(player=player,gameroom=gameroom,name=name,population_qty=gameroom.init_population,seed=seed)
+		return new_planet
 
 	def assign_perc_rate(self, perc_pop, perc_shield, perc_missile):
 		if ((perc_pop + perc_shield + perc_missile) == 100):
