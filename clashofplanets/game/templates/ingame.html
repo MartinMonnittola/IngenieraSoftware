@@ -4,6 +4,8 @@
 
 {% block main_content %}
 
+{% csrf_token %}
+
 <form action = "{% url 'game_rooms' %}" method="post">
 {% csrf_token %}
 <input type="submit" value="back to lobby">

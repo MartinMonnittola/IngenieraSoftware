@@ -21,7 +21,7 @@ function listPlayers(){
 	    type : 'POST',
 	    data : { csrfmiddlewaretoken : csrftoken, num : num},
 	    ifModified: true,
-	    url : "GetPlayers/",
+	    url : "get_players/",
 		success : function(json) {
 			if(status!="notmodified"){
 				var plist = json.players;

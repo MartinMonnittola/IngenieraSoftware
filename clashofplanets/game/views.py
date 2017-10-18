@@ -16,12 +16,14 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.decorators import method_decorator
 from random import randint
 import random
 import math
 import json
 
 # Create your views here.
+
 class Login(FormView):
     template_name = 'login.html'
     form_class = AuthenticationForm
@@ -59,6 +61,7 @@ def gameInstructionsView(request): # game instructions View
     context={}
     return HttpResponse(template.render(context, request))
 
+@method_decorator(login_required, name='dispatch')
 class gameRoomsListView(TemplateView):
     template_name = 'game_rooms.html'
     def get(self, request, *args, **kwargs):
