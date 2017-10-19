@@ -64,7 +64,9 @@ class Room(models.Model):
 		INPUT: The gameroom itself, the user who wants to join, and the planet name.
 		OUTPUT: Boolean for succesfull or not join game action.
 		"""
-		self.game_started = True
+		if not (self.game_started): #first person to press start game
+			self.game_started = True
+			self.save()
 
 	def deactivatePlanet(self, user_id):
 		"""

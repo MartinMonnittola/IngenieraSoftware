@@ -3,27 +3,27 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from django.contrib.auth.decorators import login_required
-from game.forms import *
-from game.models import *
-from django.utils import timezone
 from django.urls import reverse
+from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from django.contrib.auth.forms import AuthenticationForm
-from django.utils.decorators import method_decorator
-from random import randint
-import random
+from django.views.generic.edit import FormView
+from game.forms import *
+from game.models import *
+from random import *
 import math
 import json
 
 # Create your views here.
 
+# login view
 class Login(FormView):
     template_name = 'login.html'
     form_class = AuthenticationForm
@@ -37,12 +37,14 @@ class Login(FormView):
         login(self.request, form.get_user())
         return super(Login, self).form_valid(form)
 
-def homeView(request): # Main View
+# Main View
+def homeView(request):
     template = loader.get_template('home.html')
     context={}
     return HttpResponse(template.render(context, request))
 
-def signupView(request): # Sign Up View (Allow Users to register on system)
+# Sign Up View (Allow Users to register on system)
+def signupView(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -56,11 +58,13 @@ def signupView(request): # Sign Up View (Allow Users to register on system)
         form = SignUpForm()
     return render(request, 'register.html', {'form': form})
 
-def gameInstructionsView(request): # game instructions View
+# game instructions view
+def gameInstructionsView(request):
     template = loader.get_template('game_instructions.html')
     context={}
     return HttpResponse(template.render(context, request))
 
+# game room list view
 @method_decorator(login_required, name='dispatch')
 class gameRoomsListView(TemplateView):
     template_name = 'game_rooms.html'
@@ -78,12 +82,14 @@ class gameRoomsListView(TemplateView):
     def post(self, request, *args, **kwargs):
         return HttpResponseRedirect('/game_rooms/')
 
+# game room close view
 @login_required
 def game_closed(request):
     template = loader.get_template('gameclosed.html')
     context={}
     return HttpResponse(template.render(context, request))
 
+# game room inside view
 @login_required
 def gameRoom(request, game_room_num):
     test=request.session['gameEntry']
@@ -99,8 +105,9 @@ def gameRoom(request, game_room_num):
         context = {}
         return HttpResponse(template.render(context, request))
 
+#join game room
 @login_required
-def make_player(request): #join game
+def make_player(request):
     if (request.method=='POST' and request.is_ajax()):
         # gets form data
     	form = gameForm(request.POST) #gets the values submitted in the template
@@ -149,6 +156,7 @@ def make_player(request): #join game
         #Redirects to game room
         return HttpResponseRedirect('%s' % game_num)
 
+# make game room
 @login_required
 def make_game(request):
     #create game
@@ -235,15 +243,12 @@ def send_game_state(request):
         sdict={'game_state': current_room_state}
         return HttpResponse(json.dumps(sdict),content_type='application/json')
 
-#in game
+# start game view: Allows room creator to start the game room
 def start_game(request, game_num):
     template = loader.get_template('ingame.html')
     g=Room.objects.get(id=game_num)
     planets = Planet.objects.filter(gameroom=g.id).order_by('seed') #players in game, sorted
-    if not (g.game_started): #first person to press start game
-        g.game_started = True
-        g.save()
-    # planet_owner = request.user
+    Room.startGame(g)
     our_seed = request.session['id']
     your_planet=Planet.objects.filter(seed=our_seed).first()
     context = {
