@@ -45,14 +45,14 @@ function listGames(){
     			$('#openGames').empty();
     			for (var i = 0; i < glist.length; i++) {
     				var num=glist[i];
-    				buildListElementItem = $(
+                    buildListElementItem = $(
                         '<tr>'
                         +'<td>' + glist[i].id +'</td>'
-                        +'<td>' + glist[i].name+'</td>'
+                        +'<td>' + glist[i].name +'</td>'
                         +'<td>' + glist[i].connected_players +'</td>'
                         +'<td>' + glist[i].max_players +'</td>'
                         +'</tr>');
-                        $("#openGames").append(buildListElementItem);
+                        $("#openGames").append(buildListElementItem)
     			}
     		}
             setTimeout(listGames, 4000);

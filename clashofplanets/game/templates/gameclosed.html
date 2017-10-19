@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block main_content %}
+
+<p><montserratb>ERR....</montserratb></p>
+<p><montserratb>GAME ALREADY STARTED...SORRY</montserratb></p>
+
+<form action = "{% url 'game_rooms' %}" method="post">
+{% csrf_token %}
+<input type="submit" value="back to lobby">
+</form>
+
+{% endblock %}

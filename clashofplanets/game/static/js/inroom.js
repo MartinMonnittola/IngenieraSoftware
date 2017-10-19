@@ -14,14 +14,16 @@ function getCookie(name) {
  return cookieValue;
 }
 
-function listPlanets(){
+function listPlayers(){
 	var csrftoken = getCookie('csrftoken');
-    var num = $('#gamenum').text();
+	var num = $('#gamenum').text();
 	$.ajax({
 	    type : 'POST',
-	    data : { csrfmiddlewaretoken : csrftoken, num: num},
+	    data : { csrfmiddlewaretoken : csrftoken, num : num},
+	    ifModified: true,
 	    url : "get_planets/",
 		success : function(json) {
+			if(status!="notmodified"){
 				var plist = json.planets;
 				$('#playerList').empty();
 				for (var i = 0; i < plist.length; i++) {
@@ -31,11 +33,31 @@ function listPlanets(){
                         +'<td>' + plist[i].name+'</td>'
                         +'<td>' + plist[i].owner +'</td>'
                         +'<td>' + plist[i].seed +'</td>'
-                        +'<td>' + plist[i].pop +'</td>'
-                        +'<td>' + plist[i].shield +'</td>'
                         +'</tr>');
 				}
-			setTimeout(listPlanets, 3000);
+			}
+			setTimeout(listPlayers, 4000);
+		},
+		error : function(xhr,errmsg,err) {
+			console.log(xhr.status + ": " + xhr.responseText);
+		},
+	});
+}
+
+function gameState(){
+	var csrftoken = getCookie('csrftoken');
+	var num = $('#gamenum').text();
+	$.ajax({
+	    type : 'POST',
+	    data : { csrfmiddlewaretoken : csrftoken, num : num},
+	    url : "get_game_state/",
+		success : function(json) {
+            var rst = json.game_state;
+            if (rst == 1){
+                alert("Game has been started!!!");
+                location.href = "/game_rooms/game/"+num;
+            }
+			setTimeout(gameState, 4000);
 		},
 		error : function(xhr,errmsg,err) {
 			console.log(xhr.status + ": " + xhr.responseText);
@@ -44,5 +66,6 @@ function listPlanets(){
 }
 
 $(document).ready(function(){
-	listPlanets();
+	listPlayers();
+    gameState();
 });

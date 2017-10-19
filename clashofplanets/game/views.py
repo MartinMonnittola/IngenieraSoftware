@@ -92,7 +92,7 @@ def gameRoom(request, game_room_num):
         planets = Planet.objects.filter(gameroom=g) #Using g, we can find the players in the game properly since game compares id's
         game=get_object_or_404(g)
         template = loader.get_template('gameroom.html')
-        context = {'planets': planets,'game': game,}
+        context = {'planets': planets,'game': game, 'gameid': str(game.id)}
         return HttpResponse(template.render(context,request))
     else:
         template = loader.get_template('badjoin.html')
@@ -119,19 +119,23 @@ def make_player(request): #join game
             #seed will be used for randomization
             seed=randint(1,90001)
             # creates the planet for player
-            p=Planet.create(request.user, g, planet_name, seed)
-            # +1 to room connected players
-            g.connected_players += 1
-            #save changes to actual game
-            g.save()
-            #creates planet with game among other things
-            p.save()
-            # session seed to identify planet
+            planet_owner = request.user
+            planet_from_user = Planet.objects.filter(player=planet_owner, gameroom=g.id)
+            if len(planet_from_user) == 0:
+                p=Planet.create(planet_owner, g, planet_name, seed)
+                # +1 to room connected players
+                g.connected_players += 1
+                #save changes to actual game
+                g.save()
+                #creates planet with game among other things
+                p.save()
+                # session seed to identify planet
             request.session['id']=seed
             #Adds a cookie/session to indicate a legit entry
             request.session['gameEntry']=int(game_room_num)
             data={'gameNumber':game_room_num}
             return HttpResponse(json.dumps(data),content_type='application/json')
+
         elif (int(g.game_started)==0) and (g.connected_players == g.max_players):
             # game is full
             data={'gameNumber':-2}
@@ -186,11 +190,15 @@ def send_players(request):
             planet_owner = tmpplanet.player
             planet_id = tmpplanet.id
             planet_seed = tmpplanet.seed
+            planet_pop = tmpplanet.population_qty
+            planet_shield = tmpplanet.shield_perc
             record = {
                 'name': planet_name,
                 'id': planet_id,
                 'seed': planet_seed,
                 'owner': planet_owner.username,
+                'pop': planet_pop,
+                'shield': planet_shield
             }
             plist.append(record)
         pdict={'planets': plist}
@@ -221,7 +229,7 @@ def send_games(request):
 def send_game_state(request):
 	if (request.method=='POST' and request.is_ajax()):
 	    game_num =request.POST.get('num')
-	    room = Room.objects.get(pk=game_num, creator=request.user) #players in game
+	    room = Room.objects.get(pk=game_num) #players in game
         sdict={}
         current_room_state = room.game_started
         sdict={'game_state': current_room_state}
@@ -230,13 +238,14 @@ def send_game_state(request):
 #in game
 def start_game(request, game_num):
     template = loader.get_template('ingame.html')
-    g=Room.objects.filter(id=game_num).first()
-    planets = Planet.objects.filter(game=g).order_by('seed') #players in game, sorted
-    if int(g.game_started)==0: #first person to press start game
-        g.game_started=1
+    g=Room.objects.get(id=game_num)
+    planets = Planet.objects.filter(gameroom=g.id).order_by('seed') #players in game, sorted
+    if not (g.game_started): #first person to press start game
+        g.game_started = True
         g.save()
+    # planet_owner = request.user
     our_seed = request.session['id']
-    your_planet=Player.objects.filter(seed=our_seed).first()
+    your_planet=Planet.objects.filter(seed=our_seed).first()
     context = {
         'players': planets,
         'your_planet': your_planet,
