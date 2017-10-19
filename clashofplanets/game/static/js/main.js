@@ -22,6 +22,12 @@ var scrollFunction = function(idstring) {
 	}, 400);
 };
 
+function fillOutGame(game_num){
+	$('#JoinError').empty();
+	$('#room_num').val(game_num);
+	scrollFunction('.cardb');
+	$('#planet_name').focus();
+}
 
 //List available games
 function listGames(){
@@ -31,34 +37,31 @@ function listGames(){
 		data : { csrfmiddlewaretoken : csrftoken2 },
 		ifModified: true,
 		url : "get_games/",
-    success : function(json) {
-		if(status!="notmodified"){
-			//console.log(json);
-			var glist = json.games;
-            //alert(clist);
-			$('#openGames').empty();
-			for (var i = 0; i < glist.length; i++) {
-				var num=glist[i];
-				buildListElementItem = $(
-                    '<tr>'
-                    +'<td>' + glist[i].id +'</td>'
-                    +'<td>' + glist[i].name+'</td>'
-                    +'<td>' + glist[i].connected_players +'</td>'
-                    +'<td>' + glist[i].max_players +'</td>'
-                    +'</tr>');
-                    $("#openGames").append(buildListElementItem);
-			}
-		}
-    setTimeout(listGames(), 2000);
-    },
-    error : function(xhr,errmsg,err) {
-      console.log(xhr.status + ": " + xhr.responseText);
-    },
-  });
+        success : function(json) {
+    		if(status!="notmodified"){
+    			//console.log(json);
+    			var glist = json.games;
+                //alert(clist);
+    			$('#openGames').empty();
+    			for (var i = 0; i < glist.length; i++) {
+    				var num=glist[i];
+    				buildListElementItem = $(
+                        '<tr>'
+                        +'<td>' + glist[i].id +'</td>'
+                        +'<td>' + glist[i].name+'</td>'
+                        +'<td>' + glist[i].connected_players +'</td>'
+                        +'<td>' + glist[i].max_players +'</td>'
+                        +'</tr>');
+                        $("#openGames").append(buildListElementItem);
+    			}
+    		}
+            setTimeout(listGames, 4000);
+        },
+        error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText);
+        },
+    });
 }
-
-
-
 
 //For doing AJAX post
 $(document).ready(function(){

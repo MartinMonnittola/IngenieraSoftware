@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'^game_rooms/make_player/$', make_player, name='make_player'), #makes player and game
     url(r'^game_rooms/(?P<game_room_num>[0-9]+)/$', gameRoom, name='game_room'), #Actual game room, directed from make_player
     url(r'^game_rooms/gameclosed/$', game_closed, name='game_closed'),
-    url(r'^game_rooms/\d+/get_players/$', send_players, name ='send_players'),
+    url(r'^game_rooms/\d+/get_planets/$', send_players, name ='send_players'),
     url(r'^game_rooms/get_games/$', send_games, name ='send_games'),
     #url(r'^game_rooms/(?P<game_num>[0-9]+)/(?P<your_guy>[0-9]+)/$', start_game, name='start_game')
 ]

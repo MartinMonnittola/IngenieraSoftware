@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.template import loader
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from game.forms import *
 from game.models import *
@@ -76,7 +76,6 @@ class gameRoomsListView(TemplateView):
         request.session['gameEntry']="na"
         return self.render_to_response(context)
     def post(self, request, *args, **kwargs):
-
         return HttpResponseRedirect('/game_rooms/')
 
 @login_required
@@ -178,14 +177,24 @@ def make_game(request):
 #send a list of players as a json to js file
 def send_players(request):
 	if (request.method=='POST' and request.is_ajax()):
-		game_num=request.POST.get('game_num')
-		g=Room.objects.filter(id=game_num)
-		planets = Planet.objects.filter(gameroom=g) #players in game
-		plist=[]
-		for planet in planets:
-			plist.append(planet.name)
-		data={'planets':plist}
-		return HttpResponse(json.dumps(data),content_type='application/json')
+		game_num =request.POST.get('num')
+		planets = Planet.objects.filter(gameroom=game_num) #players in game
+        pdict={}
+        plist=[]
+        for tmpplanet in planets:
+            planet_name = tmpplanet.name
+            planet_owner = tmpplanet.player
+            planet_id = tmpplanet.id
+            planet_seed = tmpplanet.seed
+            record = {
+                'name': planet_name,
+                'id': planet_id,
+                'seed': planet_seed,
+                'owner': planet_owner.username,
+            }
+            plist.append(record)
+        pdict={'planets': plist}
+        return HttpResponse(json.dumps(pdict),content_type='application/json')
 
 #send a list of numbers of all open games as a json to js file
 def send_games(request):

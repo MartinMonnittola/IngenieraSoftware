@@ -21,16 +21,22 @@ function listPlayers(){
 	    type : 'POST',
 	    data : { csrfmiddlewaretoken : csrftoken, num : num},
 	    ifModified: true,
-	    url : "get_players/",
+	    url : "get_planets/",
 		success : function(json) {
 			if(status!="notmodified"){
-				var plist = json.players;
+				var plist = json.planets;
 				$('#playerList').empty();
 				for (var i = 0; i < plist.length; i++) {
-					$('#playerList').append('<p>' + plist[i] + '</p>');
+					$('#playerList').append(
+                        '<tr>'
+                        +'<td>' + plist[i].id +'</td>'
+                        +'<td>' + plist[i].name+'</td>'
+                        +'<td>' + plist[i].owner +'</td>'
+                        +'<td>' + plist[i].seed +'</td>'
+                        +'</tr>');
 				}
 			}
-			setTimeout(listPlayers(), 2000);
+			setTimeout(listPlayers, 4000);
 		},
 		error : function(xhr,errmsg,err) {
 			console.log(xhr.status + ": " + xhr.responseText);
