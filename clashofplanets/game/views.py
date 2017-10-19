@@ -217,19 +217,29 @@ def send_games(request):
         gdict={'games': glist}
         return HttpResponse(json.dumps(gdict),content_type='application/json')
 
+#send the game room state of current as a json to js file
+def send_game_state(request):
+	if (request.method=='POST' and request.is_ajax()):
+	    game_num =request.POST.get('num')
+	    room = Room.objects.get(pk=game_num, creator=request.user) #players in game
+        sdict={}
+        current_room_state = room.game_started
+        sdict={'game_state': current_room_state}
+        return HttpResponse(json.dumps(sdict),content_type='application/json')
+
 #in game
 def start_game(request, game_num):
-	g=Room.objects.filter(id=game_num).first()
-	planets = Planet.objects.filter(game=g).order_by('seed') #players in game, sorted
-	if int(g.game_started)==0: #first person to press start game
-		g.game_started=1
-		g.save()
-	our_seed = request.session['id']
-	your_guy=Player.objects.filter(seed=our_seed).first()
-	template = loader.get_template('ingame.html')
-	context = {
-		'players': players,
-		'your_guy': your_guy,
-		'game': game_num,
-	}
-	return HttpResponse(template.render(context,request))
+    template = loader.get_template('ingame.html')
+    g=Room.objects.filter(id=game_num).first()
+    planets = Planet.objects.filter(game=g).order_by('seed') #players in game, sorted
+    if int(g.game_started)==0: #first person to press start game
+        g.game_started=1
+        g.save()
+    our_seed = request.session['id']
+    your_planet=Player.objects.filter(seed=our_seed).first()
+    context = {
+        'players': planets,
+        'your_planet': your_planet,
+        'game': game_num,
+        }
+    return HttpResponse(template.render(context,request))

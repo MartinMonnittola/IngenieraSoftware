@@ -44,6 +44,28 @@ function listPlayers(){
 	});
 }
 
+function gameState(){
+	var csrftoken = getCookie('csrftoken');
+	var num = $('#gamenum').text();
+	$.ajax({
+	    type : 'POST',
+	    data : { csrfmiddlewaretoken : csrftoken, num : num},
+	    url : "get_game_state/",
+		success : function(json) {
+            var rst = json.game_state;
+            if (rst == 1){
+                alert("Game has been started!!!")
+            }
+			setTimeout(gameState, 4000);
+		},
+		error : function(xhr,errmsg,err) {
+			console.log(xhr.status + ": " + xhr.responseText);
+		},
+	});
+}
+
+
 window.onload = function() {
 	listPlayers();
+    gameState();
 }
