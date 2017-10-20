@@ -74,7 +74,7 @@ function listGames(){
 $(document).ready(function(){
 	listGames();
 	//Create game is clicked
-	$("#red").click(function(e){
+	$("#create").click(function(e){
 		$("#join").prop('disabled', true);
 		e.preventDefault();
 		var csrftoken = getCookie('csrftoken');
