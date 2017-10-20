@@ -120,18 +120,6 @@ class Game(models.Model):
                  user, usuario creador de la partida.
         Salida: El Game creado.
         """
-
-
-
-
-
-        """
-        Create:
-          Create una partida 
-        game with other players.
-        INPUT: Game attrributes such as user name, gameGame name, game model
-        OUTPUT: A GameGame object.
-        """
         game = cls(pub_date=timezone.now(),game_name=name,
                    max_players=max_players,game_started=False,user=owner)
         return game
