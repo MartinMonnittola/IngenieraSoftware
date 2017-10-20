@@ -67,4 +67,4 @@ class joinForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(joinForm, self).__init__(*args, **kwargs)
         self.fields['name'].help_text = 'Write a name for your planet. If you are already in the Game, just write the Game id. Required.'
-        self.fields['Game_id'].help_text = 'Write the id of the Game you want to join. Required.'
+        self.fields['game_id'].help_text = 'Write the id of the Game you want to join. Required.'

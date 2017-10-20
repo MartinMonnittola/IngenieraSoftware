@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Orbitron');
+
 /* MAIN CSS
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .btn-space {
@@ -18,9 +20,15 @@ hr.style1{
 }
 
 .navbar-nav > li{
-  padding-left:10px;
-  padding-right:10px;
-  font-family: 'Roboto', sans-serif;
+    padding-left:10px;
+    padding-right:10px;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+}
+
+.navbar-brand {
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
 }
 
 .bg-inverse {
@@ -37,7 +45,7 @@ hr.style1{
 
 body {
 	padding: 100px 0px 100px 0px;
-    font-family: 'Roboto', sans-serif; /* 1 */
+    font-family: 'Orbitron', sans-serif;
     font-size: 14px;
     color: #FFFFFF;
     background-color: #050F1A;
@@ -62,6 +70,7 @@ ul.openGamesC{
 .cardb {
     padding-top: 30px;
     text-align: center;
+    font-family: 'Orbitron', sans-serif;
     /*box-shadow: 0 2em 4em 0 #37ad6c;
     background: rgba(57, 150, 99, 0.85);*/
     transition: 0.5s;
@@ -104,14 +113,15 @@ ul.openGamesC{
 }
 
 table {
-    background-color: #050F1A;;
-    color: white;
-    border-collapse: collapse;
     width:100%;
+    font-weight: 400;
 }
 
 table th {
     padding: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-family: 'Orbitron', sans-serif;
 }
 
 table td {
@@ -136,8 +146,9 @@ table tr:nth-child(even) {
     height: 60px;
     line-height: 60px;
     background-color: #212529;
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Orbitron', sans-serif;
     color: white;
+    text-transform: uppercase;
 }
 
 /* Links
@@ -164,6 +175,7 @@ input[type="button"] {
     border: none;
     margin-bottom: 10px;
     color: hsla(0,0%,20%,1);
+    font-family: 'Orbitron', sans-serif;
     text-shadow: hsla(0,0%,40%,.5) 0 -1px 0, hsla(0,0%,100%,.6) 0 2px 1px;
     background-image: -webkit-repeating-linear-gradient(left, hsla(0,0%,100%,0) 0%,
     hsla(0,0%,100%,0) 6%, hsla(0,0%,100%, .1) 7.5%),
@@ -306,8 +318,8 @@ input[type=range]::-moz-range-thumb {
     box-shadow: 0px 0px 0px #000000;
     border: 0px solid #000000;
     height: 20px;
-    width: 40px;
-    border-radius: 12px;
+    width: 20px;
+    border-radius: 10px;
     background: #529DE1;
     cursor: pointer;
 }
@@ -321,10 +333,10 @@ input[type=range]::-ms-track {
     color: transparent;
 }
 input[type=range]::-ms-fill-lower {
-    background: #50555C;
+    background: red;
     border: 0px solid #000000;
     border-radius: 28px;
-    box-shadow: 1px 1px 1px #50555C;
+    box-shadow: 1px 1px 1px #42ebf4;
 }
 input[type=range]::-ms-fill-upper {
     background: #50555C;
@@ -343,10 +355,21 @@ input[type=range]::-ms-thumb {
     cursor: pointer;
 }
 input[type=range]:focus::-ms-fill-lower {
-    background: #50555C;
+    background: #42ebf4;
 }
 input[type=range]:focus::-ms-fill-upper {
     background: #50555C;
+}
+
+input[type=range]::-moz-range-progress {
+    width: 100%;
+    height: 14px;
+    cursor: pointer;
+    animate: 0.2s;
+    box-shadow: 1px 1px 1px rgba(66, 232, 244, 0.5);
+    background: rgba(66, 232, 244, 0.5);
+    border-radius: 14px;
+    border: 0px solid rgba(66, 232, 244, 0.5);
 }
 
 .top5 { margin-top:5px; }
@@ -364,4 +387,28 @@ input[type=range]:focus::-ms-fill-upper {
 
 	background: -moz-radial-gradient(center bottom, rgba(160, 201, 215, 0.8) 0%, rgba(160, 201, 215, 0) 70%),
 				-moz-linear-gradient(top, black 0%,#282F44 6%,#2C3551 52%,#354262 91%,#050C54 100%);
+}
+
+.metal-effect2 {
+    box-shadow: 0 0 1px 0 black,
+    1px 2px 4px 0 rgba(255, 255, 255, 0.1) inset,
+    3px 5px 6px -2px rgba(255, 255, 255, 0.05) inset,
+    1px 3px 0 1px rgba(0, 0, 0, 0.3),
+    3px 6px 2px -2px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(50deg, rgba(8, 7, 9, 0.25) 0,
+    rgba(21, 15, 26, 0.25) 10%, rgba(49, 37, 55, 0.25) 25%, rgba(8, 6, 10, 0.25) 40%,
+    rgba(47, 39, 53, 0.25) 60%, rgba(8, 6, 10, 0.25) 70%, rgba(21, 14, 27, 0.25) 90%,
+    rgba(8, 5, 11, 0.25) 100%), linear-gradient(120deg, rgba(5, 5, 5, 0.5) 0,
+    rgba(13, 22, 16, 0.5) 0%, rgba(73, 90, 83, 0.5) 30%, rgba(50, 62, 57, 0.5) 50%,
+    rgba(78, 86, 81, 0.5) 70%, rgba(37, 50, 41, 0.5) 100%),
+    linear-gradient(75deg, #1d1c1b 0, #030302 35%, #000000 65%, #000000 100%);
+}
+
+.custom-h2 {
+    margin-top: 10px;
+	font-size: 30px;
+	color: #AAAAAA;
+	text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
 }
