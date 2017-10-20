@@ -37,7 +37,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12 text-center">
+        <div class="col-md-6 text-center">
             <div class="cardb">
                 <h2>Join Game</h2>
                 <hr class="style1">
@@ -48,19 +48,21 @@
                         {{ field.label_tag }}
                         {{ field }}
                         {% if field.help_text %}
-                            <p style="color: white">{{ field.help_text }}</p>
+                            <div>
+                                <small style="color: white">{{ field.help_text }}</small>
+                            </div>
                         {% endif %}
                         {% for error in field.errors %}
                             <p style="color: red">{{ error }}</p>
                         {% endfor %}
                     </p>
                     {% endfor %}
-                    <input class="button-primary btn btn-space" type="submit" value="join game" id="join">
+                    <input class="button-primary btn btn-space" class="metal" type="submit" value="join game" id="join">
                 </form>
                 <p id="JoinError" style="color: #ef3245"></p>
             </div>
         </div>
-        <div class="col-md-12 text-center">
+        <div class="col-md-6 text-center">
             <div class="cardr">
                 <h2>Create Game</h2>
                 <hr class="style1">
@@ -83,7 +85,7 @@
                         {% endfor %}
                     </p>
                     {% endfor %}
-                    <input class="button-primary btn btn-space" type="submit" value="create game" id="create">
+                    <input class="button-primary btn btn-space" type="submit" class="metal" value="create game" id="create">
                 </form>
             </div>
         </div>
