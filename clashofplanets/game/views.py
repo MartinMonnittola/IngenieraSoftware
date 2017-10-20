@@ -223,9 +223,11 @@ def send_games(request):
             game_max_players = tmpgame.max_players
             game_id = tmpgame.id
             game_connected_players = tmpgame.connected_players
+            game_owner = tmpgame.creator.username
             record = {
                 'name': game_name,
                 'max_players': game_max_players,
+                'owner': game_owner,
                 'connected_players': game_connected_players,
                 'id': game_id,
             }

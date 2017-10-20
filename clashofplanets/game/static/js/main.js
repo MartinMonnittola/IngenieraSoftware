@@ -51,6 +51,7 @@ function listGames(){
                             '<tr>'
                             +'<td>' + glist[i].id +'</td>'
                             +'<td>' + glist[i].name +'</td>'
+                            +'<td>' + glist[i].owner +'</td>'
                             +'<td>' + glist[i].connected_players +'</td>'
                             +'<td>' + glist[i].max_players +'</td>'
                             +'</tr>');
