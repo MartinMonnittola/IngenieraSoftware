@@ -1,0 +1,66 @@
+p{
+    margin: 0;
+}
+.bottomspace{
+    margin-bottom: 50px;
+}
+.bottomspace2{
+    margin-bottom: 20px;
+}
+@font-face {
+    font-family: "montserrat";
+    src: url(montserrat.otf) format("opentype");
+whiteC{
+    color: #fdf5e6;
+}
+h1{
+    margin: 0;
+}
+ind{
+    padding-left: 60px;
+}
+ind2{
+    padding-left: 15px;
+}
+body{
+    text-align: center;
+    background-color: #00FA9A;
+}
+input[type=text], select {
+    width: 20%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ffc966;
+    border-radius: 4px;*/
+    box-sizing: border-box;
+    background-color: #ffc966;
+}
+input, select, textarea{
+    color: White;
+    font-family: "montserrat";
+    font-size: 15px;
+}
+input[type=submit] {
+    width: 30%;
+    background-color: Tomato;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+input[type=button] {
+    width: 5%;
+    background-color: Tomato;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+input[type=submit]:hover {
+    background-color: #ff5233;
+}

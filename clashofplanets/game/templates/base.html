@@ -3,22 +3,30 @@
 <!DOCTYPE html>
 <html>
     <head>
+
+        <!-- META -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
         <meta name="author" content="">
+
+        <!-- CSS -->
         <link rel="shortcut icon" href="{% static "/img/favicon.ico" %}" />
-        <link rel="stylesheet" href="{% static "css/game.css" %}">
-        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400|Roboto:300,400,500">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-        <link href="{% static "css/game.css" %}" rel="stylesheet">
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <link href="{% static "css/game.css" %}" rel="stylesheet" type="text/css"/>
+
+        <!-- Javascript -->
+        <script src="{% static "js/jquery-3.2.1.js" %}"></script>
+
         <title>{% block title %}Clash Of The Planets{% endblock %}</title>
+
         {% block additional_head %}
         {% endblock %}
+
     </head>
     <body>
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top">
             <a class="navbar-brand" href="/">Clash Of The Planets</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsCollapse" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -37,17 +45,9 @@
             </div>
         </nav>
         <div class="container" style="margin-bottom:50px;">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
             {% block main_content %}
             {% endblock %}
         </div>
-
         <footer class="footer fixed-bottom">
             <div class="container">
                 <span class="text-muted">Synergia 2017. Todos los derechos reservados.</span>
