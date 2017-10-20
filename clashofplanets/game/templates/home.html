@@ -3,17 +3,14 @@
 {% load static %}
 
 {% block main_content %}
-    <body>
-    <div class="row">
-        <div class="col-lg-12 col-md-12 text-center">
-            <h1>Welcome to Clash Of The Planets
-                {% if request.user.is_authenticated %}
-                <span class="text-primary" > {{request.user.username}}</span>!
-                {% endif %}
-            </h1>
-            <br>
-            <img src="{% static "img/home_image.gif" %}" class="img-responsive center-block" />
-        </div>
+<div class="row text-center">
+    <div class="col-md-12">
+        <h1>Welcome to Clash Of The Planets
+            {% if request.user.is_authenticated %}
+            <span class="text-primary" > {{request.user.username}}</span>!
+            {% endif %}
+        </h1>
+        <img src="{% static "img/home_image.gif" %}" class="img-fluid center-block" />
     </div>
-    </body>
+</div>
 {% endblock %}

@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from game.models import *
 
+# Create your forms here.
 
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
@@ -21,42 +22,36 @@ class SignUpForm(UserCreationForm):
         super(SignUpForm, self).__init__(*args, **kwargs)
         self.fields['password1'].help_text = 'Required. It should be more than 8 characters not entirely numerical.'
         self.fields['password2'].help_text = 'Required. Write your password again.'
-    
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        username = self.cleaned_data.get('username')        
+        username = self.cleaned_data.get('username')
         if email and User.objects.filter(email=email).exclude(username=username).exists():
             raise forms.ValidationError(u'Email addresses must be unique.')
         return email
 
-
-class JoinForm(forms.Form):
-    games = Game.objects.filter(playing=False)
-    planet_name = forms.CharField(label="Planet Name")
-
-
-
-"""
-Formulario para la creacion de partidas.
-"""
-class CreateGame(forms.ModelForm):
+class gameForm(forms.ModelForm):
+    planet_name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_nameC', 'required': True}))
+    room_name = forms.CharField(widget=forms.TextInput(attrs={'id':'room_nameC', 'required': True}))
+    max_players = forms.IntegerField(widget=forms.NumberInput(attrs={'id':'max_playersC', 'required': True}))
 
     class Meta:
-        model = Game
-        widgets = {'user': forms.HiddenInput()}
-        exclude = ['playing']
+        model = Room
+        fields = ('room_name', 'max_players') # bot_players - #game_mode
 
-    def save(self, *args, **kwargs):
-        const_poblation = self.cleaned_data.get('const_poblation')
-        const_misil = self.cleaned_data.get('const_misil')
-        const_shield = self.cleaned_data.get('const_shield')
-        if ((const_poblation + const_misil + const_shield) == 100):
-            nuevo_game = super(CreateGame, self).save(*args, **kwargs)
-            nuevo_game.const_poblation = const_poblation
-            nuevo_game.const_shield = const_shield
-            nuevo_game.const_misil = const_misil
-            nuevo_game.save()
-        else:
-            raise forms.ValidationError(
-                                  u'Los pocentajes ingresados son incorrectos.')
+    def __init__(self, *args, **kwargs):
+        super(gameForm, self).__init__(*args, **kwargs)
+        self.fields['room_name'].help_text = 'Write a name for your room. Required.'
+        self.fields['max_players'].help_text = 'How many players can join your room?. Required. More than 3.'
 
+
+class joinForm(forms.ModelForm):
+    name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_name', 'required': True}))
+    room_id = forms.CharField(widget=forms.TextInput(attrs={'id':'room_num', 'required': True}))
+
+    class Meta:
+        model = Planet
+        fields = ('name',)
+
+    def __init__(self, *args, **kwargs):
+        super(joinForm, self).__init__(*args, **kwargs)

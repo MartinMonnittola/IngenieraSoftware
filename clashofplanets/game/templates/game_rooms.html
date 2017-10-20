@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block main_content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 text-center">
+            <h4 class="bigcenter">List of Open Game Rooms</h4>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    <div class="row mx-auto" id="games">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center">Game ID</th>
+                    <th class="text-center">Game Room Name</th>
+                    <th class="text-center">Players Connected</th>
+                    <th class="text-center">Max Players Allowed</th>
+                </tr>
+            </thead>
+            <tbody id="openGames" class="openGamesC text-center">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row text-center">
+        <div class="col-md-12 col-lg-12" id="rooms_list">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="cardb">
+                <h2>Join Game</h2>
+                <hr class="style1">
+                <form method="post" onsubmit="myButton.disabled=true; return true;">
+                    {% csrf_token %}
+                    {% for field in join_form %}
+                    <p>
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}
+                            <p style="color: white">{{ field.help_text }}</p>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    </p>
+                    <hr class="style1">
+                    {% endfor %}
+                    <br>
+                <input class="button-primary btn btn-space" type="submit" value="join game" id="join">
+                </form>
+                <p id="JoinError" style="color: #ef3245"></p>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="cardr">
+                <h2>Create Game</h2>
+                <hr class="style1">
+                <form method="post" onsubmit="myButton.disabled=true; return true;">
+                    {% csrf_token %}
+                    {% for field in game_form %}
+                    <p>
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}
+                            <p style="color: white">{{ field.help_text }}</p>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+                    </p>
+                    <hr class="style1">
+                    {% endfor %}
+                    <input class="button-primary btn btn-space" type="submit" value="create game" id="create">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static "/js/main.js" %}" type="text/javascript"/></script>
+
+{% endblock %}
