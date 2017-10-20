@@ -44,7 +44,8 @@
                 <form method="post" onsubmit="myButton.disabled=true; return true;">
                     {% csrf_token %}
                     {% for field in join_form %}
-                    <p>
+                    <div class="row top30">
+                        <div class="col">
                         {{ field.label_tag }}
                         {{ field }}
                         {% if field.help_text %}
@@ -55,9 +56,10 @@
                         {% for error in field.errors %}
                             <p style="color: red">{{ error }}</p>
                         {% endfor %}
-                    </p>
+                        </div>
+                    </div>
                     {% endfor %}
-                    <input class="button-primary btn btn-space" class="metal" type="submit" value="join game" id="join">
+                    <input class="button-primary btn btn-space" type="submit" value="join game" id="join">
                 </form>
                 <p id="JoinError" style="color: #ef3245"></p>
             </div>
