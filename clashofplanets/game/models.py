@@ -152,3 +152,24 @@ class Planet(models.Model):
 			self.population_qty =- ammount
 		else:
 			self.population_qty = 0
+			
+class Missile (models.Model):
+    owner = models.ForeignKey(Planet, related_name="owner")
+    target = models.ForeignKey(Planet, related_name="target")
+    launch_time = models.DateTimeField(auto_now_add=True)
+    
+    def deal_damage(self):
+        target_planet = self.target
+        gameroom = target_planet.gameroom
+        
+        if (target_planet.shield_perc == 0):
+            damage = gameroom.population_damage_per_missile
+        else:
+            damage_diminisher = (100 / target_planet.shield_perc)
+            damage = gameroom.population_damage_per_missile / damage_diminisher
+        
+        target_planet.decrease_shield(gameroom.shield_damage_per_missile)
+        target_planet.decrease_population(damage)
+    
+    #def time_to_target(self):    
+    
