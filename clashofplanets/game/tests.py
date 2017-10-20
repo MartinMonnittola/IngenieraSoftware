@@ -13,7 +13,8 @@ class GameModelTestsCase(TestCase):
         user = User(username="GGG", first_name="GGGLJH", last_name= "GGGLKJLVG",
                     email="dvdfv@gmail.com", password="Aa12345678")
         user.save()
-        game = Game.createGame(1, 30, 30, 40, 1, 1, 1, 1, user)
+        game = Game.create(1, const_population=30, const_missil=30,
+                           const_shield=40, 1, 1, 1, 1, user)
         game.save()
         planet = Planet.create(user, game, "LJBKHB")
         planet.save()
@@ -51,7 +52,7 @@ class GameModelTestsCase(TestCase):
     def can_start_game(self):
         game = Room.objects.get(pk=1)
         game.startGame()
-        self.assertTrue(game.playing)
+        self.assertTrue(game.game_started)
 
     def can_join_game(self):
         game = Room.objects.get(pk=1)
