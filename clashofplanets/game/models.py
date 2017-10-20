@@ -133,35 +133,38 @@ class Game(models.Model):
         """
         try:
             user = User.objects.get(pk=user_id)
-            planet = Planet.create(user, self, name)
-            self.connected_players += 1
-            succesfull = True
+            if Planet.objects.filter(game_started=0).exists():
+                succesfull = False
+            else:
+                planet = Planet.create(user, self, name)
+                self.connected_players += 1
+                succesfull = True
         except User.DoesNotExist:
             succesfull = False
         return succesfull
 
     def startGame(self):
         """
-        Start Game:
-        Procedure that allow players start the game from the gameGame they are into.
-        INPUT: The Gameitself, the user who wants to join, and the planet name.
-        OUTPUT: Boolean for succesfull or not join game action.
+        Marca como iniciada una partida.
+
+        Entrada: self, el objeto game.
+        Salida:  nada.
         """
-        if not (self.game_started): #first person to press start game
+        if not (self.game_started):
             self.game_started = True
             self.save()
 
     def deactivatePlanet(self, user_id):
-        """
-        Deactivate Planet:
-        Procedure that allows the system to delete planets.
-        INPUT: The planet object id.
-        OUTPUT: Boolean for succesfull or not delete planet object.
+        """ 
+        Desactiva un planeta y elimina sus recursos.
+
+        Entrada: planet_id, clave primaria del planeta.
+        Salida:  succesfull, bool que indica si elimino el planeta.
         """
         try:
             planet = Planet.objects.get(player=user_id)
-            user = planet.player
-            planet.delete()
+            planet.population_qty = 0
+            planet.save()
             # Notificamo al usuario de la eliminacion de su planeta.
             #user.notify_devastation()
             succesfull = True
@@ -169,13 +172,14 @@ class Game(models.Model):
             succesfull = False
         return succesfull
 
+    """
+    DeleteGame:
+    Procedure that allows the gameGame owner to delete theGame.
+    INPUT: Owner user id.
+    OUTPUT: Boolean for succesfull or not delete gameGame object.
+    """
+    """"
     def delete(self, user_id):
-        """
-        DeleteGame:
-        Procedure that allows the gameGame owner to delete theGame.
-        INPUT: Owner user id.
-        OUTPUT: Boolean for succesfull or not delete gameGame object.
-        """
         try:
             Game =Game.objects.get(owner=user_id)
             game_owner =Game.owner
@@ -185,6 +189,8 @@ class Game(models.Model):
         except Game.DoesNotExist:
             succesfull = False
         return succesfull
+    """
+
 
 class Planet(models.Model):
     """
