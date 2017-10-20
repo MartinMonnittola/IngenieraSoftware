@@ -28,6 +28,13 @@ hr.style1{
     font-family: 'Roboto', sans-serif;
 }
 
+#bg{
+    background-size:cover;
+    background-repeat: no-repeat;
+    background-position: top;
+    background-attachment: fixed;
+}
+
 body {
 	padding: 100px 0px 100px 0px;
     font-family: 'Roboto', sans-serif; /* 1 */
@@ -348,3 +355,13 @@ input[type=range]:focus::-ms-fill-upper {
 .top15 { margin-top:15px; }
 .top17 { margin-top:17px; }
 .top30 { margin-top:30px; }
+
+.metal-effect
+{
+	box-shadow:0 12px 20px rgba(0,0,0,.9);
+	background: -webkit-radial-gradient(center bottom, rgba(160, 201, 215, 0.8) 0%, rgba(160, 201, 215, 0) 70%),
+				-webkit-linear-gradient(top, black 0%,#282F44 6%,#2C3551 52%,#354262 91%,#050C54 100%);
+
+	background: -moz-radial-gradient(center bottom, rgba(160, 201, 215, 0.8) 0%, rgba(160, 201, 215, 0) 70%),
+				-moz-linear-gradient(top, black 0%,#282F44 6%,#2C3551 52%,#354262 91%,#050C54 100%);
+}
