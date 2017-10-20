@@ -104,61 +104,91 @@ class Room(models.Model):
 		return succesfull
 
 class Planet(models.Model):
-	"""
-	Planet Class: Contains all the information about each player's planet
-	that will be generated after starting the game (in-game status).
-	"""
-	player = models.ForeignKey(User, on_delete=models.CASCADE)
-	gameroom = models.ForeignKey(Room, on_delete=models.CASCADE)
-	name = models.CharField(max_length=20,verbose_name='Planet name')
-	seed = models.BigIntegerField(default=0,verbose_name='Planet seed')
-	population_qty = models.IntegerField(default=5000, verbose_name='Population Amout', validators=[MinValueValidator(0)])
-	missiles_qty = models.IntegerField(default=0, verbose_name='Missile Amount', validators=[MinValueValidator(0)])
-	shield_perc = models.IntegerField(default=100, verbose_name='Shield Amount', validators=[MinValueValidator(0)])
-	population_distr = models.IntegerField(default=100, verbose_name='Planet Population %', validators=[MinValueValidator(0)])
-	shield_distr = models.IntegerField(default=0, verbose_name='Planet Shield %', validators=[MinValueValidator(0)])
-  	missile_distr = models.IntegerField(default=0, verbose_name='Planet Missile %', validators=[MinValueValidator(0)])
+    """
+    Planet Class: Contains all the information about each player's planet
+    that will be generated after starting the game (in-game status).
+    """
+    player = models.ForeignKey(User, on_delete=models.CASCADE)
+    gameroom = models.ForeignKey(Room, on_delete=models.CASCADE)
+    name = models.CharField(max_length=20,verbose_name='Planet name')
+    seed = models.BigIntegerField(default=0,verbose_name='Planet seed')
+    population_qty = models.IntegerField(default=5000, verbose_name='Population Amout', validators=[MinValueValidator(0)])
+    missiles_qty = models.IntegerField(default=0, verbose_name='Missile Amount', validators=[MinValueValidator(0)])
+    shield_perc = models.IntegerField(default=100, verbose_name='Shield Amount', validators=[MinValueValidator(0)])
+    population_distr = models.IntegerField(default=100, verbose_name='Planet Population %', validators=[MinValueValidator(0)])
+    shield_distr = models.IntegerField(default=0, verbose_name='Planet Shield %', validators=[MinValueValidator(0)])
+    missile_distr = models.IntegerField(default=0, verbose_name='Planet Missile %', validators=[MinValueValidator(0)])
 
-	def __str__(self):
-		return self.name
+    def __str__(self):
+        return self.name
 
-	@classmethod
-  	def create(cls, player, gameroom, name, seed):
-		"""
-		Create Planet:
-		Function that allow players to create their planets.
-		INPUT: Planet attributes such as player owner, gameroom they belong to, name of the planet and a random seed.
-		OUTPUT: A Planet Object.
-		"""
-		new_planet = cls(player=player,gameroom=gameroom,name=name,population_qty=gameroom.init_population,seed=seed)
-		return new_planet
+    @classmethod
+    def create(cls, player, gameroom, name, seed):
+        """
+        Create Planet:
+        Function that allow players to create their planets.
+        INPUT: Planet attributes such as player owner, gameroom they belong to, name of the planet and a random seed.
+        OUTPUT: A Planet Object.
+        """
+        new_planet = cls(player=player,gameroom=gameroom,name=name,population_qty=gameroom.init_population,seed=seed)
+        return new_planet
 
-	def assign_perc_rate(self, perc_pop, perc_shield, perc_missile):
-		if ((perc_pop + perc_shield + perc_missile) == 100):
-			self.population_distr = perc_pop
-			self.shield_distr = perc_shield
-			self.missile_distr = perc_missile
-		else:
-			raise NameError('Wrong Distribution Choice')
+    def assign_perc_rate(self, perc_pop, perc_shield, perc_missile):
+        """
+        Assign percentage rat:
+        Method that distributes work between resources.
+        INPUT: Planet itself and percentages (as integers) to assign to each resource.
+        OUTPUT: None.
+        """
+        if ((perc_pop + perc_shield + perc_missile) == 100):
+            self.population_distr = perc_pop
+            self.shield_distr = perc_shield
+            self.missile_distr = perc_missile
+        else:
+            raise NameError('Wrong Distribution Choice')
 
-	def decrease_shield(self, ammount):
-		if (self.shield_perc >= ammount):
-			self.shield_perc =- ammount
-		else:
-			self.shield_perc = 0
+    def decrease_shield(self, ammount):
+        """
+        Decrease shield:
+        Method that damages planet's shield.
+        INPUT: Planet itself, ammount of damage.
+        OUTPUT: None.
+        """
+        if (ammount <= 100):
+            if (self.shield_perc >= ammount):
+                self.shield_perc =- ammount
+            else:
+                self.shield_perc = 0
+        else:
+            raise NameError('Wrong ammount of damage. Must be 100 or less')
 
-	def decrease_population(self, ammount):
-		if (self.population_qty >= ammount):
-			self.population_qty =- ammount
-		else:
-			self.population_qty = 0
-			
+    def decrease_population(self, ammount):
+        """
+        Decrease population:
+        Method that damages planet's population.
+        INPUT: Planet itself, ammount of damage.
+        OUTPUT: None.
+        """
+        if (self.population_qty >= ammount):
+            self.population_qty =- ammount
+        else:
+            self.population_qty = 0
+
 class Missile (models.Model):
+    """
+    Missile Class: Contains origin planet, target planet and time of launch
+    """
     owner = models.ForeignKey(Planet, related_name="owner")
     target = models.ForeignKey(Planet, related_name="target")
     launch_time = models.DateTimeField(auto_now_add=True)
-    
+
     def deal_damage(self):
+        """
+        Deal damage:
+        Procedure that calculates shield and population damage to target planet.
+        INPUT: Missile itself.
+        OUTPUT: None.
+        """
         target_planet = self.target
         gameroom = target_planet.gameroom
         
@@ -170,6 +200,17 @@ class Missile (models.Model):
         
         target_planet.decrease_shield(gameroom.shield_damage_per_missile)
         target_planet.decrease_population(damage)
-    
-    #def time_to_target(self):    
+
+    def time_to_target(self):
+        """
+        Time to target:
+        Method that  calculates remaining time to impact.
+        INPUT: Missile itself.
+        OUTPUT: Time to impact.
+        """
+        gameroom = self.owner.gameroom
+        time_elapsed = self. launch_time - timezone.datetime.now()
+        time_to_impact = gameroom.missile_delay - time_elapsed
+        return time_to_impact
+        
     
