@@ -13,11 +13,12 @@
         <!-- CSS -->
         <link rel="shortcut icon" href="{% static "/img/favicon.ico" %}" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400|Roboto:300,400,500">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
         <link href="{% static "css/game.css" %}" rel="stylesheet" type="text/css"/>
 
         <!-- Javascript -->
         <script src="{% static "js/jquery-3.2.1.js" %}"></script>
+        <script src="{% static "js/slider.js" %}"></script>
 
         <title>{% block title %}Clash Of The Planets{% endblock %}</title>
 
@@ -26,11 +27,11 @@
 
     </head>
     <body>
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top">
-            <a class="navbar-brand" href="/">Clash Of The Planets</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsCollapse" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsCollapse" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <a class="navbar-brand" href="/">Clash Of The Planets</a>
             <div class="collapse navbar-collapse" id="navbarsCollapse">
                 <ul class="navbar-nav mr-auto">
                     {% if request.user.is_authenticated %}
@@ -50,7 +51,7 @@
         </div>
         <footer class="footer fixed-bottom">
             <div class="container">
-                <span class="text-muted">Synergia 2017. Todos los derechos reservados.</span>
+                <span>Synergia 2017. Todos los derechos reservados.</span>
             </div>
         </footer>
 

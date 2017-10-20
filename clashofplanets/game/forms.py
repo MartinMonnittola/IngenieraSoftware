@@ -33,8 +33,18 @@ class SignUpForm(UserCreationForm):
 class gameForm(forms.ModelForm):
     planet_name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_nameC', 'required': True}))
     room_name = forms.CharField(widget=forms.TextInput(attrs={'id':'room_nameC', 'required': True}))
-    max_players = forms.IntegerField(widget=forms.NumberInput(attrs={'id':'max_playersC', 'required': True}))
-
+    max_players = forms.IntegerField(widget=forms.NumberInput(
+        attrs={
+            'id':'max_playersC',
+            'required': True,
+            'type': 'range',
+            'min': 3,
+            'max': 50,
+            'value': 0,
+            'class': 'bar',
+            'onchange': 'rangevalue.value=value'}
+            )
+        )
     class Meta:
         model = Room
         fields = ('room_name', 'max_players') # bot_players - #game_mode
@@ -42,7 +52,8 @@ class gameForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(gameForm, self).__init__(*args, **kwargs)
         self.fields['room_name'].help_text = 'Write a name for your room. Required.'
-        self.fields['max_players'].help_text = 'How many players can join your room?. Required. More than 3.'
+        self.fields['max_players'].help_text = 'How many players can join your room?. Required. Min 3 Max 50.'
+        self.fields['planet_name'].help_text = 'Write a name for your planet. Required'
 
 
 class joinForm(forms.ModelForm):
@@ -55,3 +66,5 @@ class joinForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(joinForm, self).__init__(*args, **kwargs)
+        self.fields['name'].help_text = 'Write a name for your planet. If you are already in the room, just write the room id. Required.'
+        self.fields['room_id'].help_text = 'Write the id of the room you want to join. Required.'
