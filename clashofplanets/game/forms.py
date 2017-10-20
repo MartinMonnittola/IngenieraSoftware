@@ -51,9 +51,9 @@ class gameForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(gameForm, self).__init__(*args, **kwargs)
-        self.fields['room_name'].help_text = 'Write a name for your room. Required.'
-        self.fields['max_players'].help_text = 'How many players can join your room?. Required. Min 3 Max 50.'
-        self.fields['planet_name'].help_text = 'Write a name for your planet. Required'
+        self.fields['room_name'].help_text = 'Required. Write a name for your room. '
+        self.fields['max_players'].help_text = 'Required. How many players can join your room?.Min 3 Max 50.'
+        self.fields['planet_name'].help_text = 'Required. Write a name for your planet.'
 
 
 class joinForm(forms.ModelForm):
@@ -66,5 +66,5 @@ class joinForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(joinForm, self).__init__(*args, **kwargs)
-        self.fields['name'].help_text = 'Write a name for your planet. If you are already in the room, just write the room id. Required.'
-        self.fields['room_id'].help_text = 'Write the id of the room you want to join. Required.'
+        self.fields['name'].help_text = ' Required. Write a name for your planet. If you are already in the room, just write the room id.'
+        self.fields['room_id'].help_text = ' Required. Write the id of the room you want to join.'
