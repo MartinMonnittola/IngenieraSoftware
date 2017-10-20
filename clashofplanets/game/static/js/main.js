@@ -42,19 +42,26 @@ function listGames(){
     			//console.log(json);
     			var glist = json.games;
                 //alert(clist);
-    			$('#openGames').empty();
-    			for (var i = 0; i < glist.length; i++) {
-    				var num=glist[i];
-                    buildListElementItem = $(
-                        '<tr>'
-                        +'<td>' + glist[i].id +'</td>'
-                        +'<td>' + glist[i].name +'</td>'
-                        +'<td>' + glist[i].connected_players +'</td>'
-                        +'<td>' + glist[i].max_players +'</td>'
-                        +'</tr>');
-                        $("#openGames").append(buildListElementItem)
-    			}
-    		}
+                $('#openGames').empty();
+                $('#rooms_list').empty();
+                if ((glist.length) > 0) {
+        			for (var i = 0; i < glist.length; i++) {
+        				var num=glist[i];
+                        buildListElementItem = $(
+                            '<tr>'
+                            +'<td>' + glist[i].id +'</td>'
+                            +'<td>' + glist[i].name +'</td>'
+                            +'<td>' + glist[i].connected_players +'</td>'
+                            +'<td>' + glist[i].max_players +'</td>'
+                            +'</tr>');
+                            $("#openGames").append(buildListElementItem)
+                        }
+                    }
+                else {
+                    buildListElementItem = $('<p>No open rooms were found.</p>');
+                    $("#rooms_list").append(buildListElementItem)
+                    }
+            }
             setTimeout(listGames, 4000);
         },
         error : function(xhr,errmsg,err) {

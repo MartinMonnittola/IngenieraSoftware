@@ -41,6 +41,9 @@ class gameForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(gameForm, self).__init__(*args, **kwargs)
+        self.fields['room_name'].help_text = 'Write a name for your room. Required.'
+        self.fields['max_players'].help_text = 'How many players can join your room?. Required. More than 3.'
+
 
 class joinForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_name', 'required': True}))

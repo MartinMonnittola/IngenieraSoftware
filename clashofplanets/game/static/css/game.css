@@ -9,6 +9,10 @@ html {
   -webkit-text-size-adjust: 100%; /* 2 */
 }
 
+hr.style1{
+	border-top: 1px solid #ffffff;
+}
+
 .games {
     padding-bottom: 40px;
 }
@@ -200,10 +204,10 @@ input[type="password"],
 textarea,
 select {
   height: 30px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   background-color: #fff;
   border: 1px solid #D1D1D1;
-  border-radius: 1px;
+  border-radius: 3px;
   box-shadow: none;
   box-sizing: border-box; }
 /* Removes awkward default styles on some inputs for iOS */
@@ -220,8 +224,8 @@ textarea {
           appearance: none; }
 textarea {
   min-height: 65px;
-  padding-top: 6px;
-  padding-bottom: 6px; }
+  padding-top: 2px;
+  padding-bottom: 4px; }
 input[type="email"]:focus,
 input[type="number"]:focus,
 input[type="search"]:focus,
