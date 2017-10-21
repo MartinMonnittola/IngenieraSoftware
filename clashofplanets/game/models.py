@@ -45,7 +45,7 @@ class Game(models.Model):
         """
         representation = (('User: %d, '  % self.user.id) +
                          ('initial_poblation: %d, '  % self.initial_population) +
-                         ('const_misil: %d, '  % self.const_misil) +
+                         ('const_misil: %d, '  % self.const_missile) +
                          ('const_shield: %d, ' % self.const_shield) +
                          ('const_poblation: %d, ' % self.const_population) +
                          ('time_misil: %d, '  % self.time_misil) +
