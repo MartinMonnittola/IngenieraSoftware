@@ -174,6 +174,22 @@ class Planet(models.Model):
         else:
             self.population_qty = 0
 
+    def get_missiles_state(self):
+        """
+        Get missiles state:
+        Method that examines each missile object, bringing a list of times to impact.
+        INPUT: Planet itself.
+        OUTPUT: List of times remaining to impact
+        """
+        missiles = Missile.objects.all(owner=self)
+        times = []
+
+        for missil in missiles:
+            times.append(missil.time_to_target())
+
+        return times
+
+
 class Missile (models.Model):
     """
     Missile Class: Contains origin planet, target planet and time of launch
@@ -211,6 +227,7 @@ class Missile (models.Model):
         gameroom = self.owner.gameroom
         time_elapsed = self. launch_time - timezone.datetime.now()
         time_to_impact = gameroom.missile_delay - time_elapsed
+        
         return time_to_impact
         
     
