@@ -110,7 +110,7 @@ def gameRoom(request, game_room_num):
 def make_player(request):
     if (request.method=='POST' and request.is_ajax()):
         #gets the values submitted in the from at template
-    	form = gameForm(request.POST)
+        form = gameForm(request.POST)
         planet_name=request.POST.get('pname')
         game_room_num=request.POST.get('num')
 
@@ -192,9 +192,9 @@ def make_game(request):
 
 #send a list of players as a json to js file
 def send_players(request):
-	if (request.method=='POST' and request.is_ajax()):
-		game_num =request.POST.get('num')
-		planets = Planet.objects.filter(game=game_num) #players in game
+    if (request.method=='POST' and request.is_ajax()):
+        game_num =request.POST.get('num')
+        planets = Planet.objects.filter(game=game_num) #players in game
         pdict={}
         plist=[]
         for tmpplanet in planets:
@@ -218,8 +218,8 @@ def send_players(request):
 
 #send a list of numbers of all open games as a json to js file
 def send_games(request):
-	if (request.method=='POST' and request.is_ajax()):
-		games=Game.objects.filter(game_started=False) #all open games
+    if (request.method=='POST' and request.is_ajax()):
+        games=Game.objects.filter(game_started=False) #all open games
         gdict={}
         glist=[]
         for tmpgame in games:
@@ -241,9 +241,9 @@ def send_games(request):
 
 #send the game room state of current as a json to js file
 def send_game_state(request):
-	if (request.method=='POST' and request.is_ajax()):
-	    game_num =request.POST.get('num')
-	    room = Game.objects.get(pk=game_num) #players in game
+    if (request.method=='POST' and request.is_ajax()):
+        game_num =request.POST.get('num')
+        room = Game.objects.get(pk=game_num) #players in game
         sdict={}
         current_room_state = room.game_started
         players_in_room = room.connected_players
