@@ -192,6 +192,27 @@ class Planet(models.Model):
             raise NameError('Wrong Distribution Choice')
 
     def decrease_shield(self, ammount):
+        """
+        Decrease shield:
+        Method that damages planet's shield.
+        INPUT: Planet itself, ammount of damage.
+        OUTPUT: None.
+        """
+        if (ammount <= 100):
+            if (self.shield_perc >= ammount):
+                self.shield_perc =- ammount
+            else:
+                self.shield_perc = 0
+        else:
+            raise NameError('Wrong ammount of damage. Must be 100 or less')
+
+    def decrease_population(self, ammount):
+        """
+        Decrease population:
+        Method that damages planet's population.
+        INPUT: Planet itself, ammount of damage.
+        OUTPUT: None.
+        """
         if (self.shield_perc >= ammount):
             self.shield_perc =- ammount
         else:
@@ -202,3 +223,59 @@ class Planet(models.Model):
             self.population_qty =- ammount
         else:
             self.population_qty = 0
+
+    def get_missiles_state(self):
+        """
+        Get missiles state:
+        Method that examines each missile object, bringing a list of times to impact.
+        INPUT: Planet itself.
+        OUTPUT: List of times remaining to impact
+        """
+        missiles = Missile.objects.all(owner=self)
+        times = []
+
+        for missil in missiles:
+            times.append(missil.time_to_target())
+
+        return times
+
+
+class Missile (models.Model):
+    """
+    Missile Class: Contains origin planet, target planet and time of launch
+    """
+    owner = models.ForeignKey(Planet, related_name="owner")
+    target = models.ForeignKey(Planet, related_name="target")
+    launch_time = models.DateTimeField(auto_now_add=True)
+
+    def deal_damage(self):
+        """
+        Deal damage:
+        Procedure that calculates shield and population damage to target planet.
+        INPUT: Missile itself.
+        OUTPUT: None.
+        """
+        target_planet = self.target
+        gameroom = target_planet.gameroom
+        
+        if (target_planet.shield_perc == 0):
+            damage = gameroom.population_damage_per_missile
+        else:
+            damage_diminisher = (100 / target_planet.shield_perc)
+            damage = gameroom.population_damage_per_missile / damage_diminisher
+        
+        target_planet.decrease_shield(gameroom.shield_damage_per_missile)
+        target_planet.decrease_population(damage)
+
+    def time_to_target(self):
+        """
+        Time to target:
+        Method that  calculates remaining time to impact.
+        INPUT: Missile itself.
+        OUTPUT: Time to impact.
+        """
+        gameroom = self.owner.gameroom
+        time_elapsed = self. launch_time - timezone.datetime.now()
+        time_to_impact = gameroom.missile_delay - time_elapsed
+        
+        return time_to_impact
