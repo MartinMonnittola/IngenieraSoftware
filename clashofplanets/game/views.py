@@ -115,12 +115,12 @@ def make_player(request):
         game_room_num=request.POST.get('num')
         #isolates the already existing game
         gamelist = Room.objects.filter(id=game_room_num)
-        g=get_object_or_404(gamelist)
         #game doesn't exist, stop joining
         if not gamelist:
             #gameNumber = -1 indicates game doesn't exist
             data={'gameNumber':-1}
             return HttpResponse(json.dumps(data),content_type='application/json')
+        g=get_object_or_404(gamelist)
         #game hasn't started and players < max players
         if (int(g.game_started)==0) and (g.connected_players < g.max_players):
             #seed will be used for randomization
@@ -142,8 +142,7 @@ def make_player(request):
             request.session['gameEntry']=int(game_room_num)
             data={'gameNumber':game_room_num}
             return HttpResponse(json.dumps(data),content_type='application/json')
-
-        elif (int(g.game_started)==0) and (g.connected_players == g.max_players):
+        if (int(g.game_started)==0) and (g.connected_players == g.max_players):
             # game is full
             data={'gameNumber':-2}
             return HttpResponse(json.dumps(data),content_type='application/json')
