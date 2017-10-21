@@ -80,7 +80,7 @@ $(document).ready(function(){
 		e.preventDefault();
 		var csrftoken = getCookie('csrftoken');
 		var pname = $('#planet_nameC').val();
-        var rname = $('#room_nameC').val();
+        var rname = $('#game_nameC').val();
         var max_players = $('#max_playersC').val();
         //Ajax post
 		$.ajax({
@@ -98,14 +98,14 @@ $(document).ready(function(){
 	});
 	//When join is clicked
 	$("#join").click(function(e) {
-        $("#join").attr('disabled', true);
+        $("#create").attr('disabled', true);
 		//Prevent default submit. Must for Ajax post.Beginner's pit.
 		e.preventDefault();
 		//Prepare csrf token
 		var csrftoken = getCookie('csrftoken');
 		//Collect data from fields
 		var pname = $('#planet_name').val();
-		var num = $('#room_num').val();
+		var num = $('#game_num').val();
 		//Send data
 		$.ajax({
 			type : 'POST', // http method
