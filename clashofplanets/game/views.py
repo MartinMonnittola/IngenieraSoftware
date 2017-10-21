@@ -109,18 +109,21 @@ def gameRoom(request, game_room_num):
 @login_required
 def make_player(request):
     if (request.method=='POST' and request.is_ajax()):
-        # gets form data
-    	form = gameForm(request.POST) #gets the values submitted in the template
+        #gets the values submitted in the from at template
+    	form = gameForm(request.POST)
         planet_name=request.POST.get('pname')
         game_room_num=request.POST.get('num')
+
         #isolates the already existing game
         gamelist = Game.objects.filter(id=game_room_num)
+
         #game doesn't exist, stop joining
         if not gamelist:
             #gameNumber = -1 indicates game doesn't exist
             data={'gameNumber':-1}
             return HttpResponse(json.dumps(data),content_type='application/json')
         g=get_object_or_404(gamelist)
+
         #game hasn't started and players < max players
         if (int(g.game_started)==0) and (g.connected_players < g.max_players):
             #seed will be used for randomization
@@ -136,12 +139,14 @@ def make_player(request):
                 g.save()
                 #creates planet with game among other things
                 p.save()
-                # session seed to identify planet
+            # session seed to identify planet
             request.session['id']=seed
             #Adds a cookie/session to indicate a legit entry
             request.session['gameEntry']=int(game_room_num)
             data={'gameNumber':game_room_num}
             return HttpResponse(json.dumps(data),content_type='application/json')
+
+        #game hasn't started and players == max players
         if (int(g.game_started)==0) and (g.connected_players == g.max_players):
             # game is full
             data={'gameNumber':-2}
@@ -241,14 +246,18 @@ def send_game_state(request):
 	    room = Game.objects.get(pk=game_num) #players in game
         sdict={}
         current_room_state = room.game_started
-        sdict={'game_state': current_room_state}
+        players_in_room = room.connected_players
+        sdict={'game_state': current_room_state, 'players_in_room': players_in_room,}
         return HttpResponse(json.dumps(sdict),content_type='application/json')
 
 # start game view: Allows room user to start the game room
 def start_game(request, game_num):
     template = loader.get_template('ingame.html')
+    #gets the game by id
     g=Game.objects.get(id=game_num)
-    planets = Planet.objects.filter(game=g.id).order_by('seed') #players in game, sorted
+    #players in game, sorted
+    planets = Planet.objects.filter(game=g.id).order_by('seed')
+    # set game state to 1
     Game.startGame(g)
     our_seed = request.session['id']
     your_planet=Planet.objects.filter(seed=our_seed).first()
