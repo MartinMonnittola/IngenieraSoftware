@@ -222,7 +222,7 @@ def send_games(request):
             game_max_players = tmpgame.max_players
             game_id = tmpgame.id
             game_connected_players = tmpgame.connected_players
-            game_owner = tmpgame.creator.username
+            game_owner = tmpgame.user.username
             record = {
                 'name': game_name,
                 'max_players': game_max_players,
@@ -244,7 +244,7 @@ def send_game_state(request):
         sdict={'game_state': current_room_state}
         return HttpResponse(json.dumps(sdict),content_type='application/json')
 
-# start game view: Allows room creator to start the game room
+# start game view: Allows room user to start the game room
 def start_game(request, game_num):
     template = loader.get_template('ingame.html')
     g=Room.objects.get(id=game_num)
