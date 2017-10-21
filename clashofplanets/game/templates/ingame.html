@@ -9,11 +9,7 @@
 <div class="container">
     <div class="row text-center">
         <div class="col">
-            <h1>Game Room of {{game.room_name}}
-            <p id="gamenum">{{game}}</p>
-            {% if request.user.is_authenticated %}
-                <span class="text-primary" >{{request.user.username}}</span>!
-            {% endif %}
+            <h1>Game Room <span id="gamenum">{{game}}</span> of {% if request.user.is_authenticated %}<span class="text-primary" >{{request.user.username}}</span>{% endif %}
             </h1>
         </div>
     </div>
