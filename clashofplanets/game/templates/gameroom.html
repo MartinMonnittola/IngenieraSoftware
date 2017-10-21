@@ -34,7 +34,7 @@
     </div>
     <div class="row text-center">
         <div class="col">
-            {% if request.user == game.creator %}
+            {% if request.user == game.user %}
             <!-- solo el creador de la sala puede comenzar el juego-->
             <form action="{% url 'start_game' game.id %}" method="post">
                 {% csrf_token %}

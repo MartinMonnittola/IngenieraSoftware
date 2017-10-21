@@ -58,7 +58,7 @@ class gameForm(forms.ModelForm):
 
 class joinForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_name', 'required': True}))
-    Game_id = forms.CharField(widget=forms.TextInput(attrs={'id':'Game_num', 'required': True}))
+    game_id = forms.CharField(widget=forms.TextInput(attrs={'id':'game_num', 'required': True}))
 
     class Meta:
         model = Planet
