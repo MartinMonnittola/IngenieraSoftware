@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="row text-center">
-        <div class="col">
+        <div class="col table-responsive">
             <table class="table metal-effect2">
                 <thead>
                     <tr>
@@ -31,11 +31,49 @@
             </table>
         </div>
     </div>
+
+    <div class="row text-center top30">
+        <div class="col metal-effect2">
+            <h2 class="custom-h2">My Planet Info</h2>
+            <hr class="style1">
+    <div class="row">
+                <div class="col">
+                    <img src="{% static "img/pop_var.png" %}" class="img-fluid planet-var" />
+                    <div id="slider">
+                        <span class="highlight"></span>
+                        <output id="popvalue">3</output>
+                    </div>
+                    <input name="" required="" min="0" max="100" onchange="popvalue.value=value" class="bar" value="0" id="" type="range">
+                </div>
+                <div class="col">
+                    <img src="{% static "img/shield_var.png" %}" class="img-fluid planet-var" />
+                    <div id="slider">
+                        <span class="highlight"></span>
+                        <output id="shieldvalue">3</output>
+                    </div>
+                    <input name="" required="" min="0" max="100" onchange="shieldvalue.value=value" class="bar" value="0" id="" type="range">
+                </div>
+
+                <div class="col">
+                    <img src="{% static "img/missile_var.png" %}" class="img-fluid planet-var" />
+                    <div id="slider">
+                        <span class="highlight"></span>
+                        <output id="missilevalue">3</output>
+                    </div>
+                    <input name="" required="" min="0" max="100" onchange="missilevalue.value=value" class="bar" value="0" id="" type="range">
+                </div>
+    </div>
+            </div>
+        </div>
+
+    </div>
+
     <div class="row text-center">
         <div class="col">
             <form action = "{% url 'game_rooms' %}" method="post">
-            {% csrf_token %}
-            <input type="submit" value="back to lobby">
+                {% csrf_token %}
+                <input type="submit" value="back to lobby">
+            </form>
         </div>
     </div>
 </div>

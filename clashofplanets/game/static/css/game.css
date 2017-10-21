@@ -265,18 +265,6 @@ label > .label-body {
 
 /* SLIDER MAX PLAYERS */
 
-#slider {
-    margin: 0 auto;
-    width: 50%;
-    height: 20px;
-	-webkit-border-radius: 40px;
-	-moz-border-radius: 40px;
-	border-radius: 40px;
-	-webkit-box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.9), 0px 1px 1px 0px rgba(255, 255, 255, 0.13);
-	-moz-box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.9), 0px 1px 1px 0px rgba(255, 255, 255, 0.13);
-	box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 0, 0.9), 0px 1px 1px 0px rgba(255, 255, 255, 0.13);
-}
-
 input[type=range] {
     height: 26px;
     -webkit-appearance: none;
@@ -319,6 +307,9 @@ input[type=range]::-moz-range-track {
     background: #10171D;
     border-radius: 14px;
     border: 0px solid #000000;
+    -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+    -moz-box-shadow: 0px 0px 10px rgba(0,0,0,.8);
+               box-shadow: 0px 0px 10px rgba(0,0,0,.8);
 }
 input[type=range]::-moz-range-thumb {
     box-shadow: 1px 1px 1px #000000;
@@ -381,13 +372,11 @@ input[type=range]::-moz-range-progress {
     height: 12px;
     cursor: pointer;
     animate: 0.2s;
-    box-shadow: 1px 1px 1px rgb(53, 244, 232);
-    background: rgb(53, 244, 232);
+    box-shadow: 0px 0px 0px #000;
+    background: #33C3F0;
     border-radius: 14px;
     border: 0px solid rgb(53, 244, 232);
  }
-
-
 
 .top5 { margin-top:5px; }
 .top7 { margin-top:7px; }
@@ -396,12 +385,10 @@ input[type=range]::-moz-range-progress {
 .top17 { margin-top:17px; }
 .top30 { margin-top:30px; }
 
-.metal-effect
-{
+.metal-effect {
 	box-shadow:0 12px 20px rgba(0,0,0,.9);
 	background: -webkit-radial-gradient(center bottom, rgba(160, 201, 215, 0.8) 0%, rgba(160, 201, 215, 0) 70%),
 				-webkit-linear-gradient(top, black 0%,#282F44 6%,#2C3551 52%,#354262 91%,#050C54 100%);
-
 	background: -moz-radial-gradient(center bottom, rgba(160, 201, 215, 0.8) 0%, rgba(160, 201, 215, 0) 70%),
 				-moz-linear-gradient(top, black 0%,#282F44 6%,#2C3551 52%,#354262 91%,#050C54 100%);
 }
@@ -412,13 +399,14 @@ input[type=range]::-moz-range-progress {
     3px 5px 6px -2px rgba(255, 255, 255, 0.05) inset,
     1px 3px 0 1px rgba(0, 0, 0, 0.3),
     3px 6px 2px -2px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(50deg, rgba(8, 7, 9, 0.25) 0,
-    rgba(21, 15, 26, 0.25) 10%, rgba(49, 37, 55, 0.25) 25%, rgba(8, 6, 10, 0.25) 40%,
-    rgba(47, 39, 53, 0.25) 60%, rgba(8, 6, 10, 0.25) 70%, rgba(21, 14, 27, 0.25) 90%,
-    rgba(8, 5, 11, 0.25) 100%), linear-gradient(120deg, rgba(5, 5, 5, 0.5) 0,
-    rgba(13, 22, 16, 0.5) 0%, rgba(73, 90, 83, 0.5) 30%, rgba(50, 62, 57, 0.5) 50%,
-    rgba(78, 86, 81, 0.5) 70%, rgba(37, 50, 41, 0.5) 100%),
-    linear-gradient(75deg, #1d1c1b 0, #030302 35%, #000000 65%, #000000 100%);
+    background:
+        linear-gradient(50deg, rgba(8, 7, 9, 0.25) 0,
+        rgba(21, 15, 26, 0.25) 10%, rgba(49, 37, 55, 0.25) 25%, rgba(8, 6, 10, 0.25) 40%,
+        rgba(47, 39, 53, 0.25) 60%, rgba(8, 6, 10, 0.25) 70%, rgba(21, 14, 27, 0.25) 90%,
+        rgba(8, 5, 11, 0.25) 100%), linear-gradient(120deg, rgba(5, 5, 5, 0.5) 0,
+        rgba(13, 22, 16, 0.5) 0%, rgba(73, 90, 83, 0.5) 30%, rgba(50, 62, 57, 0.5) 50%,
+        rgba(78, 86, 81, 0.5) 70%, rgba(37, 50, 41, 0.5) 100%),
+        linear-gradient(75deg, #1d1c1b 0, #030302 35%, #000000 65%, #000000 100%);
 }
 
 .custom-h2 {
@@ -428,4 +416,9 @@ input[type=range]::-moz-range-progress {
 	text-align: center;
     font-family: 'Orbitron', sans-serif;
     text-transform: uppercase;
+}
+
+.planet-var {
+    max-height: 35%;
+    max-width: 35%;
 }
