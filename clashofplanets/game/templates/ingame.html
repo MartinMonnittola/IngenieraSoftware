@@ -5,6 +5,8 @@
 {% block main_content %}
 
 <script src="{% static 'js/ingame.js' %}?v=00003" type="text/javascript"/></script>
+<script src="{% static 'js/ion.rangeSlider.min.js' %}"/></script>
+
 
 <div class="container">
     <div class="row text-center">
@@ -34,45 +36,61 @@
 
     <div class="row text-center top30">
         <div class="col metal-effect2">
-            <h2 class="custom-h2">My Planet Info</h2>
+            <form action = "" method="post">
+            {% csrf_token %}
+            <h2 class="custom-h2">My Planet's D.R.P.</h2>
             <hr class="style1">
-    <div class="row">
-                <div class="col">
-                    <img src="{% static "img/pop_var.png" %}" class="img-fluid planet-var" />
-                    <div id="slider">
-                        <span class="highlight"></span>
-                        <output id="popvalue">3</output>
-                    </div>
-                    <input name="" required="" min="0" max="100" onchange="popvalue.value=value" class="bar" value="0" id="" type="range">
-                </div>
-                <div class="col">
-                    <img src="{% static "img/shield_var.png" %}" class="img-fluid planet-var" />
-                    <div id="slider">
-                        <span class="highlight"></span>
-                        <output id="shieldvalue">3</output>
-                    </div>
-                    <input name="" required="" min="0" max="100" onchange="shieldvalue.value=value" class="bar" value="0" id="" type="range">
-                </div>
 
+            <div class="row align-items-center">
                 <div class="col">
-                    <img src="{% static "img/missile_var.png" %}" class="img-fluid planet-var" />
-                    <div id="slider">
-                        <span class="highlight"></span>
-                        <output id="missilevalue">3</output>
-                    </div>
-                    <input name="" required="" min="0" max="100" onchange="missilevalue.value=value" class="bar" value="0" id="" type="range">
+                    <p> Population Available: <span id="mypopavailable"></span></p>
                 </div>
-    </div>
             </div>
-        </div>
 
+            <div class="row align-items-center extra-controls">
+                <div class="col">
+                    <p>POPULATION</p>
+                    <img src="{% static "img/pop_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate population"  title="Amount Of population destinated to generate population" />
+                    <div>
+                        <output class="inp js-from">0</output>%
+                    </div>
+                </div>
+
+                <div class="col">
+                    <p>SHIELD</p>
+                    <img src="{% static "img/shield_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate shield" title="Amount Of population destinated to generate shield" />
+                    <div>
+                        <output class="inp js-middle">0</output>%
+                    </div>
+                </div>
+
+                <div class="col">
+                    <p>MISSILES</p>
+                    <img src="{% static "img/missile_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate missiles" title="Amount Of population destinated to generate missiles" />
+                    <div>
+                        <span class="highlight"></span>
+                        <output class="inp js-to">0</output>%
+                    </div>
+                </div>
+
+            </div>
+
+            <hr class="style1">
+            <div class="range-slider">
+                <input type="text" class="js-range-slider" value="" />
+            </div>
+            <hr class="style1">
+            
+            <input type="submit" value="Submit New Distribution">
+            </form>
+        </div>
     </div>
 
-    <div class="row text-center">
+    <div class="row text-center top30">
         <div class="col">
             <form action = "{% url 'game_rooms' %}" method="post">
                 {% csrf_token %}
-                <input type="submit" value="back to lobby">
+                <input type="submit" value="back to lobby" onclick="return confirm('Are you sure?')"/>
             </form>
         </div>
     </div>

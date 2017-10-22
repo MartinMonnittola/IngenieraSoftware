@@ -183,6 +183,7 @@ def send_planets(request):
         planets = Planet.objects.filter(game=game_num) #players in game
         pdict={}
         plist=[]
+        current_user = request.user.username
         for tmpplanet in planets:
             planet_name = tmpplanet.name
             planet_owner = tmpplanet.player
@@ -196,10 +197,10 @@ def send_planets(request):
                 'seed': planet_seed,
                 'owner': planet_owner.username,
                 'pop': planet_pop,
-                'shield': planet_shield
+                'shield': planet_shield,
             }
             plist.append(record)
-        pdict={'planets': plist}
+        pdict={'planets': plist, 'user': current_user}
         return JsonResponse(pdict, safe=False)
 
 #send a list of numbers of all open games as a json to js file
@@ -246,7 +247,7 @@ def start_game(request, game_num):
     # set game state to 1
     Game.startGame(g)
     our_seed = request.session['id']
-    your_planet=Planet.objects.filter(seed=our_seed).first()
+    your_planet=Planet.objects.get(player=request.user, game=g)
     context = {
         'players': planets,
         'your_planet': your_planet,

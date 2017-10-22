@@ -373,9 +373,11 @@ input[type=range]::-moz-range-progress {
     cursor: pointer;
     animate: 0.2s;
     box-shadow: 0px 0px 0px #000;
-    background: #33C3F0;
+    background: #428bca;
+    background: linear-gradient(to top, rgba(66,139,202,1) 0%,rgba(127,195,232,1) 100%); /* W3C */
     border-radius: 14px;
-    border: 0px solid rgb(53, 244, 232);
+    border-bottom: 1px solid #428bca;
+    border-top: 1px solid #428bca;
  }
 
 .top5 { margin-top:5px; }
@@ -410,7 +412,7 @@ input[type=range]::-moz-range-progress {
 }
 
 .custom-h2 {
-    margin-top: 10px;
+    padding-top: 20px;
 	font-size: 30px;
 	color: #AAAAAA;
 	text-align: center;
