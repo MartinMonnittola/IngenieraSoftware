@@ -86,7 +86,7 @@ class Game(models.Model):
         game = cls(pub_date=timezone.now(),game_name=name,max_players=max_players,game_started=False,user=owner)
         return game
 
-    def joinGame(self, user_id, name):
+    def joinGame(self, user_id, name, seed):
         """
         Join Game:
         Procedure that allow players to join gameGames.
@@ -98,8 +98,10 @@ class Game(models.Model):
             if Planet.objects.filter(game_started=0).exists():
                 succesfull = False
             else:
-                planet = Planet.create(user, self, name)
+                planet = Planet.create(user, self, name, seed)
+                planet.save()
                 self.connected_players += 1
+                self.save()
                 succesfull = True
         except User.DoesNotExist:
             succesfull = False
@@ -257,13 +259,13 @@ class Missile (models.Model):
         """
         target_planet = self.target
         gameroom = target_planet.gameroom
-        
+
         if (target_planet.shield_perc == 0):
             damage = gameroom.population_damage_per_missile
         else:
             damage_diminisher = (100 / target_planet.shield_perc)
             damage = gameroom.population_damage_per_missile / damage_diminisher
-        
+
         target_planet.decrease_shield(gameroom.shield_damage_per_missile)
         target_planet.decrease_population(damage)
 
@@ -277,5 +279,5 @@ class Missile (models.Model):
         gameroom = self.owner.gameroom
         time_elapsed = self. launch_time - timezone.datetime.now()
         time_to_impact = gameroom.missile_delay - time_elapsed
-        
+
         return time_to_impact
