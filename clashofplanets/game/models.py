@@ -34,9 +34,9 @@ class Game(models.Model):
     const_shield = models.IntegerField(default=1,verbose_name='Shield Generation Constant',validators=[MinValueValidator(1)])
     # Procentaje de poblacion asignado al recurso misil.
     const_missile = models.IntegerField(default=1,verbose_name='Missile Generation Constant',validators=[MinValueValidator(1)])
-    # Dano a la poblacion por misil.
+    # Daño a la poblacion por misil.
     hurt_to_population = models.IntegerField(default=1, verbose_name='Population damage per missile',validators=[MinValueValidator(1)])
-    # Dano a la escudo por misil.
+    # Daño a la escudo por misil.
     hurt_to_shield = models.IntegerField(default=1,verbose_name='Shield damage per missile',validators=[MinValueValidator(1)])
 
     def __str__(self):
@@ -75,9 +75,9 @@ class Game(models.Model):
                  const_poblation, pocentaje que indica el pocentaje de pobladores
                               asignado al recurso poblacion.
                  time_misil, tiempo que tarda el misil en llegar al planeta atacado.
-                 hurt_to_poblation, numero que indica el porcentaje de dano a la
+                 hurt_to_poblation, numero que indica el porcentaje de daño a la
                                     poblacion.
-                 hurt_to_shield, numero que indica el porcentaje de dano a la
+                 hurt_to_shield, numero que indica el porcentaje de daño a la
                                  escudo.
                  max_players, maximo numero de jugadores.
                  user, usuario creador de la partida.
@@ -157,11 +157,11 @@ class Game(models.Model):
 
 class Planet(models.Model):
     """
-    Planet Class: Contains all the information about each player's planet
-    that will be generated after starting the game (in-game status).
+    Clase Planet: Contiene toda la informacion acerca del planeta de cada
+    jugador que sera generado luego de comenzado el juego (estado in-game)
     """
-    player = models.ForeignKey(User, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    player = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE)
     name = models.CharField(max_length=20,verbose_name='Planet name')
     seed = models.BigIntegerField(default=0,verbose_name='Planet seed')
     population_qty = models.IntegerField(default=5000, verbose_name='Population Amout', validators=[MinValueValidator(0)])
@@ -178,14 +178,22 @@ class Planet(models.Model):
     def create(cls, player, game, name, seed):
         """
         Create Planet:
-        Function that allow players to create their planets.
-        INPUT: Planet attributes such as player owner, Gamethey belong to, name of the planet and a random seed.
-        OUTPUT: A Planet Object.
+        Permite a los jugadores crear sus planetas
+        INPUT: Dueño del planeta, partida a la que pertenece,
+               nombre del planeta y un seed al azar
+        OUTPUT: Objeto Planet
         """
         new_planet = cls(player=player,game=game,name=name,population_qty=game.initial_population,seed=seed)
         return new_planet
 
     def assign_perc_rate(self, perc_pop, perc_shield, perc_missile):
+        """
+        Assign percentage rates:
+        Asigna los porcentajes de trabajo sobre cada recurso del planeta
+        INPUT: Objeto Planet, Integers para el porcentaje dedicado a poblacion,
+               generacion de escudo, y creacion de misiles
+        OUTPUT: Ninguno
+        """
         if ((perc_pop + perc_shield + perc_missile) == 100):
             self.population_distr = perc_pop
             self.shield_distr = perc_shield
@@ -196,9 +204,9 @@ class Planet(models.Model):
     def decrease_shield(self, ammount):
         """
         Decrease shield:
-        Method that damages planet's shield.
-        INPUT: Planet itself, ammount of damage.
-        OUTPUT: None.
+        Dana el escudo del planeta
+        INPUT: Objeto Planet, cantidad de daño
+        OUTPUT: Ninguno
         """
         if (ammount <= 100):
             if (self.shield_perc >= ammount):
@@ -211,40 +219,55 @@ class Planet(models.Model):
     def decrease_population(self, ammount):
         """
         Decrease population:
-        Method that damages planet's population.
-        INPUT: Planet itself, ammount of damage.
-        OUTPUT: None.
+        Dana la poblacion del planeta
+        INPUT: Objeto Planet, cantidad de daño
+        OUTPUT: Ninguno
         """
-        if (self.shield_perc >= ammount):
-            self.shield_perc =- ammount
-        else:
-            self.shield_perc = 0
-
-    def decrease_population(self, ammount):
         if (self.population_qty >= ammount):
             self.population_qty =- ammount
         else:
             self.population_qty = 0
 
+    def launch_missile(self, enemy_planet):
+        """
+        Launch missile:
+        Crea un objeto Missile dirigido a un planeta objetivo
+        INPUT: Objeto Planet, planeta enemigo
+        OUTPUT: Bool que indica si pudo enviarse el misil
+        """
+        if (self.missiles_qty >= 0):
+            try:
+                missile = Missile(owner=self, target=enemy_planet)
+                missile.save()
+                self.missiles_qty =- 1
+                missile_launched = True
+            except Missile.DoesNotExist:
+                missile_launched = False
+        else:
+            missile_launched = False
+
+        return missile_launched
+        
+
     def get_missiles_state(self):
         """
         Get missiles state:
-        Method that examines each missile object, bringing a list of times to impact.
-        INPUT: Planet itself.
-        OUTPUT: List of times remaining to impact
+        Examina cada objeto Missile y obtiene el tiempo para impacto de cada uno
+        INPUT: Objeto Planet
+        OUTPUT: Diccionario con nombre de planetas y correspondientes tiempos de impacto
         """
         missiles = Missile.objects.all(owner=self)
-        times = []
+        times = {}
 
-        for missil in missiles:
-            times.append(missil.time_to_target())
+        for missile in missiles:
+            times[missile.target.name] = missile.time_to_target()
 
         return times
 
 
 class Missile (models.Model):
     """
-    Missile Class: Contains origin planet, target planet and time of launch
+    Clase Missile: Contiene el planeta origen, planeta destino, y hora de lanzamiento
     """
     owner = models.ForeignKey(Planet, related_name="owner")
     target = models.ForeignKey(Planet, related_name="target")
@@ -253,9 +276,9 @@ class Missile (models.Model):
     def deal_damage(self):
         """
         Deal damage:
-        Procedure that calculates shield and population damage to target planet.
-        INPUT: Missile itself.
-        OUTPUT: None.
+        Calcula el daño a escudo y poblacion del planeta enemigo
+        INPUT: Objeto Missile
+        OUTPUT: Ninguno
         """
         target_planet = self.target
         gameroom = target_planet.gameroom
@@ -272,9 +295,9 @@ class Missile (models.Model):
     def time_to_target(self):
         """
         Time to target:
-        Method that  calculates remaining time to impact.
-        INPUT: Missile itself.
-        OUTPUT: Time to impact.
+        Calcula el tiempo restante para el impacto
+        INPUT: Objeto Missile
+        OUTPUT: Tiempo para el impacto
         """
         gameroom = self.owner.gameroom
         time_elapsed = self. launch_time - timezone.datetime.now()
