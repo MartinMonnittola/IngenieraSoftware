@@ -113,48 +113,35 @@ def make_player(request):
         form = gameForm(request.POST)
         planet_name=request.POST.get('pname')
         game_room_num=request.POST.get('num')
-
         #isolates the already existing game
         gamelist = Game.objects.filter(id=game_room_num)
-
-        #game doesn't exist, stop joining
         if not gamelist:
             #gameNumber = -1 indicates game doesn't exist
             data={'gameNumber':-1}
             return HttpResponse(json.dumps(data),content_type='application/json')
         g=get_object_or_404(gamelist)
-
-        #game hasn't started and players < max players
         if (int(g.game_started)==0) and (g.connected_players < g.max_players):
+            #game hasn't started and players < max players
             #seed will be used for randomization
             seed=randint(1,90001)
-            # creates the planet for player
             planet_owner = request.user
-            planet_from_user = Planet.objects.filter(player=planet_owner, game=g.id)
-            if len(planet_from_user) == 0:
-                p=Planet.create(planet_owner, g, planet_name, seed)
-                # +1 to room connected players
-                g.connected_players += 1
-                #save changes to actual game
-                g.save()
-                #creates planet with game among other things
-                p.save()
+            planets_from_user = Planet.objects.filter(player=planet_owner, game=g.id)
+            if len(planets_from_user) == 0:
+                Game.joinGame(g, planet_owner, planet_name, seed)
             # session seed to identify planet
             request.session['id']=seed
             #Adds a cookie/session to indicate a legit entry
             request.session['gameEntry']=int(game_room_num)
             data={'gameNumber':game_room_num}
-            return HttpResponse(json.dumps(data),content_type='application/json')
-
-        #game hasn't started and players == max players
+            return JsonResponse(data, safe=False)
         if (int(g.game_started)==0) and (g.connected_players == g.max_players):
-            # game is full
+            # game hasn't started and is full
             data={'gameNumber':-2}
-            return HttpResponse(json.dumps(data),content_type='application/json')
+            return JsonResponse(data, safe=False)
         else:
             #game has already started, send to sorry page
             data={'gameNumber':0}
-            return HttpResponse(json.dumps(data),content_type='application/json')
+            return JsonResponse(data, safe=False)
     else:
         form = gameForm()
         #Redirects to game room
@@ -170,8 +157,6 @@ def make_game(request):
         planet_name=request.POST.get('pname')
         room_name=request.POST.get('rname')
         max_players=request.POST.get('max_players')
-        #gets all existing game rooms
-        gamelist = Game.objects.all()
         #creates game
         g=Game.create(request.user, room_name, max_players)
         # +1 to room connected players
@@ -180,6 +165,7 @@ def make_game(request):
         game_id = g.id
         # create planet
         seed=randint(1,90001)
+        #Game.joinGame(g, request.user, planet_name, seed)
         p=Planet.create(request.user, g, planet_name, seed)
         p.save() #creates player
         request.session['id']=seed #to identify player
@@ -188,10 +174,10 @@ def make_game(request):
     else:
         print("ohno")
         form = gameForm()
-    return HttpResponse(json.dumps(data),content_type='application/json')
+    return JsonResponse(data, safe=False)
 
 #send a list of players as a json to js file
-def send_players(request):
+def send_planets(request):
     if (request.method=='POST' and request.is_ajax()):
         game_num =request.POST.get('num')
         planets = Planet.objects.filter(game=game_num) #players in game
@@ -214,7 +200,7 @@ def send_players(request):
             }
             plist.append(record)
         pdict={'planets': plist}
-        return HttpResponse(json.dumps(pdict),content_type='application/json')
+        return JsonResponse(pdict, safe=False)
 
 #send a list of numbers of all open games as a json to js file
 def send_games(request):
@@ -237,7 +223,7 @@ def send_games(request):
             }
             glist.append(record)
         gdict={'games': glist}
-        return HttpResponse(json.dumps(gdict),content_type='application/json')
+        return JsonResponse(gdict, safe=False)
 
 #send the game room state of current as a json to js file
 def send_game_state(request):
@@ -248,7 +234,7 @@ def send_game_state(request):
         current_room_state = room.game_started
         players_in_room = room.connected_players
         sdict={'game_state': current_room_state, 'players_in_room': players_in_room,}
-        return HttpResponse(json.dumps(sdict),content_type='application/json')
+        return JsonResponse(sdict, safe=False)
 
 # start game view: Allows room user to start the game room
 def start_game(request, game_num):
