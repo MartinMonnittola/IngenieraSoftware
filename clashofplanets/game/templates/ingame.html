@@ -17,7 +17,7 @@
     </div>
     <div class="row text-center">
         <div class="col table-responsive">
-            <table class="table metal-effect2">
+            <table id="playerInfo" class="table metal-effect2">
                 <thead>
                     <tr>
                         <th class="text-center">Planet ID</th>
@@ -34,9 +34,8 @@
         </div>
     </div>
 
-    <div class="row top30">
-
-        <div class="col-md-6 metal-effect2 text-center">
+    <div class="row text-center top30">
+        <div class="col metal-effect2">
             <form action = "" method="post">
             {% csrf_token %}
             <h2 class="custom-h2">My Planet's D.R.P.</h2>
@@ -50,27 +49,27 @@
 
             <div class="row align-items-center extra-controls">
                 <div class="col">
-                    <p class="planet-var-title">POPULATION</p>
+                    <p>POPULATION</p>
                     <img src="{% static "img/pop_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate population"  title="Amount Of population destinated to generate population" />
                     <div>
-                        <output class="inp js-from">0</output>%
+                        <output name="population" class="inp js-from">0</output>%
                     </div>
                 </div>
 
                 <div class="col">
-                    <p class="planet-var-title">SHIELD</p>
+                    <p>SHIELD</p>
                     <img src="{% static "img/shield_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate shield" title="Amount Of population destinated to generate shield" />
                     <div>
-                        <output class="inp js-middle">0</output>%
+                        <output name="shield" class="inp js-middle">0</output>%
                     </div>
                 </div>
 
                 <div class="col">
-                    <p class="planet-var-title">MISSILES</p>
+                    <p>MISSILES</p>
                     <img src="{% static "img/missile_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate missiles" title="Amount Of population destinated to generate missiles" />
                     <div>
                         <span class="highlight"></span>
-                        <output class="inp js-to">0</output>%
+                        <output name="missiles" class="inp js-to">0</output>%
                     </div>
                 </div>
 
@@ -82,14 +81,8 @@
             </div>
             <hr class="style1">
 
-            <input type="submit" value="Submit New Distribution">
+            <input id ="btnSubmit" type="button" value="Submit New Distribution">
             </form>
-        </div>
-
-        <div class="col-md-5 offset-md-1 metal-effect2 text-center">
-            <h2 class="custom-h2">Battle Log</h2>
-            <hr class="style1">
-            <div id="console-log" style="overflow-y: scroll; height:310px;"></div>
         </div>
     </div>
 
