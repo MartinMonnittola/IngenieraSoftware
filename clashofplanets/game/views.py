@@ -124,10 +124,11 @@ def make_player(request):
             #game hasn't started and players < max players
             #seed will be used for randomization
             seed=randint(1,90001)
-            planet_owner = request.user
+            planet_owner = request.user.id
             planets_from_user = Planet.objects.filter(player=planet_owner, game=g.id)
             if len(planets_from_user) == 0:
-                Game.joinGame(g, planet_owner, planet_name, seed)
+                p=Planet.create(request.user, g, planet_name, seed)
+                p.save() #creates player
             # session seed to identify planet
             request.session['id']=seed
             #Adds a cookie/session to indicate a legit entry
@@ -242,6 +243,7 @@ def send_game_state(request):
 # start game view: Allows room user to start the game room
 def start_game(request, game_num):
     template = loader.get_template('ingame.html')
+    form = attackForm(game_num)
     #gets the game by id
     g=Game.objects.get(id=game_num)
     #players in game, sorted
@@ -254,5 +256,18 @@ def start_game(request, game_num):
         'players': planets,
         'your_planet': your_planet,
         'game': game_num,
+        'attack_form': form,
         }
     return HttpResponse(template.render(context,request))
+
+def change_distribution(request):
+    if request.method=='POST' and request.is_ajax():
+        pseed=int(request.POST.get('planet_seed'))
+        population=int(request.POST.get('population'))
+        shield=int(request.POST.get('shield'))
+        missiles=int(request.POST.get('missiles'))
+        planet=Planet.objects.filter(seed=pseed)
+        p=get_object_or_404(planet)
+        p.assign_perc_rate(population, shield, missiles)
+        p.save()
+    return HttpResponse("")

@@ -53,7 +53,7 @@
                     <p class="planet-var-title">POPULATION</p>
                     <img src="{% static "img/pop_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate population"  title="Amount Of population destinated to generate population" />
                     <div>
-                        <output class="inp js-from">0</output>%
+                        <output id="population_range" class="inp js-from">0</output>%
                     </div>
                 </div>
 
@@ -61,7 +61,7 @@
                     <p class="planet-var-title">SHIELD</p>
                     <img src="{% static "img/shield_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate shield" title="Amount Of population destinated to generate shield" />
                     <div>
-                        <output class="inp js-middle">0</output>%
+                        <output id="shield_range" class="inp js-middle">0</output>%
                     </div>
                 </div>
 
@@ -70,7 +70,7 @@
                     <img src="{% static "img/missile_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate missiles" title="Amount Of population destinated to generate missiles" />
                     <div>
                         <span class="highlight"></span>
-                        <output class="inp js-to">0</output>%
+                        <output id="missiles_range" class="inp js-to">0</output>%
                     </div>
                 </div>
 
@@ -82,14 +82,21 @@
             </div>
             <hr class="style1">
 
-            <input type="submit" value="Submit New Distribution">
+            <input id ="btnSubmit" type="button" value="Submit New Distribution">
             </form>
         </div>
 
-        <div class="col-md-5 offset-md-1 metal-effect2 text-center">
+        <div class="col-md-5 offset-md-1 metal-effect2">
             <h2 class="custom-h2">Battle Log</h2>
             <hr class="style1">
             <div id="console-log" style="overflow-y: scroll; height:310px;"></div>
+        </div>
+    </div>
+
+    <div class="row text-center top30">
+        <div class="col metal-effect2">
+            <h2 class="custom-h2"> Planets To Attack </h2>
+            <hr class="style1">
         </div>
     </div>
 

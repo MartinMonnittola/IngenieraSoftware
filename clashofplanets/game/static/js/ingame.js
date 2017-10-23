@@ -14,9 +14,34 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function timeStamp() {
+    // Create a date object with the current time
+    var now = new Date();
+    // Create an array with the current month, day and time
+    var date = [ now.getMonth() + 1, now.getDate(), now.getFullYear() ];
+    // Create an array with the current hour, minute and second
+    var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ];
+    // Determine AM or PM suffix based on the hour
+    var suffix = ( time[0] < 12 ) ? "AM" : "PM";
+    // Convert hour from military time
+    time[0] = ( time[0] < 12 ) ? time[0] : time[0] - 12;
+    // If hour is 0, set it to 12
+    time[0] = time[0] || 12;
+
+    // If seconds and minutes are less than 10, add a zero
+    for ( var i = 1; i < 3; i++ ) {
+        if ( time[i] < 10 ) {
+          time[i] = "0" + time[i];
+        }
+    }
+    // Return the formatted string
+    return date.join("/") + " " + time.join(":") + " " + suffix;
+}
+
 function listPlanets(){
 	var csrftoken = getCookie('csrftoken');
     var num = $('#gamenum').text();
+    var timest = timeStamp();
 	$.ajax({
 	    type : 'POST',
 	    data : { csrfmiddlewaretoken : csrftoken, num: num},
@@ -26,22 +51,33 @@ function listPlanets(){
                 var user = json.user;
 				$('#playerList').empty();
 				for (var i = 0; i < plist.length; i++) {
-					$('#playerList').append(
-                        '<tr>'
-                        +'<td>' + plist[i].id +'</td>'
-                        +'<td>' + plist[i].name+'</td>'
-                        +'<td>' + plist[i].owner +'</td>'
-                        +'<td>' + plist[i].seed +'</td>'
-                        +'<td>' + plist[i].pop +'</td>'
-                        +'<td>' + plist[i].shield +'</td>'
-                        +'</tr>');
                     if ((plist[i].owner)==(user)){
                         $('#mypopAvailable').empty();
                         $('#mypopAvailable').append(plist[i].pop);
                         $('#mymissilesAvailable').empty();
                         $('#mymissilesAvailable').append(plist[i].missiles);
+                        $('#playerList').append(
+                            '<tr>'
+                            +'<td>' + plist[i].id +'</td>'
+                            +'<td>' + plist[i].name+'</td>'
+                            +'<td>' + plist[i].owner +'</td>'
+                            +'<td id=\"pseed\">' + plist[i].seed +'</td>'
+                            +'<td>' + plist[i].pop +'</td>'
+                            +'<td>' + plist[i].shield +'</td>'
+                            +'</tr>');
                     }
-                    battleLog(plist[i].name);
+                    else {
+    					$('#playerList').append(
+                            '<tr>'
+                            +'<td>' + plist[i].id +'</td>'
+                            +'<td>' + plist[i].name+'</td>'
+                            +'<td>' + plist[i].owner +'</td>'
+                            +'<td>' + plist[i].seed +'</td>'
+                            +'<td>' + plist[i].pop +'</td>'
+                            +'<td>' + plist[i].shield +'</td>'
+                            +'</tr>');
+                    }
+                    battleLog('['+ timest +']'+' '+'|'+' '+ plist[i].name);
 				}
 			setTimeout(listPlanets, 3000);
 		},
@@ -121,9 +157,37 @@ function battleLog(linelog){
     console.log(linelog);
 }
 
+function changeDistribution(){
+    $("#btnSubmit").click(function(){
+        var csrftoken = getCookie('csrftoken');
+        var population = $("#population_range").text();
+        var shield = $("#shield_range").text();
+        var missiles = $("#missiles_range").text();
+        var planet_seed = $("#pseed").text();
+        var timest = timeStamp();
+        $.ajax({
+            type: "POST",
+            url: "change_distribution/",
+            data: {
+                    csrfmiddlewaretoken: csrftoken,
+                    planet_seed: planet_seed,
+                    population: population,
+                    shield: shield,
+                    missiles: missiles,
+                  },
+            dataType: 'json',
+            success : function() {
+                battleLog('['+ timest +']'+' '+'|'+' '+ shield);
+            },
+        });
+
+    });
+}
+
 $(document).ready(function(){
     planetDistribution();
 	listPlanets();
+    changeDistribution();
     //canvas = document.getElementById("canvas");
     //context = canvas.getContext("2d");
 });

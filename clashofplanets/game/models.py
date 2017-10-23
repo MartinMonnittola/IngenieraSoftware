@@ -162,7 +162,7 @@ class Planet(models.Model):
     """
     player = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20,verbose_name='Planet name')
+    name = models.CharField(max_length=20, default='Default Name', verbose_name='Planet name')
     seed = models.BigIntegerField(default=0,verbose_name='Planet seed')
     population_qty = models.IntegerField(default=5000, verbose_name='Population Amout', validators=[MinValueValidator(0)])
     missiles_qty = models.IntegerField(default=0, verbose_name='Missile Amount', validators=[MinValueValidator(0)])
@@ -247,7 +247,7 @@ class Planet(models.Model):
             missile_launched = False
 
         return missile_launched
-        
+
 
     def get_missiles_state(self):
         """

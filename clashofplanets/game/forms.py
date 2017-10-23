@@ -68,3 +68,11 @@ class joinForm(forms.ModelForm):
         super(joinForm, self).__init__(*args, **kwargs)
         self.fields['name'].help_text = 'Write a name for your planet. If you are already in the Game, just write the Game id. Required.'
         self.fields['game_id'].help_text = 'Write the id of the Game you want to join. Required.'
+
+class attackForm(forms.Form):
+    def __init__(self, game_id, *args, **kwargs):
+        super(attackForm, self).__init__(*args, **kwargs)
+        qs = Planet.objects.filter(game=game_id)
+        self.fields['planets_id'].queryset = qs
+        self.fields['planets_id'].help_text = 'Write the ID of the planet you want to attack.'
+    planets_id = forms.ModelChoiceField(queryset=None,widget=forms.CheckboxSelectMultiple())
