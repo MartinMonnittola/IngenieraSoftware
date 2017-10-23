@@ -31,7 +31,7 @@ function listPlanets(){
                         +'<td>' + plist[i].id +'</td>'
                         +'<td>' + plist[i].name+'</td>'
                         +'<td>' + plist[i].owner +'</td>'
-                        +'<td id="pseed">' + plist[i].seed +'</td>'
+                        +'<td>' + plist[i].seed +'</td>'
                         +'<td>' + plist[i].pop +'</td>'
                         +'<td>' + plist[i].shield +'</td>'
                         +'</tr>');
@@ -112,16 +112,16 @@ function planetDistribution(){
 function changeDistribution(){
     $("#btnSubmit").click(function(){
         var csrftoken = getCookie('csrftoken');
+        var num = $('#gamenum').text();
         var population = $("output[name='population']").text();
         var shield = $("output[name='shield']").text();
         var missiles = $("output[name='missiles']").text();
-        var planet_seed = $("#playerInfo #pseed").text();
         $.ajax({
             type: "POST",
             url: "/change_distribution/",
             data: {
                     'csrfmiddlewaretoken': csrftoken,
-                    'planet_seed': planet_seed,
+                    'game_num': num,
                     'population': population,
                     'shield': shield,
                     'missiles': missiles
