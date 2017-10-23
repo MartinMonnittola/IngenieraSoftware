@@ -191,6 +191,7 @@ def send_planets(request):
             planet_seed = tmpplanet.seed
             planet_pop = tmpplanet.population_qty
             planet_shield = tmpplanet.shield_perc
+            planet_missiles = tmpplanet.missiles_qty
             record = {
                 'name': planet_name,
                 'id': planet_id,
@@ -198,6 +199,7 @@ def send_planets(request):
                 'owner': planet_owner.username,
                 'pop': planet_pop,
                 'shield': planet_shield,
+                'missiles': planet_missiles,
             }
             plist.append(record)
         pdict={'planets': plist, 'user': current_user}
