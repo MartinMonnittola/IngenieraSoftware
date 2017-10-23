@@ -36,8 +36,10 @@ function listPlanets(){
                         +'<td>' + plist[i].shield +'</td>'
                         +'</tr>');
                     if ((plist[i].owner)==(user)){
-                        $('#mypopavailable').empty();
-                        $('#mypopavailable').append(plist[i].pop);
+                        $('#mypopAvailable').empty();
+                        $('#mypopAvailable').append(plist[i].pop);
+                        $('#mymissilesAvailable').empty();
+                        $('#mymissilesAvailable').append(plist[i].missiles);
                     }
 				}
 			setTimeout(listPlanets, 3000);
