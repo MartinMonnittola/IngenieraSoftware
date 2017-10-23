@@ -41,6 +41,7 @@ function listPlanets(){
                         $('#mymissilesAvailable').empty();
                         $('#mymissilesAvailable').append(plist[i].missiles);
                     }
+                    battleLog(plist[i].name);
 				}
 			setTimeout(listPlanets, 3000);
 		},
@@ -107,6 +108,17 @@ function planetDistribution(){
         updateValues();
         updateRange();
     });
+}
+
+function battleLog(linelog){
+    var consoleLine = "<p class=\"console-line\"></p>";
+    console = {
+        log: function (text) {
+            $("#console-log").append($(consoleLine).html(text));
+        }
+    };
+
+    console.log(linelog);
 }
 
 $(document).ready(function(){

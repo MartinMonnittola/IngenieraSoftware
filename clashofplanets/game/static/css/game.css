@@ -425,6 +425,10 @@ input[type=range]::-moz-range-progress {
     max-width: 35%;
 }
 
+.planet-var-title {
+    margin-bottom: 1px;
+}
+
 .neon-effect {
   display: inline-block;
   -webkit-box-sizing: border-box;
