@@ -32,7 +32,6 @@ function listPlayers(){
                         +'<td>' + plist[i].id +'</td>'
                         +'<td>' + plist[i].name+'</td>'
                         +'<td>' + plist[i].owner +'</td>'
-                        +'<td>' + plist[i].seed +'</td>'
                         +'</tr>');
 				}
 			}

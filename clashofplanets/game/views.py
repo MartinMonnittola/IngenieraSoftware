@@ -262,11 +262,11 @@ def start_game(request, game_num):
 
 def change_distribution(request):
     if request.method=='POST' and request.is_ajax():
-        pseed=int(request.POST.get('planet_seed'))
+        game_num=int(request.POST.get('game_num'))
         population=int(request.POST.get('population'))
         shield=int(request.POST.get('shield'))
         missiles=int(request.POST.get('missiles'))
-        planet=Planet.objects.filter(seed=pseed)
+        planet=Planet.objects.filter(player=request.user, game=game_num)
         p=get_object_or_404(planet)
         p.assign_perc_rate(population, shield, missiles)
         p.save()

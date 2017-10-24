@@ -62,7 +62,6 @@ function listPlanets(){
                         +'<td>' + plist[i].id +'</td>'
                         +'<td>' + plist[i].name+'</td>'
                         +'<td>' + plist[i].owner +'</td>'
-                        +'<td id=\"pseed\">' + plist[i].seed +'</td>'
                         +'<td>' + plist[i].pop +'</td>'
                         +'<td>' + plist[i].shield +'</td>'
                         +'</tr>');
@@ -74,7 +73,6 @@ function listPlanets(){
                         +'<td>' + plist[i].id +'</td>'
                         +'<td>' + plist[i].name+'</td>'
                         +'<td>' + plist[i].owner +'</td>'
-                        +'<td>' + plist[i].seed +'</td>'
                         +'<td>' + plist[i].pop +'</td>'
                         +'<td>' + plist[i].shield +'</td>'
                         +'</tr>');
@@ -161,20 +159,20 @@ function battleLog(linelog){
 function changeDistribution(){
     $("#btnSubmit").click(function(){
         var csrftoken = getCookie('csrftoken');
+        var num = $('#gamenum').text();
         var population = $("#population_range").text();
         var shield = $("#shield_range").text();
         var missiles = $("#missiles_range").text();
-        var planet_seed = $("#pseed").text();
         var timest = timeStamp();
         $.ajax({
             type: "POST",
             url: "change_distribution/",
             data: {
                     csrfmiddlewaretoken: csrftoken,
-                    planet_seed: planet_seed,
                     population: population,
                     shield: shield,
                     missiles: missiles,
+                    game_num: num,
                   },
             dataType: 'json',
         });
