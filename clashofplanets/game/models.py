@@ -57,7 +57,7 @@ class Game(models.Model):
                          ('bot_players: %s, '  % self.bot_players) +
                          ('connected_players: %s, '  % self.connected_players) +
                          ('game_name: %s, '  % self.game_name) +
-                         ('hurt_to_poblation: %d, '  % self.hurt_to_population) +
+                         ('hurt_to_population: %d, '  % self.hurt_to_population) +
                          ('hurt_to_shield: %d'  % self.hurt_to_shield))
         return representation
 
@@ -75,7 +75,7 @@ class Game(models.Model):
                  const_poblation, pocentaje que indica el pocentaje de pobladores
                               asignado al recurso poblacion.
                  time_misil, tiempo que tarda el misil en llegar al planeta atacado.
-                 hurt_to_poblation, numero que indica el porcentaje de daño a la
+                 hurt_to_population, numero que indica el porcentaje de daño a la
                                     poblacion.
                  hurt_to_shield, numero que indica el porcentaje de daño a la
                                  escudo.
@@ -83,7 +83,11 @@ class Game(models.Model):
                  user, usuario creador de la partida.
         Salida: El Game creado.
         """
-        game = cls(pub_date=timezone.now(),game_name=name,max_players=max_players,game_started=False,user=owner)
+        game = cls(pub_date=timezone.now(),game_name=name,
+                   max_players=max_players,
+                   game_started=False,
+                   user=owner)
+        #game.save
         return game
 
     def joinGame(self, user_id, name, seed):
@@ -95,7 +99,7 @@ class Game(models.Model):
         """
         try:
             user = User.objects.get(pk=user_id)
-            if Planet.objects.filter(game_started=0).exists():
+            if Planet.objects.filter(player=user, game=self).exists():
                 succesfull = False
             else:
                 planet = Planet.create(user, self, name, seed)
@@ -118,7 +122,7 @@ class Game(models.Model):
             self.game_started = True
             self.save()
 
-    def deactivatePlanet(self, user_id):
+    def desactivatePlanet(self, planet_id):
         """
         Desactiva un planeta y elimina sus recursos.
 
@@ -126,13 +130,16 @@ class Game(models.Model):
         Salida:  succesfull, bool que indica si elimino el planeta.
         """
         try:
-            planet = Planet.objects.get(player=user_id)
-            planet.population_qty = 0
-            planet.save()
+            planet = Planet.objects.get(pk=planet_id, game=self)
+            if planet.population_qty != 0:
+                planet.population_qty = 0
+                planet.save()
+                succesfull = True                
+            else:
+                succesfull = False
             # Notificamo al usuario de la eliminacion de su planeta.
             #user.notify_devastation()
-            succesfull = True
-        except Planet.DoesNotExist:
+        except Planet.DoesNotExist, User.DoesNotExist:
             succesfull = False
         return succesfull
 
