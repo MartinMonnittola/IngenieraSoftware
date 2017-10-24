@@ -243,7 +243,7 @@ def send_game_state(request):
 # start game view: Allows room user to start the game room
 def start_game(request, game_num):
     template = loader.get_template('ingame.html')
-    form = attackForm(game_num)
+    #form = attackForm(game_num)
     #gets the game by id
     g=Game.objects.get(id=game_num)
     #players in game, sorted
@@ -256,7 +256,7 @@ def start_game(request, game_num):
         'players': planets,
         'your_planet': your_planet,
         'game': game_num,
-        'attack_form': form,
+        #'attack_form': form,
         }
     return HttpResponse(template.render(context,request))
 
@@ -270,4 +270,5 @@ def change_distribution(request):
         p=get_object_or_404(planet)
         p.assign_perc_rate(population, shield, missiles)
         p.save()
-    return HttpResponse("")
+        rdict = {'pop_dis': population, 'shield_dis': shield, 'missile_dist': missiles}
+    return JsonResponse(rdict, safe=False)

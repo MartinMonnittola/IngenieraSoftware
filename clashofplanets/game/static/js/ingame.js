@@ -35,7 +35,8 @@ function timeStamp() {
         }
     }
     // Return the formatted string
-    return date.join("/") + " " + time.join(":") + " " + suffix;
+    //return date.join("/") + " " + time.join(":") + " " + suffix;
+    return time.join(":") + " " + suffix;
 }
 
 function listPlanets(){
@@ -47,44 +48,45 @@ function listPlanets(){
 	    data : { csrfmiddlewaretoken : csrftoken, num: num},
 	    url : "get_planets/",
 		success : function(json) {
-				var plist = json.planets;
-                var user = json.user;
-				$('#playerList').empty();
-				for (var i = 0; i < plist.length; i++) {
-                    if ((plist[i].owner)==(user)){
-                        $('#mypopAvailable').empty();
-                        $('#mypopAvailable').append(plist[i].pop);
-                        $('#mymissilesAvailable').empty();
-                        $('#mymissilesAvailable').append(plist[i].missiles);
-                        $('#playerList').append(
-                            '<tr>'
-                            +'<td>' + plist[i].id +'</td>'
-                            +'<td>' + plist[i].name+'</td>'
-                            +'<td>' + plist[i].owner +'</td>'
-                            +'<td id=\"pseed\">' + plist[i].seed +'</td>'
-                            +'<td>' + plist[i].pop +'</td>'
-                            +'<td>' + plist[i].shield +'</td>'
-                            +'</tr>');
-                    }
-                    else {
-    					$('#playerList').append(
-                            '<tr>'
-                            +'<td>' + plist[i].id +'</td>'
-                            +'<td>' + plist[i].name+'</td>'
-                            +'<td>' + plist[i].owner +'</td>'
-                            +'<td>' + plist[i].seed +'</td>'
-                            +'<td>' + plist[i].pop +'</td>'
-                            +'<td>' + plist[i].shield +'</td>'
-                            +'</tr>');
-                    }
-                    battleLog('['+ timest +']'+' '+'|'+' '+ plist[i].name);
-				}
-			setTimeout(listPlanets, 3000);
-		},
+			var plist = json.planets;
+            var user = json.user;
+			$('#playerList').empty();
+			for (var i = 0; i < plist.length; i++) {
+                if ((plist[i].owner)==(user)){
+                    $('#mypopAvailable').empty();
+                    $('#mypopAvailable').append(plist[i].pop);
+                    $('#mymissilesAvailable').empty();
+                    $('#mymissilesAvailable').append(plist[i].missiles);
+                    $('#playerList').append(
+                        '<tr>'
+                        +'<td>' + plist[i].id +'</td>'
+                        +'<td>' + plist[i].name+'</td>'
+                        +'<td>' + plist[i].owner +'</td>'
+                        +'<td id=\"pseed\">' + plist[i].seed +'</td>'
+                        +'<td>' + plist[i].pop +'</td>'
+                        +'<td>' + plist[i].shield +'</td>'
+                        +'</tr>');
+                    //battleLog('['+ timest +']'+' '+'|'+' '+ plist[i].shield);
+                }
+                else {
+					$('#playerList').append(
+                        '<tr>'
+                        +'<td>' + plist[i].id +'</td>'
+                        +'<td>' + plist[i].name+'</td>'
+                        +'<td>' + plist[i].owner +'</td>'
+                        +'<td>' + plist[i].seed +'</td>'
+                        +'<td>' + plist[i].pop +'</td>'
+                        +'<td>' + plist[i].shield +'</td>'
+                        +'</tr>');
+                }
+
+			}
+        setTimeout(listPlanets, 3000);
+        },
 		error : function(xhr,errmsg,err) {
 			console.log(xhr.status + ": " + xhr.responseText);
 		},
-	});
+    });
 }
 
 function planetDistribution(){
@@ -153,7 +155,6 @@ function battleLog(linelog){
             $("#console-log").append($(consoleLine).html(text));
         }
     };
-
     console.log(linelog);
 }
 
@@ -176,13 +177,46 @@ function changeDistribution(){
                     missiles: missiles,
                   },
             dataType: 'json',
-            success : function() {
-                battleLog('['+ timest +']'+' '+'|'+' '+ shield);
-            },
         });
-
+        battleLog('['+ timest +']'+' '+'|'+' '+'NRD'+' '+'P:'+population +' '+'S:'+shield+' '+'M:'+missiles, 1);
     });
 }
+
+function generateResources (gamemode, pop_dist, shi_dist, mis_dist) {
+    var population_qty = 0;
+    var shield_qty = 0;
+    var missiles_qty = 0;
+    var csrftoken = getCookie('csrftoken');
+    var population = $("#population_range").text();
+    var shield = $("#shield_range").text();
+    var missiles = $("#missiles_range").text();
+    var planet_seed = $("#pseed").text();
+    $.ajax({
+        type: "POST",
+        url: "add_resources/",
+        data: {
+                csrfmiddlewaretoken: csrftoken,
+                planet_seed: planet_seed,
+                population: population,
+                shield: shield,
+                missiles: missiles,
+              },
+        dataType: 'json',
+    });
+}
+
+function generate () {
+    var number = parseInt($('#test').text(), 10) || 0; // Get the number from paragraph
+    // Called the function in each second
+    var interval = setInterval(function () {
+        $('#test').text(number++); // Update the value in paragraph
+
+        if (number > 1000) {
+            clearInterval(interval); // If exceeded 100, clear interval
+        }
+    }, 1000); // Run for each second
+}
+
 
 $(document).ready(function(){
     planetDistribution();
