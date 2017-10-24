@@ -25,7 +25,7 @@ class Game(models.Model):
     # Numero de bots que se agregaron a la partida a la partida.
     bot_players = models.IntegerField(default=2, verbose_name='Amount of bot players',validators=[MinValueValidator(2)])
     # Tiempo de viaje del misil.
-    time_misil = models.IntegerField(default=1, verbose_name='Missile Delay',validators=[MinValueValidator(1)])
+    time_missile = models.IntegerField(default=1, verbose_name='Missile Delay',validators=[MinValueValidator(1)])
     # Poblacion inicial al comenzar la partida.
     initial_population = models.IntegerField(default=5000,verbose_name='Initial Population',validators=[MinValueValidator(0)])
     # Procentaje de poblacion asignado al recurso poblacion.
@@ -48,7 +48,7 @@ class Game(models.Model):
                          ('const_misil: %d, '  % self.const_missile) +
                          ('const_shield: %d, ' % self.const_shield) +
                          ('const_poblation: %d, ' % self.const_population) +
-                         ('time_misil: %d, '  % self.time_misil) +
+                         ('time_missile: %d, '  % self.time_missile) +
                          ('game_name: %s, '  % self.game_name) +
                          ('pub_date: %s, '  %
                           self.pub_date.strftime("%Y-%m-%d %H:%M:%S")) +
@@ -74,7 +74,7 @@ class Game(models.Model):
                               asignado al recurso escudo.
                  const_poblation, pocentaje que indica el pocentaje de pobladores
                               asignado al recurso poblacion.
-                 time_misil, tiempo que tarda el misil en llegar al planeta atacado.
+                 time_missile, tiempo que tarda el misil en llegar al planeta atacado.
                  hurt_to_population, numero que indica el porcentaje de daño a la
                                     poblacion.
                  hurt_to_shield, numero que indica el porcentaje de daño a la
