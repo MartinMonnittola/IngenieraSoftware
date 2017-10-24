@@ -38,7 +38,7 @@ class gameForm(forms.ModelForm):
             'id':'max_playersC',
             'required': True,
             'type': 'range',
-            'min': 3,
+            'min': 2,
             'max': 50,
             'value': 0,
             'class': 'bar',

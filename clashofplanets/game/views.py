@@ -8,6 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -39,9 +40,7 @@ class Login(FormView):
 
 # Main View
 def homeView(request):
-    template = loader.get_template('home.html')
-    context={}
-    return HttpResponse(template.render(context, request))
+    return render(request, 'home.html')
 
 # Sign Up View (Allow Users to register on system)
 def signupView(request):
@@ -60,9 +59,7 @@ def signupView(request):
 
 # game instructions view
 def gameInstructionsView(request):
-    template = loader.get_template('game_instructions.html')
-    context={}
-    return HttpResponse(template.render(context, request))
+    return render(request, 'game_instructions.html')
 
 # game room list view
 @method_decorator(login_required, name='dispatch')
@@ -85,9 +82,7 @@ class gameRoomsListView(TemplateView):
 # game room close view
 @login_required
 def game_closed(request):
-    template = loader.get_template('gameclosed.html')
-    context={}
-    return HttpResponse(template.render(context, request))
+    return render(request, 'gameclosed.html')
 
 # game room inside view
 @login_required
@@ -97,13 +92,10 @@ def gameRoom(request, game_room_num):
         g=Game.objects.filter(id=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
         planets = Planet.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
         game=get_object_or_404(g)
-        template = loader.get_template('gameroom.html')
         context = {'planets': planets,'game': game, 'gameid': str(game.id)}
-        return HttpResponse(template.render(context,request))
+        return render(request, 'gameroom.html', context)
     else:
-        template = loader.get_template('badjoin.html')
-        context = {}
-        return HttpResponse(template.render(context, request))
+        return render(request, 'badjoin.html')
 
 #join game room
 @login_required
@@ -118,7 +110,7 @@ def make_player(request):
         if not gamelist:
             #gameNumber = -1 indicates game doesn't exist
             data={'gameNumber':-1}
-            return HttpResponse(json.dumps(data),content_type='application/json')
+            return JsonResponse(data, safe=False)
         g=get_object_or_404(gamelist)
         if (int(g.game_started)==0) and (g.connected_players < g.max_players):
             #game hasn't started and players < max players
@@ -258,7 +250,7 @@ def start_game(request, game_num):
         'game': game_num,
         #'attack_form': form,
         }
-    return HttpResponse(template.render(context,request))
+    return render(request, 'ingame.html', context)
 
 def change_distribution(request):
     if request.method=='POST' and request.is_ajax():
