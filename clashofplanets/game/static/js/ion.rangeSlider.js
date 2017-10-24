@@ -1688,7 +1688,8 @@
         },
         callOnFinish: function () {
             this.writeToInput();
-
+  
+            changeDistribution();
             if (this.options.onFinish && typeof this.options.onFinish === "function") {
                 if (this.options.scope) {
                     this.options.onFinish.call(this.options.scope, this.result);

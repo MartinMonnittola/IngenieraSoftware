@@ -157,7 +157,6 @@ function battleLog(linelog){
 }
 
 function changeDistribution(){
-    $("#btnSubmit").click(function(){
         var csrftoken = getCookie('csrftoken');
         var num = $('#gamenum').text();
         var population = $("#population_range").text();
@@ -177,7 +176,6 @@ function changeDistribution(){
             dataType: 'json',
         });
         battleLog('['+ timest +']'+' '+'|'+' '+'NRD'+' '+'P:'+population +' '+'S:'+shield+' '+'M:'+missiles, 1);
-    });
 }
 
 function generateResources (gamemode, pop_dist, shi_dist, mis_dist) {
@@ -193,12 +191,12 @@ function generateResources (gamemode, pop_dist, shi_dist, mis_dist) {
         type: "POST",
         url: "add_resources/",
         data: {
-                csrfmiddlewaretoken: csrftoken,
-                planet_seed: planet_seed,
-                population: population,
-                shield: shield,
-                missiles: missiles,
-              },
+           csrfmiddlewaretoken: csrftoken,
+           planet_seed: planet_seed,
+           population: population,
+           shield: shield,
+           missiles: missiles,
+        },
         dataType: 'json',
     });
 }
@@ -219,7 +217,6 @@ function generate () {
 $(document).ready(function(){
     planetDistribution();
 	listPlanets();
-    changeDistribution();
     //canvas = document.getElementById("canvas");
     //context = canvas.getContext("2d");
 });
