@@ -157,7 +157,6 @@ function battleLog(linelog){
 }
 
 function changeDistribution(){
-    $("#btnSubmit").click(function(){
         var csrftoken = getCookie('csrftoken');
         var num = $('#gamenum').text();
         var population = $("#population_range").text();
@@ -177,49 +176,9 @@ function changeDistribution(){
             dataType: 'json',
         });
         battleLog('['+ timest +']'+' '+'|'+' '+'NRD'+' '+'P:'+population +' '+'S:'+shield+' '+'M:'+missiles, 1);
-    });
 }
-
-function generateResources (gamemode, pop_dist, shi_dist, mis_dist) {
-    var population_qty = 0;
-    var shield_qty = 0;
-    var missiles_qty = 0;
-    var csrftoken = getCookie('csrftoken');
-    var population = $("#population_range").text();
-    var shield = $("#shield_range").text();
-    var missiles = $("#missiles_range").text();
-    var planet_seed = $("#pseed").text();
-    $.ajax({
-        type: "POST",
-        url: "add_resources/",
-        data: {
-                csrfmiddlewaretoken: csrftoken,
-                planet_seed: planet_seed,
-                population: population,
-                shield: shield,
-                missiles: missiles,
-              },
-        dataType: 'json',
-    });
-}
-
-function generate () {
-    var number = parseInt($('#test').text(), 10) || 0; // Get the number from paragraph
-    // Called the function in each second
-    var interval = setInterval(function () {
-        $('#test').text(number++); // Update the value in paragraph
-
-        if (number > 1000) {
-            clearInterval(interval); // If exceeded 100, clear interval
-        }
-    }, 1000); // Run for each second
-}
-
 
 $(document).ready(function(){
     planetDistribution();
 	listPlanets();
-    changeDistribution();
-    //canvas = document.getElementById("canvas");
-    //context = canvas.getContext("2d");
 });

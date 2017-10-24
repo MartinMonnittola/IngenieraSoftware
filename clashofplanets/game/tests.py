@@ -20,7 +20,7 @@ class GameModelTestsCase(TestCase):
     """
     def test_hurt_shield_has_not_value_negative_or_zero(self):
         game = Game.objects.get(pk=1)
-        self.assertGreater(game.hurt_to_shield, 0) 
+        self.assertGreater(game.hurt_to_shield, 0)
 
     def test_hurt_population_not_value_negative_or_zero(self):
         game = Game.objects.get(pk=1)
@@ -43,9 +43,12 @@ class GameModelTestsCase(TestCase):
         self.assertLessEqual((game.const_missile + game.const_population + 
                            game.const_shield), 100) 
 
+
+
     def test_time_missile_has_not_value_negative_or_zero(self):
         game = Game.objects.get(pk=1)  
         self.assertGreater(game.time_missile, 0) 
+
 
     def test_initial_population_has_not_value_negative_or_zero(self): 
         game = Game.objects.get(pk=1) 
@@ -136,12 +139,14 @@ class CreateGameTestsCase(TestCase):
                   "time_missile":1, "hurt_to_population":1,
                   "hurt_to_shield":1, "max_players":20, "user":user}
         form = CreateGame(form_data)
+
         if form.is_valid():            
             self.assertLessEqual((form_data["const_missile"] + 
                                   form_data["const_population"] + 
                                   form_data["const_shield"]), 100) 
         else:
             raise AssertionError
+
 
     def test_form_field_time_missile_does_not_value_negative_or_zero(self): 
         user = User.objects.get(pk=1)

@@ -5,8 +5,7 @@
 {% block main_content %}
 
 <script src="{% static 'js/ingame.js' %}?v=00003" type="text/javascript"/></script>
-<script src="{% static 'js/ion.rangeSlider.min.js' %}"/></script>
-
+<script src="{% static 'js/ion.rangeSlider.js' %}"/></script>
 
 <div class="container">
     <div class="row text-center">
@@ -52,7 +51,7 @@
                     <p class="planet-var-title">POPULATION</p>
                     <img src="{% static "img/pop_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate population"  title="Amount Of population destinated to generate population" />
                     <div>
-                        <output id="population_range" class="inp js-from">0</output>%
+                        <output id="population_range" class="inp js-from">100</output>%
                     </div>
                 </div>
 
@@ -80,15 +79,13 @@
                 <input type="text" class="js-range-slider" value="" />
             </div>
             <hr class="style1">
-
-            <input id ="btnSubmit" type="button" value="Submit New Distribution">
             </form>
         </div>
 
         <div class="col-md-5 offset-md-1 metal-effect2">
             <h2 class="custom-h2">Battle Log</h2>
             <hr class="style1">
-            <div id="console-log" style="overflow-y: scroll; height:310px;"></div>
+            <div id="console-log" style="overflow: auto; height: 260px; background-color: #000;"></div>
         </div>
     </div>
 
