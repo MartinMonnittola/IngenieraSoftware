@@ -10,7 +10,7 @@ from django.utils import timezone
 
 class MissileModelTestCase(TestCase):
 
-    def setup(self):
+    def setUp(self):
         user = User(username="Tester",
                     first_name="Tes",
                     last_name= "Ter",
@@ -24,26 +24,40 @@ class MissileModelTestCase(TestCase):
                        password="oponent123")
         oponent.save()
         
-        game = Room.createGame(1, 30, 30, 40, 1, 1, 1, 1, user)
+        game = Game.create(user, "TestGame", 4)
         game.save()
         
         origin = Planet.create(user, game, "TestLand", 1234)
         origin.save()
-        target = Planet.create(oponent, game, "Gonnalose", 4321)
+        target = Planet.create(oponent, game, "GonnaLose", 4321)
         target.save()
         
-        missile = Missile(user, oponent)
+        missile = Missile.create(origin, target)
         missile.save()
     
     def test_missile_has_target(self):
-        user = User.objects(username = "Tester")
-        oponent = User.objects.get(username = "Oponent")
-        missile = Missile.objects.get(owner = user)
-        self.assertEqual(missile.target, oponent)
+        origin = Planet.objects.get(pk=1)
+        target = Planet.objects.get(pk=2)
+        missile = Missile.objects.get(owner = origin)
+        self.assertEqual(missile.target, target)
 
     def test_missile_has_owner(self):
-        user = User.objects.get(pk=2)
-        oponent = User.objects.get(username = "Oponent")
-        missile = Missile.objects.get(target = oponent)
-        self.assertEqual(missile.owner, user)
+        origin = Planet.objects.get(pk=1)
+        target = Planet.objects.get(pk=2)
+        missile = Missile.objects.get(target = target)
+        self.assertEqual(missile.owner, origin)
 
+    def test_damage_dealt_on_shield(self):
+        missile = Missile.objects.get(pk=1)
+        missile.deal_damage()
+        self.assertLess(Planet.objects.get(pk=2).shield_perc, 100)
+    
+    def test_damage_dealt_on_pop(self):
+        missile = Missile.objects.get(pk=1)
+        missile.deal_damage()
+        self.assertLess(Planet.objects.get(pk=2).population_qty, 5000)
+
+    def test_time_to_target_returns_right_value(self):
+        missile = Missile.objects.get(pk=1)
+        time = missile.time_to_target()
+        self.assertLess(timezone.timedelta(seconds=missile.owner.game.time_missile), time)
