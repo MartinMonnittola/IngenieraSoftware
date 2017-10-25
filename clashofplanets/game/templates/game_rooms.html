@@ -12,6 +12,7 @@
     </div>
 </div>
 <br>
+
 <div class="container">
     <div class="row" id="games">
         <div class="col table-responsive text-center">
@@ -25,11 +26,38 @@
                         <th class="text-center">Max Players Allowed</th>
                     </tr>
                 </thead>
-                <tbody id="openGames" class="openGamesC text-center">
+                <tbody id="open"class="openGamesC text-center">
+
+                    {% for latest_game in latest_game_list %}
+                        <tr>
+                            <td class="text-center">{{ latest_game.id}}</th>
+                            <td class="text-center">{{ latest_game.game_name}}</td>
+                            <td class="text-center">{{ latest_game.user}}</td>
+                            <td class="text-center">{{ latest_game.connected_players}}</td>
+                            <td class="text-center">{{ latest_game.max_players}}</td>
+                        </tr>
+                   {% endfor %}
+
                 </tbody>
             </table>
         </div>
     </div>
+
+    <span class="step-links">
+        <center>
+            {% if latest_game_list.has_previous %}
+                <a href="?page={{ latest_game_list.previous_page_number }}">previous  </a>
+            {% endif %}
+            <span class="current">
+                Page {{ latest_game_list.number }} of {{ latest_game_list.paginator.num_pages }}
+            </span>
+            {% if latest_game_list.has_next %}
+                <a href="?page={{ latest_game_list.next_page_number }}" >  next</a>
+            {% endif %}
+        </center>
+    </span>
+    <br>
+    <br>
 
     <div class="row text-center">
         <div class="col-md-12 col-lg-12" id="rooms_list">
