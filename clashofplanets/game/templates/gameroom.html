@@ -8,11 +8,10 @@
 <div class="container">
     <div class="row text-center">
         <div class="col">
-            <h1>Game Room: {{game.room_name}}
+            <h1>
+            Welcome {% if request.user.is_authenticated %}<span class="text-primary" >{{request.user.username}}</span> to {% endif %}
+            Game Room ID:
             <p id="gamenum">{{game.id}}</p>
-            {% if request.user.is_authenticated %}
-                <span class="text-primary" >{{request.user.username}}</span>!
-            {% endif %}
             </h1>
         </div>
     </div>
@@ -24,7 +23,6 @@
                             <th class="text-center">Planet ID</th>
                             <th class="text-center">Planet Name</th>
                             <th class="text-center">Planet Owner</th>
-                            <th class="text-center">Planet Seed</th>
                         </tr>
                     </thead>
                     <tbody id="playerList" class="text-center">
@@ -45,7 +43,7 @@
         <div class="col">
             <form action="{% url 'game_rooms' %}" method="post">
                 {% csrf_token %}
-                <input type="submit" value="back to lobby">
+                <input type="submit" value="back to lobby" onclick="return confirm('Are you sure?')" />
             </form>
         </div>
     </div>

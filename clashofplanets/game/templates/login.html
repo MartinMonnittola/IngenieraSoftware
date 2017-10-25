@@ -2,8 +2,8 @@
 {% block main_content %}
     <div class="row">
         <div class="col-lg-12 col-md-12 text-center cardb">
-            <h3>Login</h3>
-            <hr>
+            <h2 class="top15">Login</h2>
+            <hr class="style1">
             {% if form.errors %}
             <p class="text-danger">Your username and password didn't match. Please try again.</p>
             {% endif %}
@@ -21,12 +21,12 @@
                         </div>
                     {% else %}
                         <div class="control-group">
-                            <label class="control-label">{{ field.label }}</label>
+                            <label class="control-label top10">{{ field.label }}</label>
                             <div class="controls">{{ field }}</div>
                         </div>
                     {% endif %}
                 {% endfor %}
-                <hr>
+                <hr class="style1">
                 <input class="button-primary btn btn-space" type="submit" value="log in">
             </form>
 

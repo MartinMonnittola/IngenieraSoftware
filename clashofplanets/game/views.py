@@ -8,6 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -39,9 +40,7 @@ class Login(FormView):
 
 # Main View
 def homeView(request):
-    template = loader.get_template('home.html')
-    context={}
-    return HttpResponse(template.render(context, request))
+    return render(request, 'home.html')
 
 # Sign Up View (Allow Users to register on system)
 def signupView(request):
@@ -60,9 +59,7 @@ def signupView(request):
 
 # game instructions view
 def gameInstructionsView(request):
-    template = loader.get_template('game_instructions.html')
-    context={}
-    return HttpResponse(template.render(context, request))
+    return render(request, 'game_instructions.html')
 
 # game room list view
 @method_decorator(login_required, name='dispatch')
@@ -85,25 +82,16 @@ class gameRoomsListView(TemplateView):
 # game room close view
 @login_required
 def game_closed(request):
-    template = loader.get_template('gameclosed.html')
-    context={}
-    return HttpResponse(template.render(context, request))
+    return render(request, 'gameclosed.html')
 
 # game room inside view
 @login_required
 def gameRoom(request, game_room_num):
-    test=request.session['gameEntry']
-    if test==int(game_room_num):
-        g=Game.objects.filter(id=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
-        planets = Planet.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
-        game=get_object_or_404(g)
-        template = loader.get_template('gameroom.html')
-        context = {'planets': planets,'game': game, 'gameid': str(game.id)}
-        return HttpResponse(template.render(context,request))
-    else:
-        template = loader.get_template('badjoin.html')
-        context = {}
-        return HttpResponse(template.render(context, request))
+    g=Game.objects.filter(id=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
+    planets = Planet.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
+    game=get_object_or_404(g)
+    context = {'planets': planets,'game': game, 'gameid': str(game.id)}
+    return render(request, 'gameroom.html', context)
 
 #join game room
 @login_required
@@ -113,48 +101,40 @@ def make_player(request):
         form = gameForm(request.POST)
         planet_name=request.POST.get('pname')
         game_room_num=request.POST.get('num')
-
         #isolates the already existing game
         gamelist = Game.objects.filter(id=game_room_num)
-
-        #game doesn't exist, stop joining
         if not gamelist:
             #gameNumber = -1 indicates game doesn't exist
             data={'gameNumber':-1}
-            return HttpResponse(json.dumps(data),content_type='application/json')
-        g=get_object_or_404(gamelist)
+            return JsonResponse(data, safe=False)
 
-        #game hasn't started and players < max players
+        g=get_object_or_404(gamelist)
+        planet_owner = request.user.id
+        planets_from_user = Planet.objects.filter(player=planet_owner, game=g.id)
+
         if (int(g.game_started)==0) and (g.connected_players < g.max_players):
+            #game hasn't started and players < max players
             #seed will be used for randomization
             seed=randint(1,90001)
-            # creates the planet for player
-            planet_owner = request.user
-            planet_from_user = Planet.objects.filter(player=planet_owner, game=g.id)
-            if len(planet_from_user) == 0:
-                p=Planet.create(planet_owner, g, planet_name, seed)
-                # +1 to room connected players
+            if len(planets_from_user) == 0:
+                p=Planet.create(request.user, g, planet_name, seed)
                 g.connected_players += 1
-                #save changes to actual game
+                p.save() #creates player
                 g.save()
-                #creates planet with game among other things
-                p.save()
-            # session seed to identify planet
-            request.session['id']=seed
-            #Adds a cookie/session to indicate a legit entry
-            request.session['gameEntry']=int(game_room_num)
             data={'gameNumber':game_room_num}
-            return HttpResponse(json.dumps(data),content_type='application/json')
-
-        #game hasn't started and players == max players
+            return JsonResponse(data, safe=False)
         if (int(g.game_started)==0) and (g.connected_players == g.max_players):
-            # game is full
-            data={'gameNumber':-2}
-            return HttpResponse(json.dumps(data),content_type='application/json')
+            # game hasn't started and is full
+            if len(planets_from_user) > 0:
+                data={'gameNumber':game_room_num}
+                return JsonResponse(data, safe=False)
+            else:
+                data={'gameNumber':-2}
+                return JsonResponse(data, safe=False)
         else:
             #game has already started, send to sorry page
             data={'gameNumber':0}
-            return HttpResponse(json.dumps(data),content_type='application/json')
+            return JsonResponse(data, safe=False)
     else:
         form = gameForm()
         #Redirects to game room
@@ -170,8 +150,6 @@ def make_game(request):
         planet_name=request.POST.get('pname')
         room_name=request.POST.get('rname')
         max_players=request.POST.get('max_players')
-        #gets all existing game rooms
-        gamelist = Game.objects.all()
         #creates game
         g=Game.create(request.user, room_name, max_players)
         # +1 to room connected players
@@ -180,41 +158,41 @@ def make_game(request):
         game_id = g.id
         # create planet
         seed=randint(1,90001)
+        #Game.joinGame(g, request.user, planet_name, seed)
         p=Planet.create(request.user, g, planet_name, seed)
         p.save() #creates player
-        request.session['id']=seed #to identify player
-        request.session['gameEntry']=int(game_id)
         data={'gameNumber': game_id}
     else:
         print("ohno")
         form = gameForm()
-    return HttpResponse(json.dumps(data),content_type='application/json')
+    return JsonResponse(data, safe=False)
 
 #send a list of players as a json to js file
-def send_players(request):
+def send_planets(request):
     if (request.method=='POST' and request.is_ajax()):
         game_num =request.POST.get('num')
         planets = Planet.objects.filter(game=game_num) #players in game
         pdict={}
         plist=[]
+        current_user = request.user.username
         for tmpplanet in planets:
             planet_name = tmpplanet.name
             planet_owner = tmpplanet.player
             planet_id = tmpplanet.id
-            planet_seed = tmpplanet.seed
             planet_pop = tmpplanet.population_qty
             planet_shield = tmpplanet.shield_perc
+            planet_missiles = tmpplanet.missiles_qty
             record = {
                 'name': planet_name,
                 'id': planet_id,
-                'seed': planet_seed,
                 'owner': planet_owner.username,
                 'pop': planet_pop,
-                'shield': planet_shield
+                'shield': planet_shield,
+                'missiles': planet_missiles,
             }
             plist.append(record)
-        pdict={'planets': plist}
-        return HttpResponse(json.dumps(pdict),content_type='application/json')
+        pdict={'planets': plist, 'user': current_user}
+        return JsonResponse(pdict, safe=False)
 
 #send a list of numbers of all open games as a json to js file
 def send_games(request):
@@ -237,7 +215,7 @@ def send_games(request):
             }
             glist.append(record)
         gdict={'games': glist}
-        return HttpResponse(json.dumps(gdict),content_type='application/json')
+        return JsonResponse(gdict, safe=False)
 
 #send the game room state of current as a json to js file
 def send_game_state(request):
@@ -248,22 +226,49 @@ def send_game_state(request):
         current_room_state = room.game_started
         players_in_room = room.connected_players
         sdict={'game_state': current_room_state, 'players_in_room': players_in_room,}
-        return HttpResponse(json.dumps(sdict),content_type='application/json')
+        return JsonResponse(sdict, safe=False)
 
 # start game view: Allows room user to start the game room
 def start_game(request, game_num):
     template = loader.get_template('ingame.html')
+    #form = attackForm(game_num)
     #gets the game by id
     g=Game.objects.get(id=game_num)
     #players in game, sorted
-    planets = Planet.objects.filter(game=g.id).order_by('seed')
+    planets = Planet.objects.filter(game=g.id).order_by('id')
     # set game state to 1
     Game.startGame(g)
-    our_seed = request.session['id']
-    your_planet=Planet.objects.filter(seed=our_seed).first()
+    your_planet=Planet.objects.get(player=request.user, game=g)
     context = {
-        'players': planets,
+        'planets': planets,
         'your_planet': your_planet,
         'game': game_num,
+        #'attack_form': form,
         }
-    return HttpResponse(template.render(context,request))
+    return render(request, 'ingame.html', context)
+
+# Allow players to change their resources generation rate
+def change_distribution(request):
+    if request.method=='POST' and request.is_ajax():
+        game_num=int(request.POST.get('game_num'))
+        population=int(request.POST.get('population'))
+        shield=int(request.POST.get('shield'))
+        missiles=int(request.POST.get('missiles'))
+        planet=Planet.objects.filter(player=request.user, game=game_num)
+        p=get_object_or_404(planet)
+        p.assign_perc_rate(population, shield, missiles)
+        p.save()
+        rdict = {'pop_dis': population, 'shield_dis': shield, 'missile_dist': missiles}
+    return JsonResponse(rdict, safe=False)
+
+# Allow players to attack their enemies
+def send_attack(request):
+    if request.method=='POST' and request.is_ajax():
+        planet_gameroom = int(request.POST.get('game_num'))
+        planet_id = int(request.POST.get('planet_id'))
+        planet=Planet.objects.filter(pk=planet_id, game=planet_gameroom)
+        p=get_object_or_404(planet)
+        p.population_qty -= 100
+        p.save()
+        rdict = {'planet_id': planet_id}
+    return JsonResponse(rdict, safe=False)

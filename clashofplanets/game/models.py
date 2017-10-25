@@ -25,7 +25,7 @@ class Game(models.Model):
     # Numero de bots que se agregaron a la partida a la partida.
     bot_players = models.IntegerField(default=2, verbose_name='Amount of bot players',validators=[MinValueValidator(2)])
     # Tiempo de viaje del misil.
-    time_misil = models.IntegerField(default=1, verbose_name='Missile Delay',validators=[MinValueValidator(1)])
+    time_missile = models.IntegerField(default=1, verbose_name='Missile Delay',validators=[MinValueValidator(1)])
     # Poblacion inicial al comenzar la partida.
     initial_population = models.IntegerField(default=5000,verbose_name='Initial Population',validators=[MinValueValidator(0)])
     # Procentaje de poblacion asignado al recurso poblacion.
@@ -48,7 +48,7 @@ class Game(models.Model):
                          ('const_misil: %d, '  % self.const_missile) +
                          ('const_shield: %d, ' % self.const_shield) +
                          ('const_poblation: %d, ' % self.const_population) +
-                         ('time_misil: %d, '  % self.time_misil) +
+                         ('time_missile: %d, '  % self.time_missile) +
                          ('game_name: %s, '  % self.game_name) +
                          ('pub_date: %s, '  %
                           self.pub_date.strftime("%Y-%m-%d %H:%M:%S")) +
@@ -57,7 +57,7 @@ class Game(models.Model):
                          ('bot_players: %s, '  % self.bot_players) +
                          ('connected_players: %s, '  % self.connected_players) +
                          ('game_name: %s, '  % self.game_name) +
-                         ('hurt_to_poblation: %d, '  % self.hurt_to_population) +
+                         ('hurt_to_population: %d, '  % self.hurt_to_population) +
                          ('hurt_to_shield: %d'  % self.hurt_to_shield))
         return representation
 
@@ -74,8 +74,8 @@ class Game(models.Model):
                               asignado al recurso escudo.
                  const_poblation, pocentaje que indica el pocentaje de pobladores
                               asignado al recurso poblacion.
-                 time_misil, tiempo que tarda el misil en llegar al planeta atacado.
-                 hurt_to_poblation, numero que indica el porcentaje de daño a la
+                 time_missile, tiempo que tarda el misil en llegar al planeta atacado.
+                 hurt_to_population, numero que indica el porcentaje de daño a la
                                     poblacion.
                  hurt_to_shield, numero que indica el porcentaje de daño a la
                                  escudo.
@@ -83,10 +83,14 @@ class Game(models.Model):
                  user, usuario creador de la partida.
         Salida: El Game creado.
         """
-        game = cls(pub_date=timezone.now(),game_name=name,max_players=max_players,game_started=False,user=owner)
+        game = cls(pub_date=timezone.now(),game_name=name,
+                   max_players=max_players,
+                   game_started=False,
+                   user=owner)
+        #game.save
         return game
 
-    def joinGame(self, user_id, name):
+    def joinGame(self, user_id, name, seed):
         """
         Join Game:
         Procedure that allow players to join gameGames.
@@ -95,11 +99,13 @@ class Game(models.Model):
         """
         try:
             user = User.objects.get(pk=user_id)
-            if Planet.objects.filter(game_started=0).exists():
+            if Planet.objects.filter(player=user, game=self).exists():
                 succesfull = False
             else:
-                planet = Planet.create(user, self, name)
+                planet = Planet.create(user, self, name, seed)
+                planet.save()
                 self.connected_players += 1
+                self.save()
                 succesfull = True
         except User.DoesNotExist:
             succesfull = False
@@ -116,7 +122,7 @@ class Game(models.Model):
             self.game_started = True
             self.save()
 
-    def deactivatePlanet(self, user_id):
+    def desactivatePlanet(self, planet_id):
         """
         Desactiva un planeta y elimina sus recursos.
 
@@ -124,13 +130,16 @@ class Game(models.Model):
         Salida:  succesfull, bool que indica si elimino el planeta.
         """
         try:
-            planet = Planet.objects.get(player=user_id)
-            planet.population_qty = 0
-            planet.save()
+            planet = Planet.objects.get(pk=planet_id, game=self)
+            if planet.population_qty != 0:
+                planet.population_qty = 0
+                planet.save()
+                succesfull = True                
+            else:
+                succesfull = False
             # Notificamo al usuario de la eliminacion de su planeta.
             #user.notify_devastation()
-            succesfull = True
-        except Planet.DoesNotExist:
+        except Planet.DoesNotExist, User.DoesNotExist:
             succesfull = False
         return succesfull
 
@@ -160,7 +169,7 @@ class Planet(models.Model):
     """
     player = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20,verbose_name='Planet name')
+    name = models.CharField(max_length=20, default='Default Name', verbose_name='Planet name')
     seed = models.BigIntegerField(default=0,verbose_name='Planet seed')
     population_qty = models.IntegerField(default=5000, verbose_name='Population Amout', validators=[MinValueValidator(0)])
     missiles_qty = models.IntegerField(default=0, verbose_name='Missile Amount', validators=[MinValueValidator(0)])
@@ -245,7 +254,7 @@ class Planet(models.Model):
             missile_launched = False
 
         return missile_launched
-        
+
 
     def get_missiles_state(self):
         """

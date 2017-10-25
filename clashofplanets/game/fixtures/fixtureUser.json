@@ -1,0 +1,235 @@
+[{"model":"auth.User",
+"pk":  1,
+"fields":{
+    "username":"Jehova",
+    "first_name": "Rey",
+    "last_name": "Ishi",
+    "email": "jhv@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk": 2,
+"fields":{
+    "username":"Pdro",
+    "first_name": "Pedro",
+    "last_name": "Benjamin",
+    "email": "pe@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+}},
+{"model":"auth.User",
+"pk":  3,
+"fields":{
+    "username":"Bnjmin",
+    "first_name": "Benjamin",
+    "last_name": "Esteban",
+    "email": "b@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  4,
+"fields":{
+    "username":"AAA",
+    "first_name": " JJJJJKL",
+    "last_name": "HHHH",
+    "email": "a@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  5,
+"fields":{
+    "username":"BBB",
+    "first_name": "BBBBBJJJ",
+    "last_name": "JJJJJ",
+    "email": "b@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  6,
+"fields":{
+    "username":"HHH",
+    "first_name": "HHHJJJ ",
+    "last_name": "HJHJJ",
+    "email": "h@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  7,
+"fields":{
+    "username":"LLL",
+    "first_name": "LLLLHHGUJ",
+    "last_name": "LLLLLHJ",
+    "email": "l@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  8,
+"fields":{
+    "username":"CCC",
+    "first_name": "CCCJJJ",
+    "last_name": "CCCHHKKÑÑ",
+    "email": "c@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  9,
+"fields":{
+    "username":"SSS",
+    "first_name": "SJJHSSS",
+    "last_name": "SSSSHHH",
+    "email": "s@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  10,
+"fields":{
+    "username":"FFF",
+    "first_name": "FFFEE",
+    "last_name": "FFEEE",
+    "email": "f@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  11,
+"fields":{
+    "username":"ZZZ",
+    "first_name": "WWWWEEE",
+    "last_name": "WWWEAA",
+    "email": "z@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  12,
+"fields":{
+    "username":"QQQ",
+    "first_name": "QQQJJJJHH",
+    "last_name": "QQWWWWEE",
+    "email": "kjvbjh@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  13,
+"fields":{
+    "username":"GGHH",
+    "first_name": "GGGLLLLL",
+    "last_name": "GGGGLLLL",
+    "email": "b@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  14,
+"fields":{
+    "username":"VVV",
+    "first_name": "VVVWWW",
+    "last_name": "VVVWWWN",
+    "email": "v@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  15,
+"fields":{
+    "username":"NNN",
+    "first_name": "NNNHGFGCX",
+    "last_name": "NNNJHGJ",
+    "email": "n@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  16,
+"fields":{
+    "username":"PPP",
+    "first_name": "PPPvdfbv",
+    "last_name": "PPPgdfv",
+    "email": "p@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  17,
+"fields":{
+    "username":"UUU",
+    "first_name": "UUUHGJ",
+    "last_name": "UUUVHGHFC",
+    "email": "vcsd@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  18,
+"fields":{
+    "username":"JJJ",
+    "first_name": "sdvsv",
+    "last_name": "sdvsv",
+    "email": "j@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  19,
+"fields":{
+    "username":"WWW",
+    "first_name": "fbfgng",
+    "last_name": "ghmjhmhj",
+    "email": "w@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  20,
+"fields":{
+    "username":"GGG",
+    "first_name": "GGGLJH",
+    "last_name": "GGGLKJLVG",
+    "email": "g@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+
+}},
+{"model":"auth.User",
+"pk":  21,
+"fields":{
+    "username":"EEE",
+    "first_name": "EEELÑKÑ",
+    "last_name": "EEEJLKJL",
+    "email": "e@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+}},
+{"model":"auth.User",
+"pk":  22,
+"fields":{
+    "username":"DDD",
+    "first_name": "EEELÑKÑ",
+    "last_name": "EEEJLKJL",
+    "email": "d@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+}},
+{"model":"auth.User",
+"pk":  23,
+"fields":{
+    "username":"OOO",
+    "first_name": "EEELÑKÑ",
+    "last_name": "EEEJLKJL",
+    "email": "o@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+}},
+{"model":"auth.User",
+"pk":  24,
+"fields":{
+    "username":"TTT",
+    "first_name": "EEELÑKÑ",
+    "last_name": "EEEJLKJL",
+    "email": "t@gmail.com",
+    "password": "pbkdf2_sha256$30000$TqVsAQKOuut2$cffy6XN/QmbCxofPxQoNHs4NbvYkMxGrjOZDwbIXbiM="
+}}]

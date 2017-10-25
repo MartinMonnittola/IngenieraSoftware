@@ -124,6 +124,12 @@ table th {
     font-family: 'Orbitron', sans-serif;
 }
 
+table tr {
+    line-height: 38px;
+    min-height: 25px;
+    height: 38px;
+}
+
 table td {
     padding: 2px 10px;
     white-space:nowrap;
@@ -173,7 +179,7 @@ input[type="button"] {
     text-transform: uppercase;
     cursor: pointer;
     border: none;
-    margin-bottom: 10px;
+    margin: 0px 0px 0px 0px;
     color: hsla(0,0%,20%,1);
     font-family: 'Orbitron', sans-serif;
     text-shadow: hsla(0,0%,40%,.5) 0 -1px 0, hsla(0,0%,100%,.6) 0 2px 1px;
@@ -373,9 +379,11 @@ input[type=range]::-moz-range-progress {
     cursor: pointer;
     animate: 0.2s;
     box-shadow: 0px 0px 0px #000;
-    background: #33C3F0;
+    background: #428bca;
+    background: linear-gradient(to top, rgba(66,139,202,1) 0%,rgba(127,195,232,1) 100%); /* W3C */
     border-radius: 14px;
-    border: 0px solid rgb(53, 244, 232);
+    border-bottom: 1px solid #428bca;
+    border-top: 1px solid #428bca;
  }
 
 .top5 { margin-top:5px; }
@@ -410,7 +418,7 @@ input[type=range]::-moz-range-progress {
 }
 
 .custom-h2 {
-    margin-top: 10px;
+    padding-top: 20px;
 	font-size: 30px;
 	color: #AAAAAA;
 	text-align: center;
@@ -421,4 +429,27 @@ input[type=range]::-moz-range-progress {
 .planet-var {
     max-height: 35%;
     max-width: 35%;
+}
+
+.planet-var-title {
+    margin-bottom: 1px;
+}
+
+.neon-effect {
+  display: inline-block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 10px;
+  color: rgba(255,255,255,1);
+  text-decoration: normal;
+  text-align: center;
+  -o-text-overflow: clip;
+  text-overflow: clip;
+  white-space: pre;
+  text-shadow: 0 0 10px rgba(255,255,255,1) , 0 0 20px rgba(255,255,255,1) , 0 0 30px rgba(255,255,255,1) , 0 0 20px #00ffff , 0 0 40px #00ffff , 0 0 60px #00ffff , 0 0 100px #00ffff ;
+  -webkit-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+  -moz-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+  -o-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
+  transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1);
 }
