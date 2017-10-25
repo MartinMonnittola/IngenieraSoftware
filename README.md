@@ -25,5 +25,5 @@
 
 	Fuentes:
 		Stackoverflow
-       		Manual Django 1.11
+		Manual Django 1.11
         	Referencias de otros proyectos de mecanica similar (Mafia Wars, Space Battle, Mob Wars)
