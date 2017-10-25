@@ -19,7 +19,7 @@
 	Lo que se logro hasta el momento:
 		Registro, login, logout, instrucciones del juego.
 		Crear, listar, unirse, y abandonar partidas.
-        	Mecanica del juego: Atacar planetas enemigos, asignar una distribucion de poblacion para generar recursos, battleLog de la 		   partida.
+        	Mecanica del juego: Atacar planetas enemigos, asignar una distribucion de poblacion para generar recursos, battleLog de la partida.
         	Estetica del juego: Si bien en algun momento se piensa implementar un canvas que haga mas dinamico e interactivo al juego,
         	por el momento se implemento un estilo moderno futurista que va con el mismo.
 
