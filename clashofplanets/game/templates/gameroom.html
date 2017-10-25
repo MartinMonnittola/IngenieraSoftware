@@ -36,14 +36,14 @@
             <!-- solo el creador de la sala puede comenzar el juego-->
             <form action="{% url 'start_game' game.id %}" method="post">
                 {% csrf_token %}
-                <input type="submit" value="start game">
+                <input type="submit" value="start game" class="metal">
             </form>
             {% endif %}
         </div>
         <div class="col">
             <form action="{% url 'game_rooms' %}" method="post">
                 {% csrf_token %}
-                <input type="submit" value="back to lobby" onclick="return confirm('Are you sure?')" />
+                <input type="submit" class="metal" value="back to lobby" onclick="return confirm('Are you sure?')" />
             </form>
         </div>
     </div>

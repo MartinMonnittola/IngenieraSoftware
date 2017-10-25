@@ -264,11 +264,16 @@ def change_distribution(request):
 # Allow players to attack their enemies
 def send_attack(request):
     if request.method=='POST' and request.is_ajax():
+        # get game room data
         planet_gameroom = int(request.POST.get('game_num'))
-        planet_id = int(request.POST.get('planet_id'))
-        planet=Planet.objects.filter(pk=planet_id, game=planet_gameroom)
-        p=get_object_or_404(planet)
-        p.population_qty -= 100
-        p.save()
-        rdict = {'planet_id': planet_id}
-    return JsonResponse(rdict, safe=False)
+        # get planet target data
+        planet_target_id = int(request.POST.get('planet_id'))
+        planet_target =Planet.objects.get(pk=planet_target_id, game=planet_gameroom)
+        # get planet attacker data
+        planet_attacker_owner = request.user
+        planet_attacker = Planet.objects.get(player=planet_attacker_owner, game=planet_gameroom)
+        # attack data
+        planet_target.population_qty -= 100
+        planet_target.save()
+        attack_dict = {}
+    return JsonResponse(attack_dict, safe=False)
