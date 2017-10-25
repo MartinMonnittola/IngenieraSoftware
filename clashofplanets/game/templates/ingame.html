@@ -10,11 +10,13 @@
 <div class="container">
     <div class="row text-center">
         <div class="col">
-            <h1>Game Room <span id="gamenum">{{game}}</span> of {% if request.user.is_authenticated %}<span class="text-primary" >{{request.user.username}}</span>{% endif %}
+            <h1>
+                Welcome {% if request.user.is_authenticated %}<span class="text-primary" >{{request.user.username}}</span> to {% endif %}
+                Game Room ID: <span id="gamenum">{{game}}</span>
             </h1>
         </div>
     </div>
-    <div class="row text-center">
+    <div class="row text-center top30">
         <div class="col table-responsive">
             <table class="table metal-effect2">
                 <thead>
@@ -24,9 +26,30 @@
                         <th class="text-center">Planet Owner</th>
                         <th class="text-center">Planet Pop</th>
                         <th class="text-center">Planet Shield</th>
+                        <th class="text-center">Attack Order</th>
                     </tr>
                 </thead>
-                <tbody id="playerList" class="text-center">
+                <tbody class="text-center">
+                    {% for p in planets %}
+                    <tr id="planet-{{p.id}}" class="planet-row">
+                        <td class="tb_planet_id">{{p.id}}</td>
+                        <td class="tb_planet_name">{{p.name}}</td>
+                        <td class="tb_planet_owner">{{p.player}}</td>
+                        <td class="tb_planet_pop"></td>
+                        <td class="tb_planet_shield"></td>
+                        <td class="tb_attack_order">
+                            {% if p.player == request.user %}
+                                YOUR PLANET!!!
+                            {% else %}
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{p.id}}" name="name_of_var">
+                                    <input class="attack-planet" type="submit" value="Attack"/>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -86,13 +109,6 @@
             <h2 class="custom-h2">Battle Log</h2>
             <hr class="style1">
             <div id="console-log" style="overflow: auto; height: 260px; background-color: #000;"></div>
-        </div>
-    </div>
-
-    <div class="row text-center top30">
-        <div class="col metal-effect2">
-            <h2 class="custom-h2"> Planets To Attack </h2>
-            <hr class="style1">
         </div>
     </div>
 

@@ -245,13 +245,14 @@ def start_game(request, game_num):
     our_seed = request.session['id']
     your_planet=Planet.objects.get(player=request.user, game=g)
     context = {
-        'players': planets,
+        'planets': planets,
         'your_planet': your_planet,
         'game': game_num,
         #'attack_form': form,
         }
     return render(request, 'ingame.html', context)
 
+# Allow players to change their resources generation rate
 def change_distribution(request):
     if request.method=='POST' and request.is_ajax():
         game_num=int(request.POST.get('game_num'))
@@ -263,4 +264,16 @@ def change_distribution(request):
         p.assign_perc_rate(population, shield, missiles)
         p.save()
         rdict = {'pop_dis': population, 'shield_dis': shield, 'missile_dist': missiles}
+    return JsonResponse(rdict, safe=False)
+
+# Allow players to attack their enemies
+def send_attack(request):
+    if request.method=='POST' and request.is_ajax():
+        planet_gameroom = int(request.POST.get('game_num'))
+        planet_id = int(request.POST.get('planet_id'))
+        planet=Planet.objects.filter(pk=planet_id, game=planet_gameroom)
+        p=get_object_or_404(planet)
+        p.population_qty -= 100
+        p.save()
+        rdict = {'planet_id': planet_id}
     return JsonResponse(rdict, safe=False)

@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^game_rooms/game/(?P<game_num>[0-9]+)/$', start_game, name='start_game'),
     url(r'^game_rooms/game/\d+/get_planets/$', send_planets, name ='send_planets'),
     url(r'^game_rooms/game/\d+/change_distribution/$', change_distribution, name='change_distribution'),
+    url(r'^game_rooms/game/\d+/send_attack/$', send_attack, name='send_attack'),
 ]
