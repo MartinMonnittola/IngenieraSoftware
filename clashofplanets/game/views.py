@@ -87,15 +87,11 @@ def game_closed(request):
 # game room inside view
 @login_required
 def gameRoom(request, game_room_num):
-    test=request.session['gameEntry']
-    if test==int(game_room_num):
-        g=Game.objects.filter(id=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
-        planets = Planet.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
-        game=get_object_or_404(g)
-        context = {'planets': planets,'game': game, 'gameid': str(game.id)}
-        return render(request, 'gameroom.html', context)
-    else:
-        return render(request, 'badjoin.html')
+    g=Game.objects.filter(id=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
+    planets = Planet.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
+    game=get_object_or_404(g)
+    context = {'planets': planets,'game': game, 'gameid': str(game.id)}
+    return render(request, 'gameroom.html', context)
 
 #join game room
 @login_required
@@ -111,28 +107,30 @@ def make_player(request):
             #gameNumber = -1 indicates game doesn't exist
             data={'gameNumber':-1}
             return JsonResponse(data, safe=False)
+
         g=get_object_or_404(gamelist)
+        planet_owner = request.user.id
+        planets_from_user = Planet.objects.filter(player=planet_owner, game=g.id)
+
         if (int(g.game_started)==0) and (g.connected_players < g.max_players):
             #game hasn't started and players < max players
             #seed will be used for randomization
             seed=randint(1,90001)
-            planet_owner = request.user.id
-            planets_from_user = Planet.objects.filter(player=planet_owner, game=g.id)
             if len(planets_from_user) == 0:
                 p=Planet.create(request.user, g, planet_name, seed)
                 g.connected_players += 1
                 p.save() #creates player
-                g.save() 
-            # session seed to identify planet
-            request.session['id']=seed
-            #Adds a cookie/session to indicate a legit entry
-            request.session['gameEntry']=int(game_room_num)
+                g.save()
             data={'gameNumber':game_room_num}
             return JsonResponse(data, safe=False)
         if (int(g.game_started)==0) and (g.connected_players == g.max_players):
             # game hasn't started and is full
-            data={'gameNumber':-2}
-            return JsonResponse(data, safe=False)
+            if len(planets_from_user) > 0:
+                data={'gameNumber':game_room_num}
+                return JsonResponse(data, safe=False)
+            else:
+                data={'gameNumber':-2}
+                return JsonResponse(data, safe=False)
         else:
             #game has already started, send to sorry page
             data={'gameNumber':0}
@@ -163,8 +161,6 @@ def make_game(request):
         #Game.joinGame(g, request.user, planet_name, seed)
         p=Planet.create(request.user, g, planet_name, seed)
         p.save() #creates player
-        request.session['id']=seed #to identify player
-        request.session['gameEntry']=int(game_id)
         data={'gameNumber': game_id}
     else:
         print("ohno")
@@ -183,14 +179,12 @@ def send_planets(request):
             planet_name = tmpplanet.name
             planet_owner = tmpplanet.player
             planet_id = tmpplanet.id
-            planet_seed = tmpplanet.seed
             planet_pop = tmpplanet.population_qty
             planet_shield = tmpplanet.shield_perc
             planet_missiles = tmpplanet.missiles_qty
             record = {
                 'name': planet_name,
                 'id': planet_id,
-                'seed': planet_seed,
                 'owner': planet_owner.username,
                 'pop': planet_pop,
                 'shield': planet_shield,
@@ -241,10 +235,9 @@ def start_game(request, game_num):
     #gets the game by id
     g=Game.objects.get(id=game_num)
     #players in game, sorted
-    planets = Planet.objects.filter(game=g.id).order_by('seed')
+    planets = Planet.objects.filter(game=g.id).order_by('id')
     # set game state to 1
     Game.startGame(g)
-    our_seed = request.session['id']
     your_planet=Planet.objects.get(player=request.user, game=g)
     context = {
         'planets': planets,

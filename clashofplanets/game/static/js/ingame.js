@@ -63,7 +63,7 @@ function listPlanets(){
                 $('#planet-'+plist[i].id+' .tb_planet_shield').empty();
                 $('#planet-'+plist[i].id+' .tb_planet_shield').append(plist[i].shield);
 			}
-        setTimeout(listPlanets, 3000);
+        setTimeout(listPlanets, 2000);
         },
 		error : function(xhr,errmsg,err) {
 			console.log(xhr.status + ": " + xhr.responseText);
@@ -164,9 +164,9 @@ function changeDistribution(){
 
 function attackPlanet(){
     $('.attack-planet').on("click", function(event) {
-        event.preventDefault()
-        var cell = $(".attack-planet").closest('tr').find('td:nth-child(1)').text();
-        var planet_id = $(".attack-planet").closest('tr').find('td:nth-child(1)').text();
+        event.preventDefault();
+        var planet_id = $(this).closest('tr').find('td:nth-child(1)').text();
+        //battleLog(planet_id); //Uncomment to check attack is working OK
         var num = $('#gamenum').text();
         var csrftoken = getCookie('csrftoken');
         $.ajax({
