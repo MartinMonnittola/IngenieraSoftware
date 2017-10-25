@@ -69,9 +69,6 @@ class gameRoomsListView(TemplateView):
         game_list = Game.objects.filter(game_started=0).order_by('-pub_date')
         paginator = Paginator(game_list, 10)
         page = request.GET.get('page')
-        print "Chequeamos si el campo page es null."
-        print page is None
-
         try:
             latest_game_list = paginator.page(page)
         except PageNotAnInteger:
