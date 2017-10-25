@@ -48,15 +48,16 @@ class MissileModelTestCase(TestCase):
         self.assertEqual(missile.owner, origin)
 
     def test_damage_dealt_on_shield(self):
-        origin = Planet.objects.get(pk=1)
-        target = Planet.objects.get(pk=2)
         missile = Missile.objects.get(pk=1)
         missile.deal_damage()
-        self.assertLess(target.shield_perc, 100)
+        self.assertLess(Planet.objects.get(pk=2).shield_perc, 100)
     
     def test_damage_dealt_on_pop(self):
-        origin = Planet.objects.get(pk=1)
-        target = Planet.objects.get(pk=2)
         missile = Missile.objects.get(pk=1)
         missile.deal_damage()
-        self.assertLess(target.population_qty, 5000)
+        self.assertLess(Planet.objects.get(pk=2).population_qty, 5000)
+
+    def test_time_to_target_returns_right_value(self):
+        missile = Missile.objects.get(pk=1)
+        time = missile.time_to_target()
+        self.assertLess(timezone.timedelta(seconds=missile.owner.game.time_missile), time)
