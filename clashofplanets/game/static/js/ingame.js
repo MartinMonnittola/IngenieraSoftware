@@ -165,8 +165,8 @@ function changeDistribution(){
 function attackPlanet(){
     $('.attack-planet').on("click", function(event) {
         event.preventDefault()
-        var cell = $(".attack-planet").closest('tr').find('td.tb_planet_id').first();
-        var planet_id = cell.text();
+        var cell = $(".attack-planet").closest('tr').find('td:nth-child(1)').text();
+        var planet_id = $(".attack-planet").closest('tr').find('td:nth-child(1)').text();
         var num = $('#gamenum').text();
         var csrftoken = getCookie('csrftoken');
         $.ajax({

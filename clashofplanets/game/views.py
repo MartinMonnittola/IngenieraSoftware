@@ -120,7 +120,9 @@ def make_player(request):
             planets_from_user = Planet.objects.filter(player=planet_owner, game=g.id)
             if len(planets_from_user) == 0:
                 p=Planet.create(request.user, g, planet_name, seed)
+                g.connected_players += 1
                 p.save() #creates player
+                g.save() 
             # session seed to identify planet
             request.session['id']=seed
             #Adds a cookie/session to indicate a legit entry
