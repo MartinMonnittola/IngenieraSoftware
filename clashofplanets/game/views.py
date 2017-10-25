@@ -6,7 +6,6 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
-from django.template import loader
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -230,7 +229,6 @@ def send_game_state(request):
 
 # start game view: Allows room user to start the game room
 def start_game(request, game_num):
-    template = loader.get_template('ingame.html')
     #form = attackForm(game_num)
     #gets the game by id
     g=Game.objects.get(id=game_num)
@@ -266,6 +264,7 @@ def send_attack(request):
     if request.method=='POST' and request.is_ajax():
         # get game room data
         planet_gameroom = int(request.POST.get('game_num'))
+        game = Game.objects.get(pk=planet_gameroom)
         # get planet target data
         planet_target_id = int(request.POST.get('planet_id'))
         planet_target =Planet.objects.get(pk=planet_target_id, game=planet_gameroom)
@@ -273,7 +272,15 @@ def send_attack(request):
         planet_attacker_owner = request.user
         planet_attacker = Planet.objects.get(player=planet_attacker_owner, game=planet_gameroom)
         # attack data
-        planet_target.population_qty -= 100
-        planet_target.save()
-        attack_dict = {}
+        if planet_attacker.missiles_qty > 0: # planet has missiles to launch
+            planet_target.population_qty -= game.hurt_to_population
+            planet_target.shield_perc -= game.hurt_to_shield
+            planet_attacker.missiles_qty -= 1
+            planet_target.save()
+            planet_attacker.save()
+            attack_message = 1
+        else: # planet doesnt have missiles to launch
+            attack_message = 0
+        # send attack msg (attack ok or error)
+        attack_dict = {'origin_id': planet_attacker.id, 'target_id': planet_target.id, 'message': attack_message}
     return JsonResponse(attack_dict, safe=False)

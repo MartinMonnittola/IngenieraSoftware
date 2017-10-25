@@ -177,7 +177,6 @@ function attackPlanet(){
                     planet_id: planet_id,
                     game_num: num,
                   },
-            dataType: 'json',
         });
     });
 }
