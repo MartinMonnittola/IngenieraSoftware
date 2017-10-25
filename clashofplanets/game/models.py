@@ -294,7 +294,7 @@ class Missile (models.Model):
         
         target.decrease_shield(gameroom.hurt_to_shield)
         target.decrease_population(damage)
-
+        
         target.save()
 
     def time_to_target(self):
