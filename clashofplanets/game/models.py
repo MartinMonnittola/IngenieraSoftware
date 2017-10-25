@@ -316,7 +316,7 @@ class Missile (models.Model):
         gameroom = self.owner.game
 
         now = timezone.datetime.now(timezone.utc)
-        missile_delay = timezone.timedelta(seconds=gameroom.time_misil)
+        missile_delay = timezone.timedelta(seconds=gameroom.time_missile)
 
         time_elapsed = self.launch_time - now
         time_to_impact = missile_delay - time_elapsed
