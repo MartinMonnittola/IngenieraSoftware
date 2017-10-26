@@ -9,32 +9,27 @@ from .forms import *
 
 class LoginAndSignUpViewTest(TestCase):
     def setUp(self):
-        """Create two users"""
-        self.credentials1 = {
-            'username': 'testuser1',
+        """Create user"""
+        self.credentials = {
+            'username': 'testuser',
             'password': '12345'}
-        self.credentials2 = {
-            'username': 'testuser2',
-            'password': '12345'}
-        test_user1 = User.objects.create_user(**self.credentials1)
+        test_user1 = User.objects.create_user(**self.credentials)
         test_user1.save()
-        test_user2 = User.objects.create_user(**self.credentials2)
-        test_user2.save()
 
     def test_login(self):
-        response = self.client.post('/login/', self.credentials1, follow=True)
+        response = self.client.post('/login/', self.credentials, follow=True)
         self.assertTrue(response.context['user'].is_active)
         self.assertTemplateUsed("game_rooms.html") #Template used for successfull login
 
     def test_bad_login(self):
-        response = self.client.post('/login/', username='notexist',password='123')
+        response = self.client.post('/login/', username='notexist', password='123')
         self.assertFalse(response.context['user'].is_active)
 
-    def test_game_rooms_after_loggin(self):
-        login = self.client.login(username='testuser1', password='12345')
+    def test_game_rooms_after_login(self):
+        self.client.login(**self.credentials)
         response = self.client.get(reverse('game_rooms'))
         #Check our user is logged in
-        self.assertEqual(str(response.context['user']), 'testuser1')
+        self.assertEqual(str(response.context['user']), 'testuser')
         #Check that we got a response "success"
         self.assertEqual(response.status_code, 200)
         #Check we used correct template
@@ -48,31 +43,36 @@ class LoginAndSignUpViewTest(TestCase):
 
     def test_signup_view_not_logged(self):
         c = Client()
-        response = c.get("/signup/")
+        c.get("/signup/")
         self.assertTemplateUsed("signup.html")
 
-    def test_signup_view_after_loggin(self):
-        login = self.client.login(username='testuser1', password='12345')
+    def test_signup_view_after_login(self):
+        self.client.login(**self.credentials)
         response = self.client.get(reverse('signup'))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/')
 
 
-class OtherViewsTest(TestCase):
+class GameRoomsListViewTest(TestCase):
     def setUp(self):
-        #Create two users
-        test_user1 = User.objects.create_user(username='testuser1', password='12345')
+        """Create user"""
+        self.credentials = {
+            'username': 'testuser',
+            'password': '12345'}
+        test_user1 = User.objects.create_user(**self.credentials)
         test_user1.save()
-        test_user2 = User.objects.create_user(username='testuser2', password='12345')
-        test_user2.save()
 
+    def
+
+
+class OtherViewsTest(TestCase):
     def test_instructions(self):
         c = Client()
-        response = c.get("/game_instructions")
+        c.get("/game_instructions")
         self.assertTemplateUsed("game_instructions.html")
 
     def test_home(self):
         c = Client()
-        response = c.get("/")
+        c.get("/")
         self.assertTemplateUsed("home.html")
 

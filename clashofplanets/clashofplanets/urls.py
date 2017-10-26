@@ -9,12 +9,12 @@ app_name = 'game'
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', homeView, name='home'),
-    url(r'^signup/$', signupView, name='signup'),
+    url(r'^$', home_view, name='home'),
+    url(r'^signup/$', signup_view, name='signup'),
     url(r'^login/$', Login.as_view(), name='login'),
     url(r'^logout/$', logout, {'next_page': settings.LOGOUT_REDIRECT_URL}),
-    url(r'^game_instructions/$', gameInstructionsView, name='game_instructions'),
-    url(r'^game_rooms/$', gameRoomsListView.as_view(), name='game_rooms'), #Game Room List (Lobby)
+    url(r'^game_instructions/$', game_instructions_view, name='game_instructions'),
+    url(r'^game_rooms/$', GameRoomsListView.as_view(), name='game_rooms'), #Game Room List (Lobby)
     url(r'^game_rooms/make_game/$', make_game, name='make_game'), #make game,
     url(r'^game_rooms/make_player/$', make_player, name='make_player'), #makes player and game
     url(r'^game_rooms/(?P<game_room_num>[0-9]+)/$', gameRoom, name='game_room'), #Actual game room, directed from make_player

@@ -25,26 +25,39 @@ import json
 
 # Create your views here.
 
-# login view
+
 class Login(FormView):
+    """
+    Login View
+    """
     template_name = 'login.html'
     form_class = AuthenticationForm
-    success_url =  reverse_lazy('game_rooms')
+    success_url = reverse_lazy('game_rooms')
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             return HttpResponseRedirect(self.get_success_url())
         else:
             return super(Login, self).dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         login(self.request, form.get_user())
         return super(Login, self).form_valid(form)
 
+
 # Main View
-def homeView(request):
+def home_view(request):
+    """
+    Home view template render
+    """
     return render(request, 'home.html')
 
+
 # Sign Up View (Allow Users to register on system)
-def signupView(request):
+def signup_view(request):
+    """
+    Sign Up View
+    """
     if not request.user.is_authenticated:
         if request.method == 'POST':
             form = SignUpForm(request.POST)
@@ -60,15 +73,24 @@ def signupView(request):
         return render(request, 'register.html', {'form': form})
     return HttpResponseRedirect('/')
 
-# game instructions view
-def gameInstructionsView(request):
+
+def game_instructions_view(request):
+    """
+    Render instructions view
+    """
     return render(request, 'game_instructions.html')
+
 
 # game room list view
 @method_decorator(login_required, name='dispatch')
-class gameRoomsListView(TemplateView):
+class GameRoomsListView(TemplateView):
+    """List available games"""
     template_name = 'game_rooms.html'
+
     def get(self, request, *args, **kwargs):
+        """
+        GameRoomsList get method
+        """
         game_list = Game.objects.filter(game_started=0).order_by('-pub_date')
         paginator = Paginator(game_list, 10)
         page = request.GET.get('page')
@@ -91,7 +113,12 @@ class gameRoomsListView(TemplateView):
         }
         request.session['gameEntry']="na"
         return self.render_to_response(context)
-    def post(self, request, *args, **kwargs):
+
+    @staticmethod
+    def post():
+        """
+        GameRoomsList post method
+        """
         return HttpResponseRedirect('/game_rooms/')
 
 # game room close view
