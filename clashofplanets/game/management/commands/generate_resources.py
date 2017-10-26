@@ -9,10 +9,16 @@ class Command(BaseCommand):
         for g in active_games:
             planets_in_active_rooms = Planet.objects.filter(game=g)
             for p in planets_in_active_rooms:
-                if p.population_qty < 5000:
-                    p.population_qty += 1
+                if p.population_qty < 10000:
+                    cantidad_asig = p.population_qty * p.population_distr / 100
+                    calculo_generar_pop = cantidad_asig / g.const_population
+                    p.population_qty += calculo_generar_pop
                 if p.shield_perc < 100:
-                    p.shield_perc += 1
-                p.missiles_qty += 1
+                    cant_asig_shield = p.population_qty * p.shield_distr / 100
+                    calculo_generar_shield = cant_asig_shield / g.const_shield
+                    p.shield_perc += calculo_generar_shield
+                cant_asig_mis = p.population_qty * p.missile_distr / 100
+                calculo_generar_missile = cant_asig_mis / g.const_missile
+                p.missiles_qty += calculo_generar_missile
                 p.save()
         return "Planets have been refilled"
