@@ -36,9 +36,10 @@
             <!-- solo el creador de la sala puede comenzar el juego-->
             <form action="{% url 'start_game' game.id %}" method="post">
                 {% csrf_token %}
-                <input type="submit" value="start game" class="metal">
+                <input type="submit" value="start game" class="metal start-game-btn">
             </form>
             {% endif %}
+            <p id="StartGameError" style="color: #ef3245" class="top5"></p>
         </div>
         <div class="col">
             <form action="{% url 'game_rooms' %}" method="post">
