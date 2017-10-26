@@ -43,12 +43,9 @@ class GameModelTestsCase(TestCase):
         self.assertLessEqual((game.const_missile + game.const_population + 
                            game.const_shield), 100) 
 
-
-
     def test_time_missile_has_not_value_negative_or_zero(self):
         game = Game.objects.get(pk=1)  
         self.assertGreater(game.time_missile, 0) 
-
 
     def test_initial_population_has_not_value_negative_or_zero(self): 
         game = Game.objects.get(pk=1) 
@@ -59,7 +56,6 @@ class GameModelTestsCase(TestCase):
         game = Game.objects.get(pk=1)
         planet = Planet.objects.get(pk=1, game=game)
         self.assertTrue(game.desactivatePlanet(planet.id))
-
 
     def test_can_not_desactivate_twice_a_planet(self):
         game = Game.objects.get(pk=1)
