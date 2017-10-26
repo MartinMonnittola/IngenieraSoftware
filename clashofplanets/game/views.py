@@ -1,3 +1,6 @@
+"""
+Game Views
+"""
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
@@ -6,11 +9,8 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseBadRequest
-from django.template.response import TemplateResponse
-from django.template import RequestContext
-from django.urls import reverse
-from django.utils import timezone
+from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
@@ -20,8 +20,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from game.forms import *
 from game.models import *
 from random import *
-import math
-import json
+
 
 # Create your views here.
 
@@ -35,12 +34,18 @@ class Login(FormView):
     success_url = reverse_lazy('game_rooms')
 
     def dispatch(self, request, *args, **kwargs):
+        """
+        Method that redirects to game_rooms when logged in
+        """
         if request.user.is_authenticated():
             return HttpResponseRedirect(self.get_success_url())
         else:
             return super(Login, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
+        """
+        Method that checks for a valid form
+        """
         login(self.request, form.get_user())
         return super(Login, self).form_valid(form)
 
@@ -125,16 +130,28 @@ class GameRoomsListView(TemplateView):
 # game room close view
 @login_required
 def game_closed(request):
+    """
+    Game close view
+    """
     return render(request, 'gameclosed.html')
 
 
 # game room inside view
 @login_required
-def gameRoom(request, game_room_num):
-    g=Game.objects.filter(id=game_room_num)  # Game ID =/= Game room num, find the game that has the same room num
-    planets = Planet.objects.filter(game=g)  # Using g, we can find the players in the game properly since game compares id's
-    game=get_object_or_404(g)
-    context = {'planets': planets,'game': game, 'gameid': str(game.id)}
+def game_room(request, game_room_num):
+    """
+    Room view after join
+    :param request: Request Object
+    :param game_room_num: Number of game
+    :return: HTTPResponse Object
+    """
+    # Game ID =/= Game room num, find the game that has the same room num
+    g = Game.objects.filter(id=game_room_num)
+    # Using g, we can find the players in the game properly since game compares
+    #  id's
+    planets = Planet.objects.filter(game=g)
+    game = get_object_or_404(g)
+    context = {'planets': planets, 'game': game, 'gameid': str(game.id)}
     return render(request, 'gameroom.html', context)
 
 
@@ -158,35 +175,36 @@ def make_player(request):
             return JsonResponse(data, safe=False)
         g = get_object_or_404(gamelist)
         planet_owner = request.user.id
-        planets_from_user = Planet.objects.filter(player=planet_owner, game=g.id)
-
-        if (int(g.game_started) == 0) and (g.connected_players < g.max_players):
+        planets_from_user = Planet.objects.filter(player=planet_owner,
+                                                  game=g.id)
+        if (int(g.game_started) == 0) and (g.connected_players <
+                                           g.max_players):
             # game hasn't started and players < max players
             # seed will be used for randomization
-            seed = randint(1, 90001)
+            rseed = randint(1, 90001)
             if len(planets_from_user) == 0:
-                p = Planet.create(request.user, g, planet_name, seed)
+                p = Planet.create(request.user, g, planet_name, rseed)
                 g.connected_players += 1
                 p.save()  # creates player
                 g.save()
             data = {'gameNumber': game_room_num}
             return JsonResponse(data, safe=False)
-        if (int(g.game_started) == 0) and (g.connected_players == g.max_players):
+        if (int(g.game_started) == 0) and (g.connected_players ==
+                                           g.max_players):
             # game hasn't started and is full
             if len(planets_from_user) > 0:
-                data={'gameNumber': game_room_num}
+                data = {'gameNumber': game_room_num}
                 return JsonResponse(data, safe=False)
             else:
-                data={'gameNumber': -2}
+                data = {'gameNumber': -2}
                 return JsonResponse(data, safe=False)
         else:
             # game has already started, send to sorry page
-            data = {'gameNumber':0}
+            data = {'gameNumber': 0}
             return JsonResponse(data, safe=False)
     else:
-        form = gameForm()
-        # Redirects to game room
-        return HttpResponseRedirect('%s' % game_num)
+        # Redirects to lobby
+        return HttpResponseRedirect('/game_rooms/')
 
 
 # make game room
@@ -197,25 +215,24 @@ def make_game(request):
     :param request: request object
     :return: Json Response of created game
     """
-    #create game
-    if (request.method=='POST' and request.is_ajax()):
+    # create game
+    if request.method == 'POST' and request.is_ajax():
         # form related stuff, gets data submitted in the template
-        form = gameForm(request.POST)
-        planet_name=request.POST.get('pname')
-        room_name=request.POST.get('rname')
-        max_players=request.POST.get('max_players')
-        #creates game
-        g=Game.create(request.user, room_name, max_players)
+        planet_name = request.POST.get('pname')
+        room_name = request.POST.get('rname')
+        max_players = request.POST.get('max_players')
+        # creates game
+        g = Game.create(request.user, room_name, max_players)
         # +1 to room connected players
         g.connected_players += 1
         g.save()
         game_id = g.id
         # create planet
-        seed=randint(1,90001)
-        #Game.joinGame(g, request.user, planet_name, seed)
-        p=Planet.create(request.user, g, planet_name, seed)
-        p.save() #creates player
-        data={'gameNumber': game_id}
+        rseed = randint(1, 90001)
+        # Game.joinGame(g, request.user, planet_name, rseed)
+        p = Planet.create(request.user, g, planet_name, rseed)
+        p.save()  # creates player
+        data = {'gameNumber': game_id}
     else:
         return HttpResponseBadRequest("Bad Request")
     return JsonResponse(data, safe=False)
@@ -223,11 +240,14 @@ def make_game(request):
 
 # send a list of players as a json to js file
 def send_planets(request):
-    if (request.method=='POST' and request.is_ajax()):
-        game_num =request.POST.get('num')
-        planets = Planet.objects.filter(game=game_num) #players in game
-        pdict={}
-        plist=[]
+    """
+    Send list of planets
+    :return: JSON Response object
+    """
+    if request.method == 'POST' and request.is_ajax():
+        game_num = request.POST.get('num')
+        planets = Planet.objects.filter(game=game_num)  # players in game
+        plist = []
         current_user = request.user.username
         for tmpplanet in planets:
             planet_name = tmpplanet.name
@@ -245,7 +265,7 @@ def send_planets(request):
                 'missiles': planet_missiles,
             }
             plist.append(record)
-        pdict={'planets': plist, 'user': current_user}
+        pdict = {'planets': plist, 'user': current_user}
         return JsonResponse(pdict, safe=False)
 
 
@@ -254,9 +274,8 @@ def send_games(request):
     """
     Send open games
     """
-    if request.method=='POST' and request.is_ajax():
-        games = Game.objects.filter(game_started=False) #all open games
-        gdict = {}
+    if request.method == 'POST' and request.is_ajax():
+        games = Game.objects.filter(game_started=False)  # all open games
         glist = []
         for tmpgame in games:
             g_name = tmpgame.game_name
@@ -281,69 +300,93 @@ def send_game_state(request):
     """
     Send game room state
     """
-    if request.method=='POST' and request.is_ajax():
-        game_num =request.POST.get('num')
-        room = Game.objects.get(pk=game_num) # players in game
-        sdict={}
+    if request.method == 'POST' and request.is_ajax():
+        game_num = request.POST.get('num')
+        room = Game.objects.get(pk=game_num)  # players in game
         current_room_state = room.game_started
         players_in_room = room.connected_players
-        sdict={'game_state': current_room_state, 'players_in_room': players_in_room,}
+        sdict = {'game_state': current_room_state,
+                 'players_in_room': players_in_room}
         return JsonResponse(sdict, safe=False)
+
 
 # start game view: Allows room user to start the game room
 def start_game(request, game_num):
-    #form = attackForm(game_num)
-    #gets the game by id
-    g=Game.objects.get(id=game_num)
-    #players in game, sorted
+    """
+    Start game view
+    :param request:
+    :param game_num:
+    :return:
+    """
+    # form = attackForm(game_num)
+    # gets the game by id
+    g = Game.objects.get(id=game_num)
+    # players in game, sorted
     planets = Planet.objects.filter(game=g.id).order_by('id')
     # set game state to 1
     Game.startGame(g)
-    your_planet=Planet.objects.get(player=request.user, game=g)
+    your_planet = Planet.objects.get(player=request.user, game=g)
     context = {
         'planets': planets,
         'your_planet': your_planet,
         'game': game_num,
-        #'attack_form': form,
-        }
+        # 'attack_form': form,
+    }
     return render(request, 'ingame.html', context)
+
 
 # Allow players to change their resources generation rate
 def change_distribution(request):
-    if request.method=='POST' and request.is_ajax():
-        game_num=int(request.POST.get('game_num'))
-        population=int(request.POST.get('population'))
-        shield=int(request.POST.get('shield'))
-        missiles=int(request.POST.get('missiles'))
-        planet=Planet.objects.filter(player=request.user, game=game_num)
-        p=get_object_or_404(planet)
+    """
+    Change distribution view
+    """
+    if request.method == 'POST' and request.is_ajax():
+        game_num = int(request.POST.get('game_num'))
+        population = int(request.POST.get('population'))
+        shield = int(request.POST.get('shield'))
+        missiles = int(request.POST.get('missiles'))
+        planet = Planet.objects.filter(player=request.user, game=game_num)
+        p = get_object_or_404(planet)
         p.assign_perc_rate(population, shield, missiles)
         p.save()
-        rdict = {'pop_dis': population, 'shield_dis': shield, 'missile_dist': missiles}
+        rdict = {'pop_dis': population, 'shield_dis': shield,
+                 'missile_dist': missiles}
+    else:
+        rdict = {'error': 'bad_request'}
     return JsonResponse(rdict, safe=False)
+
 
 # Allow players to attack their enemies
 def send_attack(request):
-    if request.method=='POST' and request.is_ajax():
+    """
+    View to attack enemy planets
+    """
+    if request.method == 'POST' and request.is_ajax():
         # get game room data
         planet_gameroom = int(request.POST.get('game_num'))
         game = Game.objects.get(pk=planet_gameroom)
         # get planet target data
         planet_target_id = int(request.POST.get('planet_id'))
-        planet_target =Planet.objects.get(pk=planet_target_id, game=planet_gameroom)
+        planet_target = Planet.objects.get(pk=planet_target_id,
+                                           game=planet_gameroom)
         # get planet attacker data
         planet_attacker_owner = request.user
-        planet_attacker = Planet.objects.get(player=planet_attacker_owner, game=planet_gameroom)
+        planet_attacker = Planet.objects.get(player=planet_attacker_owner,
+                                             game=planet_gameroom)
         # attack data
-        if planet_attacker.missiles_qty > 0: # planet has missiles to launch
+        if planet_attacker.missiles_qty > 0:  # planet has missiles to launch
             planet_target.population_qty -= game.hurt_to_population
             planet_target.shield_perc -= game.hurt_to_shield
             planet_attacker.missiles_qty -= 1
             planet_target.save()
             planet_attacker.save()
             attack_message = 1
-        else: # planet doesnt have missiles to launch
+        else:  # planet doesnt have missiles to launch
             attack_message = 0
         # send attack msg (attack ok or error)
-        attack_dict = {'origin_id': planet_attacker.id, 'target_id': planet_target.id, 'message': attack_message}
+        attack_dict = {'origin_id': planet_attacker.id,
+                       'target_id': planet_target.id,
+                       'message': attack_message}
+    else:
+        attack_dict = {'error': 'bad_request'}
     return JsonResponse(attack_dict, safe=False)

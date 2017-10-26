@@ -1,7 +1,8 @@
 from django.test import TestCase
 from .forms import * 
 
-class gameFormTestsCase(TestCase):
+
+class GameFormTestsCase(TestCase):
     def setUp(self):
         user = User(username="GGG", first_name="GGGLJH", last_name= "GGGLKJLVG",
                     email="dvdfv@gmail.com", password="Aa12345678")
