@@ -90,12 +90,7 @@ class GameModelTestsCase(TestCase):
             self.assertFalse(game.joinGame(user_id=user.id, name="Sion", seed=2))
         else:
             raise AssertionError
-    """
-    def test_can_create_game():
-        game = Game.create(user=user)
-        game.save()
-    """ 
-
+            
 
 class CreateGameTestsCase(TestCase):
     def setUp(self):
