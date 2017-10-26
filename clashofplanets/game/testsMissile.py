@@ -53,6 +53,9 @@ class MissileModelTestCase(TestCase):
         self.assertLess(Planet.objects.get(pk=2).shield_perc, 100)
     
     def test_damage_dealt_on_pop(self):
+        target = Planet.objects.get(pk=2)
+        target.decrease_shield(100)
+        target.save()
         missile = Missile.objects.get(pk=1)
         missile.deal_damage()
         self.assertLess(Planet.objects.get(pk=2).population_qty, 5000)
