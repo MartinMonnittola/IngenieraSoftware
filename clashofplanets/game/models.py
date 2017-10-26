@@ -175,6 +175,7 @@ class Game(models.Model):
             succesfull = False
         return succesfull
 
+
 class Planet(models.Model):
     """
     Clase Planet: Contiene toda la informacion acerca del planeta de cada
