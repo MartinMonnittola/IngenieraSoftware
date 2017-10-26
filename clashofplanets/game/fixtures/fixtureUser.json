@@ -1,7 +1,7 @@
 [{"model":"auth.User",
 "pk":  1,
 "fields":{
-    "username":"Jehova",
+    "username":"Jhv",
     "first_name": "Rey",
     "last_name": "Ishi",
     "email": "jhv@gmail.com",
