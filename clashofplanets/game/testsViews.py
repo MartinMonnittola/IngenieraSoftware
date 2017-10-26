@@ -87,12 +87,16 @@ class GameRoomsListViewTest(TestCase):
         Create some games for listing, owners are testuser2 and testuser3,
         so testuser1 can join
         """
-        game1 = Game(game_name="Game1", max_players=10, user_id=1, pub_date=timezone.now())
-        game1_owner_planet = Planet(name="Planet1", seed="1234", game_id=1, player_id=2)
+        game1 = Game(game_name="Game1", max_players=10, user_id=1,
+                     pub_date=timezone.now())
+        game1_owner_planet = Planet(name="Planet1", seed="1234", game_id=1,
+                                    player_id=2)
         game1_owner_planet.save()
         game1.save()
-        game2 = Game(game_name="Game2", max_players=7, user_id=2, pub_date=timezone.now())
-        game2_owner_planet = Planet(name="Planet2", seed="12345", game_id=2, player_id=3)
+        game2 = Game(game_name="Game2", max_players=7, user_id=2,
+                     pub_date=timezone.now())
+        game2_owner_planet = Planet(name="Planet2", seed="12345", game_id=2,
+                                    player_id=3)
         game2_owner_planet.save()
         game2.save()
 
@@ -112,8 +116,10 @@ class GameRoomsListViewTest(TestCase):
             'max_players': 10
         }
 
-        response = self.client.post('/game_rooms/make_game/', data,
-                                    **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
+        response = self.client.post(
+            '/game_rooms/make_game/',
+            data,
+            **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
         data = json.loads(response.content)
         self.assertEqual(Game.objects.count(), 1)
         self.assertEqual(Planet.objects.count(), 1)
@@ -129,8 +135,10 @@ class GameRoomsListViewTest(TestCase):
             'pname': 'Planet3',
             'num': 1,
         }
-        response = self.client.post('/game_rooms/make_player/', data,
-                                    **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
+        response = self.client.post(
+            '/game_rooms/make_player/',
+            data,
+            **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
         data = json.loads(response.content)
         self.assertEqual(Planet.objects.count(), 3)
         self.assertEqual(Planet.objects.get(pk=3).name.__str__(), "Planet3")

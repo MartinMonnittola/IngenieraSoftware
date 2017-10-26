@@ -248,12 +248,16 @@ def send_planets(request):
         pdict={'planets': plist, 'user': current_user}
         return JsonResponse(pdict, safe=False)
 
-#send a list of numbers of all open games as a json to js file
+
+# send a list of numbers of all open games as a json to js file
 def send_games(request):
-    if (request.method=='POST' and request.is_ajax()):
-        games=Game.objects.filter(game_started=False) #all open games
-        gdict={}
-        glist=[]
+    """
+    Send open games
+    """
+    if request.method=='POST' and request.is_ajax():
+        games = Game.objects.filter(game_started=False) #all open games
+        gdict = {}
+        glist = []
         for tmpgame in games:
             g_name = tmpgame.game_name
             g_max_players = tmpgame.max_players
@@ -268,14 +272,18 @@ def send_games(request):
                 'id': g_id,
             }
             glist.append(record)
-        gdict={'games': glist}
+        gdict = {'games': glist}
         return JsonResponse(gdict, safe=False)
 
-#send the game room state of current as a json to js file
+
+# send the game room state of current as a json to js file
 def send_game_state(request):
-    if (request.method=='POST' and request.is_ajax()):
+    """
+    Send game room state
+    """
+    if request.method=='POST' and request.is_ajax():
         game_num =request.POST.get('num')
-        room = Game.objects.get(pk=game_num) #players in game
+        room = Game.objects.get(pk=game_num) # players in game
         sdict={}
         current_room_state = room.game_started
         players_in_room = room.connected_players

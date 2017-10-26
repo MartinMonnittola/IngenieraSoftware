@@ -76,6 +76,7 @@ $(document).ready(function () {
     listGames();
     //Create game is clicked
     $("#create").click(function (e) {
+        console.log("creando");
         $("#join").prop('disabled', true);
         e.preventDefault();
         var csrftoken = getCookie('csrftoken');
