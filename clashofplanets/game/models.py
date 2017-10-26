@@ -139,7 +139,7 @@ class Game(models.Model):
                 succesfull = False
             # Notificamo al usuario de la eliminacion de su planeta.
             #user.notify_devastation()
-        except Planet.DoesNotExist, User.DoesNotExist:
+        except (Planet.DoesNotExist, User.DoesNotExist):
             succesfull = False
         return succesfull
 
