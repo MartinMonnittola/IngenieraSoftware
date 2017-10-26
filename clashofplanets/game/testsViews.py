@@ -1,3 +1,6 @@
+"""
+Views Tests
+"""
 from django.test import TestCase, Client
 from django.urls import reverse
 import json
@@ -140,4 +143,3 @@ class OtherViewsTest(TestCase):
         c = Client()
         c.get("/")
         self.assertTemplateUsed("home.html")
-

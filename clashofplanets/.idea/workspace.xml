@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="407dc6e8-cf10-4e1a-8835-6076965541d8" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/game/static/js/game.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/clashofplanets/urls.py" afterPath="$PROJECT_DIR$/clashofplanets/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/game/forms.py" afterPath="$PROJECT_DIR$/game/forms.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/game/models.py" afterPath="$PROJECT_DIR$/game/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/game/static/js/ingame.js" afterPath="$PROJECT_DIR$/game/static/js/ingame.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/game/testsViews.py" afterPath="$PROJECT_DIR$/game/testsViews.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/game/views.py" afterPath="$PROJECT_DIR$/game/views.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -47,10 +40,10 @@
       <file leaf-file-name="testsViews.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/game/testsViews.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
-              <caret line="129" column="48" lean-forward="false" selection-start-line="129" selection-start-column="48" selection-end-line="129" selection-end-column="48" />
+            <state relative-caret-position="17">
+              <caret line="1" column="11" lean-forward="false" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="11" />
               <folding>
-                <element signature="e#0#40#0" expanded="true" />
+                <element signature="e#20#60#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -181,8 +174,8 @@
         <option value="$PROJECT_DIR$/game/static/js/ingame.js" />
         <option value="$PROJECT_DIR$/game/forms.py" />
         <option value="$PROJECT_DIR$/clashofplanets/urls.py" />
-        <option value="$PROJECT_DIR$/game/testsViews.py" />
         <option value="$PROJECT_DIR$/game/views.py" />
+        <option value="$PROJECT_DIR$/game/testsViews.py" />
       </list>
     </option>
   </component>
@@ -760,10 +753,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/game/testsViews.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="129" column="48" lean-forward="false" selection-start-line="129" selection-start-column="48" selection-end-line="129" selection-end-column="48" />
+        <state relative-caret-position="17">
+          <caret line="1" column="11" lean-forward="false" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="11" />
           <folding>
-            <element signature="e#0#40#0" expanded="true" />
+            <element signature="e#20#60#0" expanded="true" />
           </folding>
         </state>
       </provider>
