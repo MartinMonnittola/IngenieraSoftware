@@ -206,8 +206,6 @@ def make_game(request):
         max_players=request.POST.get('max_players')
         #creates game
         g=Game.create(request.user, room_name, max_players)
-        # +1 to room connected players
-        g.connected_players += 1
         g.save()
         game_id = g.id
         # create planet

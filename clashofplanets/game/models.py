@@ -114,7 +114,7 @@ class Game(models.Model):
                    max_players=max_players,
                    game_started=False,
                    user=owner)
-        # game.save
+        game.connected_players += 1
         return game
 
     def joinGame(self, user_id, name, seed):
