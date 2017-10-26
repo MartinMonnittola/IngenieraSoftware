@@ -9,7 +9,7 @@ from django.utils import timezone
 
 class Game(models.Model):
     """
-    Game Class: Contains all the info about a game lobby (pre-game status).
+    Clase Game contiene informacion sobre las partidas en espera y en ejecucion.
     """
     # User creador de la partida.
     user = models.ForeignKey(User,
@@ -103,38 +103,31 @@ class Game(models.Model):
         """
         Crea una partida en estado de espera.
 
-        Entrada: Gm, Clase Game.
-                 initial_poblation, numero que indica la poblacion inicial.
-                 const_misil, pocentaje que indica el pocentaje de pobladores
-                              asignado al recurso misil.
-                 const_shield, pocentaje que indica el pocentaje de pobladores
-                               asignado al recurso escudo.
-                 const_poblation, pocentaje que indica el pocentaje de
-                                  pobladores asignado al recurso poblacion.
-                 time_missile, tiempo que tarda el misil en llegar al planeta
-                               atacado.
-                 hurt_to_population, numero que indica el porcentaje de daño a
-                                     la poblacion.
-                 hurt_to_shield, numero que indica el porcentaje de daño a la
-                                 escudo.
+        Entrada: cls, Clase Game.
+                 game_name, nombre del partida.
+                 owner, usurio creador del partida.
                  max_players, maximo numero de jugadores.
-                 user, usuario creador de la partida.
-        Salida: El Game creado.
+        Salida: game,  objeto Game creado.
         """
         game = cls(pub_date=timezone.now(),
                    game_name=name,
                    max_players=max_players,
                    game_started=False,
                    user=owner)
-        # game.save
+        game.connected_players += 1
         return game
 
     def joinGame(self, user_id, name, seed):
         """
-        Join Game:
-        Procedure that allow players to join gameGames.
-        INPUT: The game itself, the user who wants to join, and the planet name
-        OUTPUT: Boolean for succesfull or not join game action.
+        Une a un usuario al usuario a la partida.
+
+        Entrada: self, el objeto partida mismo.
+                 user_id, entero que representa la clave primaria del user
+                          que se unira a la partida.
+                 name, nombre del planeta que se creara para el usuario con
+                       pk user_id.
+                 seed, clave de session.
+        Salida:  bool que indica si el usuario pudo unirse a la partida.
         """
         try:
             user = User.objects.get(pk=user_id)
@@ -166,7 +159,7 @@ class Game(models.Model):
         Desactiva un planeta y elimina sus recursos.
 
         Entrada: planet_id, clave primaria del planeta.
-        Salida:  succesfull, bool que indica si elimino el planeta.
+        Salida:  bool que indica si elimino el planeta.
         """
         try:
             planet = Planet.objects.get(pk=planet_id, game=self)
@@ -181,25 +174,6 @@ class Game(models.Model):
         except (Planet.DoesNotExist, User.DoesNotExist):
             succesfull = False
         return succesfull
-
-    """
-    DeleteGame:
-    Procedure that allows the gameGame owner to delete theGame.
-    INPUT: Owner user id.
-    OUTPUT: Boolean for succesfull or not delete gameGame object.
-    """
-    """"
-    def delete(self, user_id):
-        try:
-            Game =Game.objects.get(owner=user_id)
-            game_owner =Game.owner
-            Game.deactivatePlanet(game_owner)
-            Game.delete()
-            succesfull = True
-        except Game.DoesNotExist:
-            succesfull = False
-        return succesfull
-    """
 
 
 class Planet(models.Model):

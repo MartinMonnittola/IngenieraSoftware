@@ -51,6 +51,15 @@ function gameState() {
         data: {csrfmiddlewaretoken: csrftoken, num: num},
         url: "get_game_state/",
         success: function (json) {
+            if (json.players_in_room < 2) {
+                $(".start-game-btn").prop('disabled', true);
+                $('#StartGameError').text("You can't start the game with less than 2 players.");
+            }
+            else {
+                $(".start-game-btn").prop('disabled', false);
+                $('#StartGameError').text("");
+            }
+
             var rst = json.game_state;
             if (rst == 1) {
                 alert("Game has been started!!!");

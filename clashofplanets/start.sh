@@ -1,33 +1,53 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-HOST=127.0.0.1:8000
-UPDATE_TIME=2
-COUNT=0
 
 # When receive a ctrl+c
 function ctrl_c() {
-    while [ $COUNT -lt 3 ]; do
-        echo -e "Waiting until django processes spawn..."
-        sleep 2
-        COUNT=$(ps ax | grep $HOST | wc -l)
-    done
-
-    echo -e Killing django...
-    fuser -k 8000/tcp
-    exit 0
+        kill -SIGTERM -$$
 }
 
-# Catch ctrl+c
-trap ctrl_c INT
+usage () {
+    echo "Usage: $0 [-l IP:PORT] [-u SECONDS]"
+}
 
-/usr/bin/python manage.py runserver $HOST &
+main() {
 
-# Wait 5 seconds until the game loads
-sleep 5
+    # Default options
+    HOST=127.0.0.1:8000
+    UPDATE_TIME=2
 
-# Sleep and run the updates
-while true
-do
-    sleep $UPDATE_TIME
-    python manage.py generate_resources
-done
+    while getopts "l:u:h" opt; do
+        case ${opt} in
+            l )  HOST=$OPTARG
+                 ;;
+            u )  UPDATE_TIME=$OPTARG
+                 ;;
+            h )  usage
+                 exit 0
+                 ;;
+            \? ) usage 
+                 exit 1
+                 ;;
+        esac
+    done
+
+    if [[ "$HOST" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+$ ]] &&
+       [[ "$UPDATE_TIME" =~ [0-9]+ ]]; then
+        # Catch ctrl+c
+        trap ctrl_c INT
+
+        # Execute the game
+        /usr/bin/python manage.py runserver $HOST &
+
+        # Wait for UPDATE_TIME seconds and run the updates
+        while true
+        do
+            sleep $UPDATE_TIME
+            python manage.py generate_resources
+        done
+    else
+        echo "Wrong parameters format. Exiting..."
+    fi
+}
+
+main $@

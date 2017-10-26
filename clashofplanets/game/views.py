@@ -383,11 +383,10 @@ def send_attack(request):
         planet_attacker = Planet.objects.get(player=planet_attacker_owner,
                                              game=planet_gameroom)
         # attack data
-        if planet_attacker.missiles_qty > 0:  # planet has missiles to launch
-            planet_target.population_qty -= game.hurt_to_population
-            planet_target.shield_perc -= game.hurt_to_shield
+        if planet_attacker.missiles_qty > 0: # planet has missiles to launch
+            m = Missile.create(owner=planet_attacker,target=planet_target)
+            m.deal_damage()
             planet_attacker.missiles_qty -= 1
-            planet_target.save()
             planet_attacker.save()
             attack_message = 1
         else:  # planet doesnt have missiles to launch

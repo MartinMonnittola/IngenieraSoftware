@@ -9,12 +9,12 @@
     "connected_players":4,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -28,12 +28,12 @@
     "connected_players":3,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -47,12 +47,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -66,12 +66,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -85,12 +85,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -104,12 +104,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -123,12 +123,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 }},
 {"model":"game.game",
 "pk":  8,
@@ -141,12 +141,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 }},
 {"model":"game.game",
 "pk":  9,
@@ -159,12 +159,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -178,12 +178,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -197,12 +197,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -216,12 +216,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -235,12 +235,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -254,12 +254,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -273,12 +273,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -292,12 +292,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -311,12 +311,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -330,12 +330,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -349,12 +349,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }}
 ,{"model":"game.game",
@@ -368,12 +368,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -387,12 +387,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -406,12 +406,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -425,12 +425,12 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }},
 {"model":"game.game",
@@ -444,11 +444,11 @@
     "connected_players":2,
     "bot_players":0,
     "time_missile":1,
-    "initial_population":1,
-    "const_population": 1,
-    "const_shield":1,
-    "const_missile":1, 
-    "hurt_to_population":1,
-    "hurt_to_shield":1
+    "initial_population":100,
+    "const_population": 10,
+    "const_shield":50,
+    "const_missile":40, 
+    "hurt_to_population":10,
+    "hurt_to_shield":10
 
 }}]
