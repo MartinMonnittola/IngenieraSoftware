@@ -115,7 +115,7 @@ class GameRoomsListView(TemplateView):
         return self.render_to_response(context)
 
     @staticmethod
-    def post():
+    def post(request):
         """
         GameRoomsList post method
         """
@@ -138,7 +138,7 @@ def gameRoom(request, game_room_num):
     return render(request, 'gameroom.html', context)
 
 
-#join game room
+# join game room
 @login_required
 def make_player(request):
     """
@@ -188,6 +188,7 @@ def make_player(request):
         # Redirects to game room
         return HttpResponseRedirect('%s' % game_num)
 
+
 # make game room
 @login_required
 def make_game(request):
@@ -219,7 +220,8 @@ def make_game(request):
         return HttpResponseBadRequest("Bad Request")
     return JsonResponse(data, safe=False)
 
-#send a list of players as a json to js file
+
+# send a list of players as a json to js file
 def send_planets(request):
     if (request.method=='POST' and request.is_ajax()):
         game_num =request.POST.get('num')

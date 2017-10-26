@@ -21,10 +21,12 @@ class LoginAndSignUpViewTest(TestCase):
     def test_login(self):
         response = self.client.post('/login/', self.credentials, follow=True)
         self.assertTrue(response.context['user'].is_active)
-        self.assertTemplateUsed("game_rooms.html")  # Template used for successful login
+        # Template used for successful login
+        self.assertTemplateUsed("game_rooms.html")
 
     def test_bad_login(self):
-        response = self.client.post('/login/', username='notexist', password='123')
+        response = self.client.post('/login/',
+                                    username='notexist', password='123')
         self.assertFalse(response.context['user'].is_active)
 
     def test_game_rooms_after_login(self):
@@ -76,12 +78,14 @@ class GameRoomsListViewTest(TestCase):
         test_user3 = User.objects.create_user(**self.credentials3)
         test_user3.save()
 
-        self.client.login(**self.credentials1)  # testuser1 with id 1 is logged in
+        # testuser1 with id 1 log in
+        self.client.login(**self.credentials1)
 
     @staticmethod
     def create_games():
         """
-        Create some games for listing, owners are testuser2 and testuser3, so testuser1 can join
+        Create some games for listing, owners are testuser2 and testuser3,
+        so testuser1 can join
         """
         game1 = Game(game_name="Game1", max_players=10, user_id=1, pub_date=timezone.now())
         game1_owner_planet = Planet(name="Planet1", seed="1234", game_id=1, player_id=2)
