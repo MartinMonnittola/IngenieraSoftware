@@ -6,6 +6,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils import timezone
 
+
 class Game(models.Model):
     """
     Game Class: Contains all the information about a game lobby (pre-game status).
@@ -15,7 +16,7 @@ class Game(models.Model):
     # Nombre de la partida.
     game_name = models.CharField(max_length=20, verbose_name='Game Name', default='Default Name')
     # Tiempo en el que se inicio la partida.
-    pub_date = models.DateTimeField(verbose_name='Date added')
+    pub_date = models.DateTimeField(verbose_name='Date added', default=timezone.now)
     # Estado de la partida.
     game_started = models.BooleanField(default=0,verbose_name='Game started (True/False)')
     # Numero maximo de jugadores.

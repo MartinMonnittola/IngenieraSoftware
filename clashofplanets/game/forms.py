@@ -30,6 +30,7 @@ class SignUpForm(UserCreationForm):
             raise forms.ValidationError(u'Email addresses must be unique.')
         return email
 
+
 class gameForm(forms.ModelForm):
     planet_name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_nameC', 'required': True}))
     game_name = forms.CharField(widget=forms.TextInput(attrs={'id':'game_nameC', 'required': True}))

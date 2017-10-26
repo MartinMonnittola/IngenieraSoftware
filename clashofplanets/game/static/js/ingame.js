@@ -4,10 +4,10 @@ function getCookie(name) {
         var cookies = document.cookie.split(';');
         for (var i = 0; i < cookies.length; i++) {
             var cookie = jQuery.trim(cookies[i]);
-          	// Does this cookie string begin with the name we want?
-          	if (cookie.substring(0, name.length + 1) == (name + '=')) {
-            	cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-              	break;
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
         }
     }
@@ -18,9 +18,9 @@ function timeStamp() {
     // Create a date object with the current time
     var now = new Date();
     // Create an array with the current month, day and time
-    var date = [ now.getMonth() + 1, now.getDate(), now.getFullYear() ];
+    var date = [now.getMonth() + 1, now.getDate(), now.getFullYear()];
     // Create an array with the current hour, minute and second
-    var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ];
+    var time = [now.getHours(), now.getMinutes(), now.getSeconds()];
     // Determine AM or PM suffix based on the hour
     var suffix = ( time[0] < 12 ) ? "AM" : "PM";
     // Convert hour from military time
@@ -29,9 +29,9 @@ function timeStamp() {
     time[0] = time[0] || 12;
 
     // If seconds and minutes are less than 10, add a zero
-    for ( var i = 1; i < 3; i++ ) {
-        if ( time[i] < 10 ) {
-          time[i] = "0" + time[i];
+    for (var i = 1; i < 3; i++) {
+        if (time[i] < 10) {
+            time[i] = "0" + time[i];
         }
     }
     // Return the formatted string
@@ -39,48 +39,48 @@ function timeStamp() {
     return time.join(":") + " " + suffix;
 }
 
-function listPlanets(){
-	var csrftoken = getCookie('csrftoken');
+function listPlanets() {
+    var csrftoken = getCookie('csrftoken');
     var num = $('#gamenum').text();
     var timest = timeStamp();
-	$.ajax({
-	    type : 'POST',
-	    data : { csrfmiddlewaretoken : csrftoken, num: num},
-	    url : "get_planets/",
-		success : function(json) {
-			var plist = json.planets;
+    $.ajax({
+        type: 'POST',
+        data: {csrfmiddlewaretoken: csrftoken, num: num},
+        url: "get_planets/",
+        success: function (json) {
+            var plist = json.planets;
             var user = json.user;
-			$('#playerList').empty();
-			for (var i = 0; i < plist.length; i++) {
-                if ((plist[i].owner)==(user)){
+            $('#playerList').empty();
+            for (var i = 0; i < plist.length; i++) {
+                if ((plist[i].owner) == (user)) {
                     $('#mypopAvailable').empty();
                     $('#mypopAvailable').append(plist[i].pop);
                     $('#mymissilesAvailable').empty();
                     $('#mymissilesAvailable').append(plist[i].missiles);
                 }
-                $('#planet-'+plist[i].id+' .tb_planet_pop').empty();
-				$('#planet-'+plist[i].id+' .tb_planet_pop').append(plist[i].pop);
-                $('#planet-'+plist[i].id+' .tb_planet_shield').empty();
-                $('#planet-'+plist[i].id+' .tb_planet_shield').append(plist[i].shield);
-			}
-        setTimeout(listPlanets, 2000);
+                $('#planet-' + plist[i].id + ' .tb_planet_pop').empty();
+                $('#planet-' + plist[i].id + ' .tb_planet_pop').append(plist[i].pop);
+                $('#planet-' + plist[i].id + ' .tb_planet_shield').empty();
+                $('#planet-' + plist[i].id + ' .tb_planet_shield').append(plist[i].shield);
+            }
+            setTimeout(listPlanets, 2000);
         },
-		error : function(xhr,errmsg,err) {
-			console.log(xhr.status + ": " + xhr.responseText);
-		},
+        error: function (xhr, errmsg, err) {
+            console.log(xhr.status + ": " + xhr.responseText);
+        },
     });
 }
 
-function planetDistribution(){
+function planetDistribution() {
     var $range = $(".js-range-slider"),
-    $from = $(".js-from"),
-    $middle = $(".js-middle"),
-    $to = $(".js-to"),
-    range,
-    min = 0,
-    max = 100,
-    from,
-    to;
+        $from = $(".js-from"),
+        $middle = $(".js-middle"),
+        $to = $(".js-to"),
+        range,
+        min = 0,
+        max = 100,
+        from,
+        to;
     var updateValues = function () {
         $from.prop("value", from);
         $middle.prop("value", to - from);
@@ -130,7 +130,7 @@ function planetDistribution(){
     });
 }
 
-function battleLog(linelog){
+function battleLog(linelog) {
     var consoleLine = "<p class=\"console-line\"></p>";
     console = {
         log: function (text) {
@@ -140,7 +140,7 @@ function battleLog(linelog){
     console.log(linelog);
 }
 
-function changeDistribution(){
+function changeDistribution() {
     var csrftoken = getCookie('csrftoken');
     var num = $('#gamenum').text();
     var population = $("#population_range").text();
@@ -151,19 +151,19 @@ function changeDistribution(){
         type: "POST",
         url: "change_distribution/",
         data: {
-                csrfmiddlewaretoken: csrftoken,
-                population: population,
-                shield: shield,
-                missiles: missiles,
-                game_num: num,
-              },
+            csrfmiddlewaretoken: csrftoken,
+            population: population,
+            shield: shield,
+            missiles: missiles,
+            game_num: num,
+        },
         dataType: 'json',
     });
-    battleLog('['+ timest +']'+' '+'|'+' '+'NRD'+' '+'P:'+population +' '+'S:'+shield+' '+'M:'+missiles);
+    battleLog('[' + timest + ']' + ' ' + '|' + ' ' + 'NRD' + ' ' + 'P:' + population + ' ' + 'S:' + shield + ' ' + 'M:' + missiles);
 }
 
-function attackPlanet(){
-    $('.attack-planet').on("click", function(event) {
+function attackPlanet() {
+    $('.attack-planet').on("click", function (event) {
         event.preventDefault();
         var planet_id = $(this).closest('tr').find('td:nth-child(1)').text();
         //battleLog(planet_id); //Uncomment to check attack is working OK
@@ -173,15 +173,15 @@ function attackPlanet(){
             type: "POST",
             url: "send_attack/",
             data: {
-                    csrfmiddlewaretoken: csrftoken,
-                    planet_id: planet_id,
-                    game_num: num,
-                  },
+                csrfmiddlewaretoken: csrftoken,
+                planet_id: planet_id,
+                game_num: num,
+            },
         });
     });
 }
 
-$(document).ready(function(){
+$(document).ready(function () {
     planetDistribution();
     listPlanets();
     attackPlanet();
