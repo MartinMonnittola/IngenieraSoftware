@@ -16,7 +16,10 @@ class Command(BaseCommand):
                 if p.shield_perc < 100:
                     cant_asig_shield = p.population_qty * p.shield_distr / 100
                     calculo_generar_shield = cant_asig_shield / g.const_shield
-                    p.shield_perc += calculo_generar_shield
+                    if (p.shield_perc + calculo_generar_shield) > 100:
+                        p.shield_perc = 100
+                    else:
+                        p.shield_perc += calculo_generar_shield
                 cant_asig_mis = p.population_qty * p.missile_distr / 100
                 calculo_generar_missile = cant_asig_mis / g.const_missile
                 p.missiles_qty += calculo_generar_missile
