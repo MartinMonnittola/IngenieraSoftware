@@ -6,8 +6,9 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.template.response import TemplateResponse
+from django.template import RequestContext
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -24,48 +25,72 @@ import json
 
 # Create your views here.
 
-# login view
+
 class Login(FormView):
+    """
+    Login View
+    """
     template_name = 'login.html'
     form_class = AuthenticationForm
-    success_url =  reverse_lazy('game_rooms')
+    success_url = reverse_lazy('game_rooms')
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             return HttpResponseRedirect(self.get_success_url())
         else:
             return super(Login, self).dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         login(self.request, form.get_user())
         return super(Login, self).form_valid(form)
 
+
 # Main View
-def homeView(request):
+def home_view(request):
+    """
+    Home view template render
+    """
     return render(request, 'home.html')
 
-# Sign Up View (Allow Users to register on system)
-def signupView(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
-    else:
-        form = SignUpForm()
-    return render(request, 'register.html', {'form': form})
 
-# game instructions view
-def gameInstructionsView(request):
+# Sign Up View (Allow Users to register on system)
+def signup_view(request):
+    """
+    Sign Up View
+    """
+    if not request.user.is_authenticated:
+        if request.method == 'POST':
+            form = SignUpForm(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data.get('username')
+                raw_password = form.cleaned_data.get('password1')
+                user = authenticate(username=username, password=raw_password)
+                login(request, user)
+                return redirect('home')
+        else:
+            form = SignUpForm()
+        return render(request, 'register.html', {'form': form})
+    return HttpResponseRedirect('/')
+
+
+def game_instructions_view(request):
+    """
+    Render instructions view
+    """
     return render(request, 'game_instructions.html')
+
 
 # game room list view
 @method_decorator(login_required, name='dispatch')
-class gameRoomsListView(TemplateView):
+class GameRoomsListView(TemplateView):
+    """List available games"""
     template_name = 'game_rooms.html'
+
     def get(self, request, *args, **kwargs):
+        """
+        GameRoomsList get method
+        """
         game_list = Game.objects.filter(game_started=0).order_by('-pub_date')
         paginator = Paginator(game_list, 10)
         page = request.GET.get('page')
@@ -86,75 +111,92 @@ class gameRoomsListView(TemplateView):
             'game_form': game_form,
             'join_form': join_form,
         }
-        request.session['gameEntry']="na"
+        request.session['gameEntry'] = "na"
         return self.render_to_response(context)
-    def post(self, request, *args, **kwargs):
+
+    @staticmethod
+    def post(request):
+        """
+        GameRoomsList post method
+        """
         return HttpResponseRedirect('/game_rooms/')
+
 
 # game room close view
 @login_required
 def game_closed(request):
     return render(request, 'gameclosed.html')
 
+
 # game room inside view
 @login_required
 def gameRoom(request, game_room_num):
-    g=Game.objects.filter(id=game_room_num) #Game ID =/= Game room num, find the game that has the same room num
-    planets = Planet.objects.filter(game=g) #Using g, we can find the players in the game properly since game compares id's
+    g=Game.objects.filter(id=game_room_num)  # Game ID =/= Game room num, find the game that has the same room num
+    planets = Planet.objects.filter(game=g)  # Using g, we can find the players in the game properly since game compares id's
     game=get_object_or_404(g)
     context = {'planets': planets,'game': game, 'gameid': str(game.id)}
     return render(request, 'gameroom.html', context)
 
-#join game room
+
+# join game room
 @login_required
 def make_player(request):
-    if (request.method=='POST' and request.is_ajax()):
-        #gets the values submitted in the from at template
-        form = gameForm(request.POST)
-        planet_name=request.POST.get('pname')
-        game_room_num=request.POST.get('num')
-        #isolates the already existing game
+    """
+    Join a game
+    :param request: Request Object
+    :return: JSON Response
+    """
+    if request.method == 'POST' and request.is_ajax():
+        # gets the values submitted in the from at template
+        planet_name = request.POST.get('pname')
+        game_room_num = request.POST.get('num')
+        # isolates the already existing game
         gamelist = Game.objects.filter(id=game_room_num)
         if not gamelist:
-            #gameNumber = -1 indicates game doesn't exist
-            data={'gameNumber':-1}
+            # gameNumber = -1 indicates game doesn't exist
+            data = {'gameNumber': -1}
             return JsonResponse(data, safe=False)
-
-        g=get_object_or_404(gamelist)
+        g = get_object_or_404(gamelist)
         planet_owner = request.user.id
         planets_from_user = Planet.objects.filter(player=planet_owner, game=g.id)
 
-        if (int(g.game_started)==0) and (g.connected_players < g.max_players):
-            #game hasn't started and players < max players
-            #seed will be used for randomization
-            seed=randint(1,90001)
+        if (int(g.game_started) == 0) and (g.connected_players < g.max_players):
+            # game hasn't started and players < max players
+            # seed will be used for randomization
+            seed = randint(1, 90001)
             if len(planets_from_user) == 0:
-                p=Planet.create(request.user, g, planet_name, seed)
+                p = Planet.create(request.user, g, planet_name, seed)
                 g.connected_players += 1
-                p.save() #creates player
+                p.save()  # creates player
                 g.save()
-            data={'gameNumber':game_room_num}
+            data = {'gameNumber': game_room_num}
             return JsonResponse(data, safe=False)
-        if (int(g.game_started)==0) and (g.connected_players == g.max_players):
+        if (int(g.game_started) == 0) and (g.connected_players == g.max_players):
             # game hasn't started and is full
             if len(planets_from_user) > 0:
-                data={'gameNumber':game_room_num}
+                data={'gameNumber': game_room_num}
                 return JsonResponse(data, safe=False)
             else:
-                data={'gameNumber':-2}
+                data={'gameNumber': -2}
                 return JsonResponse(data, safe=False)
         else:
-            #game has already started, send to sorry page
-            data={'gameNumber':0}
+            # game has already started, send to sorry page
+            data = {'gameNumber':0}
             return JsonResponse(data, safe=False)
     else:
         form = gameForm()
-        #Redirects to game room
+        # Redirects to game room
         return HttpResponseRedirect('%s' % game_num)
+
 
 # make game room
 @login_required
 def make_game(request):
+    """
+    Create new game
+    :param request: request object
+    :return: Json Response of created game
+    """
     #create game
     if (request.method=='POST' and request.is_ajax()):
         # form related stuff, gets data submitted in the template
@@ -175,11 +217,11 @@ def make_game(request):
         p.save() #creates player
         data={'gameNumber': game_id}
     else:
-        print("ohno")
-        form = gameForm()
+        return HttpResponseBadRequest("Bad Request")
     return JsonResponse(data, safe=False)
 
-#send a list of players as a json to js file
+
+# send a list of players as a json to js file
 def send_planets(request):
     if (request.method=='POST' and request.is_ajax()):
         game_num =request.POST.get('num')
