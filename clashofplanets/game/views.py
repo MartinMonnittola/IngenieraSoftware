@@ -8,6 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
+from django.template import RequestContext
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -44,18 +45,20 @@ def homeView(request):
 
 # Sign Up View (Allow Users to register on system)
 def signupView(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
-    else:
-        form = SignUpForm()
-    return render(request, 'register.html', {'form': form})
+    if not request.user.is_authenticated:
+        if request.method == 'POST':
+            form = SignUpForm(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data.get('username')
+                raw_password = form.cleaned_data.get('password1')
+                user = authenticate(username=username, password=raw_password)
+                login(request, user)
+                return redirect('home')
+        else:
+            form = SignUpForm()
+        return render(request, 'register.html', {'form': form})
+    return HttpResponseRedirect('/')
 
 # game instructions view
 def gameInstructionsView(request):

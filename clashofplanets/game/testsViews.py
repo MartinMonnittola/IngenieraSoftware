@@ -8,7 +8,6 @@ from .forms import *
 # Create your tests here.
 
 class ViewsTest(TestCase):
-
     def setUp(self):
         #Create two users
         test_user1 = User.objects.create_user(username='testuser1', password='12345')
@@ -50,6 +49,6 @@ class ViewsTest(TestCase):
     def test_signup_view_after_loggin(self):
         login = self.client.login(username='testuser1', password='12345')
         response = self.client.get(reverse('signup'))
-        self.assertEqual(str(response.context['user']), 'testuser1')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'register.html')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/')
+
