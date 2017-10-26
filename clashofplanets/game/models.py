@@ -139,7 +139,7 @@ class Game(models.Model):
                 succesfull = False
             # Notificamo al usuario de la eliminacion de su planeta.
             #user.notify_devastation()
-        except Planet.DoesNotExist, User.DoesNotExist:
+        except (Planet.DoesNotExist, User.DoesNotExist):
             succesfull = False
         return succesfull
 
@@ -205,6 +205,8 @@ class Planet(models.Model):
             self.population_distr = perc_pop
             self.shield_distr = perc_shield
             self.missile_distr = perc_missile
+
+            self.save()
         else:
             raise NameError('Wrong Distribution Choice')
 
@@ -217,9 +219,10 @@ class Planet(models.Model):
         """
         if (ammount <= 100):
             if (self.shield_perc >= ammount):
-                self.shield_perc =- ammount
+                self.shield_perc -= ammount
             else:
                 self.shield_perc = 0
+            self.save()
         else:
             raise NameError('Wrong ammount of damage. Must be 100 or less')
 
@@ -231,9 +234,11 @@ class Planet(models.Model):
         OUTPUT: Ninguno
         """
         if (self.population_qty >= ammount):
-            self.population_qty =- ammount
+            self.population_qty -= ammount
         else:
             self.population_qty = 0
+
+        self.save()
 
     def launch_missile(self, enemy_planet):
         """
@@ -242,16 +247,20 @@ class Planet(models.Model):
         INPUT: Objeto Planet, planeta enemigo
         OUTPUT: Bool que indica si pudo enviarse el misil
         """
-        if (self.missiles_qty >= 0):
+        if (self.missiles_qty > 0):
             try:
                 missile = Missile(owner=self, target=enemy_planet)
                 missile.save()
+
                 self.missiles_qty =- 1
+
                 missile_launched = True
             except Missile.DoesNotExist:
                 missile_launched = False
         else:
             missile_launched = False
+
+        self.save()
 
         return missile_launched
 
@@ -263,7 +272,7 @@ class Planet(models.Model):
         INPUT: Objeto Planet
         OUTPUT: Diccionario con nombre de planetas y correspondientes tiempos de impacto
         """
-        missiles = Missile.objects.all(owner=self)
+        missiles = Missile.objects.all().filter(owner=self)
         times = {}
 
         for missile in missiles:
@@ -276,9 +285,14 @@ class Missile (models.Model):
     """
     Clase Missile: Contiene el planeta origen, planeta destino, y hora de lanzamiento
     """
-    owner = models.ForeignKey(Planet, related_name="owner")
-    target = models.ForeignKey(Planet, related_name="target")
+    owner = models.ForeignKey(Planet, default=1, related_name="owner")
+    target = models.ForeignKey(Planet, default=2, related_name="target")
     launch_time = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def create(cls, owner, target):
+        new_missile = cls(owner=owner, target=target)
+        return new_missile
 
     def deal_damage(self):
         """
@@ -287,17 +301,19 @@ class Missile (models.Model):
         INPUT: Objeto Missile
         OUTPUT: Ninguno
         """
-        target_planet = self.target
-        gameroom = target_planet.gameroom
-
-        if (target_planet.shield_perc == 0):
-            damage = gameroom.population_damage_per_missile
+        target = self.target
+        gameroom = target.game
+        
+        if (target.shield_perc == 0):
+            damage = gameroom.hurt_to_population
+            target.decrease_population(damage)
         else:
-            damage_diminisher = (100 / target_planet.shield_perc)
-            damage = gameroom.population_damage_per_missile / damage_diminisher
-
-        target_planet.decrease_shield(gameroom.shield_damage_per_missile)
-        target_planet.decrease_population(damage)
+            damage_diminisher = (100 / self.target.shield_perc)
+            damage = gameroom.hurt_to_population / damage_diminisher
+            target.decrease_shield(gameroom.hurt_to_shield)
+            target.decrease_population(damage)
+        
+        target.save()
 
     def time_to_target(self):
         """
@@ -306,8 +322,12 @@ class Missile (models.Model):
         INPUT: Objeto Missile
         OUTPUT: Tiempo para el impacto
         """
-        gameroom = self.owner.gameroom
-        time_elapsed = self. launch_time - timezone.datetime.now()
-        time_to_impact = gameroom.missile_delay - time_elapsed
+        gameroom = self.owner.game
 
+        now = timezone.datetime.now(timezone.utc)
+        missile_delay = timezone.timedelta(seconds=gameroom.time_missile)
+
+        time_elapsed = self.launch_time - now
+        time_to_impact = missile_delay - time_elapsed
+        
         return time_to_impact

@@ -15,6 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from game.forms import *
 from game.models import *
 from random import *
@@ -65,9 +66,21 @@ def gameInstructionsView(request):
 class gameRoomsListView(TemplateView):
     template_name = 'game_rooms.html'
     def get(self, request, *args, **kwargs):
-        latest_game_list = Game.objects.filter(game_started=0).order_by('-pub_date')
-        game_form = gameForm(self.request.GET or None)
-        join_form = joinForm(self.request.GET or None)
+        game_list = Game.objects.filter(game_started=0).order_by('-pub_date')
+        paginator = Paginator(game_list, 10)
+        page = request.GET.get('page')
+        try:
+            latest_game_list = paginator.page(page)
+        except PageNotAnInteger:
+            latest_game_list = paginator.page(1)
+        except EmptyPage:
+            latest_game_list = paginator.page(paginator.num_pages)
+        if page is None:
+            game_form = gameForm(self.request.GET or None)
+            join_form = joinForm(self.request.GET or None)
+        else:
+            game_form = gameForm()
+            join_form = joinForm()
         context = {
             'latest_game_list': latest_game_list,
             'game_form': game_form,
