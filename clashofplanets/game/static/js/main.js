@@ -73,7 +73,7 @@ function listGames() {
 
 //For doing AJAX post
 $(document).ready(function () {
-    //listGames();
+    listGames();
     //Create game is clicked
     $("#create").click(function (e) {
         $("#join").prop('disabled', true);
