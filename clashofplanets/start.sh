@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 HOST=127.0.0.1:8000
 UPDATE_TIME=2
 COUNT=0
