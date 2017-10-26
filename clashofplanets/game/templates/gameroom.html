@@ -4,12 +4,18 @@
 
 {% block main_content %}
 
-<script src="{% static 'js/inroom.js' %}?v=00003" type="text/javascript"/></script>
+    <script src="{% static 'js/inroom.js' %}?v=00003" type="text/javascript">
+    </script>
 <div class="container">
     <div class="row text-center">
         <div class="col">
             <h1>
-            Welcome {% if request.user.is_authenticated %}<span class="text-primary" >{{request.user.username}}</span> to {% endif %}
+            Welcome
+                {% if request.user.is_authenticated %}
+                <span class="text-primary" >
+                    {{request.user.username}}
+                </span> to
+            {% endif %}
             Game Room ID:
             <p id="gamenum">{{game.id}}</p>
             </h1>
@@ -43,7 +49,8 @@
         <div class="col">
             <form action="{% url 'game_rooms' %}" method="post">
                 {% csrf_token %}
-                <input type="submit" class="metal" value="back to lobby" onclick="return confirm('Are you sure?')" />
+                <input type="submit" class="metal" value="back to lobby"
+                       onclick="return confirm('Are you sure?')" />
             </form>
         </div>
     </div>

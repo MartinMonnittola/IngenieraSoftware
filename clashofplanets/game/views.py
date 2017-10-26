@@ -116,7 +116,6 @@ class GameRoomsListView(TemplateView):
             'game_form': game_form,
             'join_form': join_form,
         }
-        request.session['gameEntry'] = "na"
         return self.render_to_response(context)
 
     @staticmethod
@@ -166,7 +165,7 @@ def make_player(request):
     if request.method == 'POST' and request.is_ajax():
         # gets the values submitted in the from at template
         planet_name = request.POST.get('pname')
-        game_room_num = request.POST.get('num')
+        game_room_num = int(request.POST.get('num'))
         # isolates the already existing game
         gamelist = Game.objects.filter(id=game_room_num)
         if not gamelist:
@@ -183,11 +182,15 @@ def make_player(request):
             # seed will be used for randomization
             rseed = randint(1, 90001)
             if len(planets_from_user) == 0:
+                if planet_name == "":
+                    planet_name = "Planet "+request.user.username
                 p = Planet.create(request.user, g, planet_name, rseed)
                 g.connected_players += 1
                 p.save()  # creates player
                 g.save()
-            data = {'gameNumber': game_room_num}
+                data = {'gameNumber': game_room_num}
+            else:
+                data = {'gameNumber': -3}
             return JsonResponse(data, safe=False)
         if (int(g.game_started) == 0) and (g.connected_players ==
                                            g.max_players):
@@ -220,19 +223,24 @@ def make_game(request):
         # form related stuff, gets data submitted in the template
         planet_name = request.POST.get('pname')
         room_name = request.POST.get('rname')
-        max_players = request.POST.get('max_players')
-        # creates game
-        g = Game.create(request.user, room_name, max_players)
-        # +1 to room connected players
-        g.connected_players += 1
-        g.save()
-        game_id = g.id
-        # create planet
-        rseed = randint(1, 90001)
-        # Game.joinGame(g, request.user, planet_name, rseed)
-        p = Planet.create(request.user, g, planet_name, rseed)
-        p.save()  # creates player
-        data = {'gameNumber': game_id}
+        max_players = int(request.POST.get('max_players'))
+
+        if max_players < 2:
+            data = {'gameNumber': -1,
+                    'message': "Max_players can't be less than 2."}
+        else:
+            # creates game
+            g = Game.create(request.user, room_name, max_players)
+            # +1 to room connected players
+            g.connected_players += 1
+            g.save()
+            game_id = g.id
+            # create planet
+            rseed = randint(1, 90001)
+            # Game.joinGame(g, request.user, planet_name, rseed)
+            p = Planet.create(request.user, g, planet_name, rseed)
+            p.save()  # creates player
+            data = {'gameNumber': game_id}
     else:
         return HttpResponseBadRequest("Bad Request")
     return JsonResponse(data, safe=False)
@@ -324,7 +332,8 @@ def start_game(request, game_num):
     # players in game, sorted
     planets = Planet.objects.filter(game=g.id).order_by('id')
     # set game state to 1
-    Game.startGame(g)
+    if request.user.id == g.user_id:
+        Game.startGame(g)
     your_planet = Planet.objects.get(player=request.user, game=g)
     context = {
         'planets': planets,
