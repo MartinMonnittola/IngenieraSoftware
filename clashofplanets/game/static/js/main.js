@@ -98,7 +98,7 @@ $(document).ready(function () {
     });
     //When join is clicked
     $("#join").click(function (e) {
-        $("#create").attr('disabled', true);
+        //$("#create").attr('disabled', true);
         //Prevent default submit. Must for Ajax post.Beginner's pit.
         e.preventDefault();
         //Prepare csrf token
