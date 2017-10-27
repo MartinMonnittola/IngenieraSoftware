@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils import timezone
-
+#from abc import ABCMeta, abstractmethod
+import random
 
 class Game(models.Model):
     """
@@ -362,3 +363,63 @@ class Missile (models.Model):
         time_to_impact = missile_delay - time_elapsed
 
         return time_to_impact
+
+
+class Bot(models.Model):
+    # Probabilidad de decidir atacar.
+    problability_attack = models.IntegerField(default=30,
+                                      help_text='probability of attack',
+                                      blank=False)
+
+    # Probabilidad de decidir atacar otra vez despues de haber atacado.
+    probability_attacking_again  = models.IntegerField(default=30,
+                                     help_text='probability of attacking again',
+                                     blank=False)
+
+    # Probabilidad de decidir modificar los recursos.
+    problability_modify_resources = models.IntegerField(default=60,
+                                 help_text='probability of modifying resources',
+                                 blank=False)
+
+    # Probabilidad de decidir esperar y no realizar acciones.
+    probability_not_acting = models.IntegerField(default=10,
+                                 help_text='probability of not acting',
+                                 blank=False)
+
+    # Partida a la que pertenece el bot.
+    game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE)
+
+    # Nombre del bot.
+    name = models.CharField(max_length=20, blank=False, verbose_name='Bot name')
+
+    class Meta:
+        abstract = True
+
+    """
+    Clase abstracta que representa a los bot.
+    """
+    #@abstractmethod
+    def attack(self):
+        """
+        Decide aleatoriamente si ataca a uno o mas planetas.
+        """
+        return True
+
+    #def decide_to_modify_resources(self):
+    #@abstractmethod
+    def defense(self):
+        """
+        Decide aleatoriamente si modifica los recursos del planeta propio.
+        """
+        return True
+
+
+class Defensive(Bot):
+    """
+    #Contiene informacion sobre los bot de caracteristica defensiva.
+    """
+    def attack(self):
+        return True
+
+    def defense(self):
+        return True
