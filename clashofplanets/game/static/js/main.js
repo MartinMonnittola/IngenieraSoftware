@@ -76,6 +76,7 @@ $(document).ready(function () {
     listGames();
     //Create game is clicked
     $("#create").click(function (e) {
+        console.log("creando");
         $("#join").prop('disabled', true);
         e.preventDefault();
         var csrftoken = getCookie('csrftoken');
@@ -112,17 +113,26 @@ $(document).ready(function () {
             data: {csrfmiddlewaretoken: csrftoken, pname: pname, num: num},
             url: 'make_player/',// data sent with the post request
             // handle a successful response
+            /**
+            * @param json - JSON response.
+            * @param json.gameNumber - Displays the game number to join, or
+             * error status code.
+            */
             success: function (json) {
                 //On success show the data posted to server as a message
                 // alert(json.gameNumber);
-                if (json.gameNumber == 0) {
+                if (json.gameNumber === 0) {
                     window.location.href = 'GameClosed';
                 }
-                else if (json.gameNumber == -1) {
+                else if (parseInt(json.gameNumber) === -1) {
                     $('#JoinError').text("Sorry, that game doesn't exist.");
                 }
-                else if (json.gameNumber == -2) {
+                else if (parseInt(json.gameNumber) === -2) {
                     $('#JoinError').text("Sorry, that game is full of players.");
+                }
+                else if (parseInt(json.gameNumber) === -3){
+                    $('#JoinError').text("Sorry, you are already playing" +
+                        " another game.");
                 }
                 else {
                     $("#join").prop('disabled', true);
