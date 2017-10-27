@@ -161,21 +161,6 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         self.assertEqual(Planet.objects.get(pk=3).name.__str__(), "Planet3")
         self.assertEqual(data["gameNumber"], 1)
 
-    def test_double_join_game(self):
-        self.create_games()
-        game = Game.objects.get(pk=1)
-        game.joinGame(1, "Planet3", 12345)
-        data = {
-            'pname': 'Planet3',
-            'num': 1,
-        }
-        response = self.client.post(
-            '/game_rooms/make_player/',
-            data,
-            **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
-        data = json.loads(response.content)
-        self.assertEqual(data["gameNumber"], -3)
-
     def test_join_game_full(self):
         game = Game.create(User.objects.get(pk=2), "Game", 2)
         game.save()
