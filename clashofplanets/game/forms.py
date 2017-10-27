@@ -53,7 +53,7 @@ class gameForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(gameForm, self).__init__(*args, **kwargs)
         self.fields['game_name'].help_text = 'Write a name for your Game. Required.'
-        self.fields['max_players'].help_text = 'How many players can join your Game?. Required. Min 3 Max 50.'
+        self.fields['max_players'].help_text = 'How many players can join your Game?. Required. Min 2 Max 50.'
         self.fields['planet_name'].help_text = 'Write a name for your planet. Required'
 
 
