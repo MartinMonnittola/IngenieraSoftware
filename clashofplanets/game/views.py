@@ -172,7 +172,7 @@ def make_player(request):
             # gameNumber = -1 indicates game doesn't exist
             data = {'gameNumber': -1}
             return JsonResponse(data, safe=False)
-        g = get_object_or_404(gamelist)
+        g = gamelist.get()
         planet_owner = request.user.id
         planets_from_user = Planet.objects.filter(player=planet_owner,
                                                   game=g.id)
@@ -184,10 +184,7 @@ def make_player(request):
             if len(planets_from_user) == 0:
                 if planet_name == "":
                     planet_name = "Planet "+request.user.username
-                p = Planet.create(request.user, g, planet_name, rseed)
-                g.connected_players += 1
-                p.save()  # creates player
-                g.save()
+                g.joinGame(planet_owner, planet_name, rseed)
                 data = {'gameNumber': game_room_num}
             else:
                 data = {'gameNumber': -3}
@@ -231,8 +228,6 @@ def make_game(request):
         else:
             # creates game
             g = Game.create(request.user, room_name, max_players)
-            # +1 to room connected players
-            g.connected_players += 1
             g.save()
             game_id = g.id
             # create planet

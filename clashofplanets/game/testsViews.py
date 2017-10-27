@@ -89,10 +89,14 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         """
         game1 = Game.create(User.objects.get(pk=2), "Game1", 10)
         game1.save()
-        game1.joinGame(2, "Planet1", 12345)
+        planet1 = Planet.create(User.objects.get(pk=2),
+                                Game.objects.get(pk=1), "Planet1", 123456)
+        planet1.save()
         game2 = Game.create(User.objects.get(pk=3), "Game2", 10)
         game2.save()
-        game2.joinGame(3, "Planet2", 1234)
+        planet2 = Planet.create(User.objects.get(pk=3),
+                                Game.objects.get(pk=2), "Planet2", 1234532)
+        planet2.save()
 
     def test_no_games(self):
         response = self.client.get('/game_rooms/')
@@ -117,6 +121,7 @@ class GameRoomsListJoinCreateViewTest(TestCase):
             **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
         data = json.loads(response.content)
         self.assertEqual(Game.objects.count(), 1)
+        self.assertEqual(Game.objects.get(pk=1).connected_players, 1)
         self.assertEqual(Planet.objects.count(), 1)
         self.assertEqual(data["gameNumber"], 1)
 
@@ -152,6 +157,7 @@ class GameRoomsListJoinCreateViewTest(TestCase):
             **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
         data = json.loads(response.content)
         self.assertEqual(Planet.objects.count(), 3)
+        self.assertEqual(Game.objects.get(pk=1).connected_players, 2)
         self.assertEqual(Planet.objects.get(pk=3).name.__str__(), "Planet3")
         self.assertEqual(data["gameNumber"], 1)
 
@@ -173,7 +179,6 @@ class GameRoomsListJoinCreateViewTest(TestCase):
     def test_join_game_full(self):
         game = Game.create(User.objects.get(pk=2), "Game", 2)
         game.save()
-        game.joinGame(2, "Planet1", 123456)
         game.joinGame(3, "Planet2", 12345)
         data = {
             'pname': 'Planet3',
@@ -213,11 +218,14 @@ class InGameViewsTest(TestCase):
         """
         game1 = Game.create(User.objects.get(pk=1), "Game1", 10)
         game1.save()
-        game1.joinGame(1, "Planet1", 12345)
-        game1.joinGame(3, "Planet2", 123345)
-        game1.joinGame(4, "Planet3", 123451)
-        game1.joinGame(5, "Planet4", 123454)
-        game1.joinGame(6, "Planet5", 1234512)
+        planet1 = Planet.create(User.objects.get(pk=1),
+                                Game.objects.get(pk=1), "Planet1", 123456)
+        planet1.save()
+        game1.joinGame(2, "Planet2", 12345)
+        game1.joinGame(3, "Planet3", 123345)
+        game1.joinGame(4, "Planet4", 123451)
+        game1.joinGame(5, "Planet5", 123454)
+        game1.joinGame(6, "Planet6", 1234512)
 
     def test_send_planets_as_json(self):
         self.create_game_and_planets()
