@@ -185,7 +185,7 @@ def make_player(request):
                 if planet_name == "":
                     planet_name = "Planet "+request.user.username
                 g.joinGame(planet_owner, planet_name, rseed)
-                data = {'gameNumber': game_room_num}
+            data = {'gameNumber': game_room_num}
             return JsonResponse(data, safe=False)
         if (int(g.game_started) == 0) and (g.connected_players ==
                                            g.max_players):
