@@ -176,19 +176,16 @@ def make_player(request):
         planet_owner = request.user.id
         planets_from_user = Planet.objects.filter(player=planet_owner,
                                                   game=g.id)
-        if (int(g.game_started) == 0) and (g.connected_players <
-                                           g.max_players):
+        if (int(g.game_started) == 0) and (g.connected_players < g.max_players):
             # game hasn't started and players < max players
             # seed will be used for randomization
-            rseed = randint(1, 90001)
             if len(planets_from_user) == 0:
                 if planet_name == "":
                     planet_name = "Planet "+request.user.username
                 g.joinGame(planet_owner, planet_name, rseed)
-                data = {'gameNumber': game_room_num}
+            data = {'gameNumber': game_room_num}
             return JsonResponse(data, safe=False)
-        if (int(g.game_started) == 0) and (g.connected_players ==
-                                           g.max_players):
+        if (int(g.game_started) == 0) and (g.connected_players == g.max_players):
             # game hasn't started and is full
             if len(planets_from_user) > 0:
                 data = {'gameNumber': game_room_num}
