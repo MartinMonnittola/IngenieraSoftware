@@ -179,6 +179,7 @@ def make_player(request):
         if (int(g.game_started) == 0) and (g.connected_players < g.max_players):
             # game hasn't started and players < max players
             # seed will be used for randomization
+            rseed = randint(1, 90001)
             if len(planets_from_user) == 0:
                 if planet_name == "":
                     planet_name = "Planet "+request.user.username
