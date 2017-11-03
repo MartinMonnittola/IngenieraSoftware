@@ -31,11 +31,11 @@
                 {% if latest_game_list %}
                     {% for latest_game in latest_game_list %}
                         <tr>
-                            <td class="text-center">{{ latest_game.id}}</td>
-                            <td class="text-center">{{ latest_game.game_name}}</td>
-                            <td class="text-center">{{ latest_game.user}}</td>
-                            <td class="text-center">{{ latest_game.connected_players}}</td>
-                            <td class="text-center">{{ latest_game.max_players}}</td>
+                            <td class="text-center">{{latest_game.id}}</td>
+                            <td class="text-center">{{latest_game.game_name}}</td>
+                            <td class="text-center">{{latest_game.user}}</td>
+                            <td class="text-center">{{latest_game.connected_players}}</td>
+                            <td class="text-center">{{latest_game.max_players}}</td>
                         </tr>
                    {% endfor %}
                 {% else %}
