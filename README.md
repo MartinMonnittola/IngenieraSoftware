@@ -10,9 +10,11 @@
 
 1. Clonar el repositorio: git clone https://github.com/ingsoft-famaf/synergia.git
 2. cd synergia/clashofplanets
-3. python manage.py makemigrations
-4. python manage.py migrate
-5. ./start.sh
+3. python manage.py makemigrations game
+4. python manage.py migrate game
+5. python manage.py makemigrations
+6. python manage.py migrate
+7. ./start.sh
 
 ## Uso de start.sh ##
 
