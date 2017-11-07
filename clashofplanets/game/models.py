@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils import timezone
-
+from haikunator import Haikunator
 
 class Game(models.Model):
     """
@@ -26,6 +26,11 @@ class Game(models.Model):
     game_started = models.BooleanField(
                                       default=0,
                                       verbose_name='Game started (True/False)')
+    # Numero de alianzas
+    num_alliances = models.IntegerField(default=0,
+                                      verbose_name='Number of Alliances',
+                                      blank=True,
+                                      validators=[MinValueValidator(0)])
     # Numero maximo de jugadores.
     max_players = models.IntegerField(default=0,
                                       verbose_name='Game players limit',
@@ -338,9 +343,8 @@ class Missile (models.Model):
         target = self.target
         gameroom = target.game
 
-        damage_diminisher = (100 - self.target.shield_perc) / 100
+        damage_diminisher = (100.0 - float(self.target.shield_perc)) / 100.0
         damage = gameroom.hurt_to_population * damage_diminisher
-
         target.decrease_shield(gameroom.hurt_to_shield)
         target.decrease_population(damage)
 
@@ -362,3 +366,25 @@ class Missile (models.Model):
         time_to_impact = missile_delay - time_elapsed
 
         return time_to_impact
+
+
+class Alliance (models.Model):
+    """
+    Clase Alliance: Agrupa los planetas en alianzas si las hay en partida bajo un nombre.
+    """
+    name = models.CharField(max_length=30,default='Team',verbose_name='Alliance Name')
+    game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE,verbose_name='Game Name')
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def create(cls, name, game):
+        """
+        Create Alliance:
+        Permite crear una alianza (equipo-team)
+        INPUT: Partida donde vive la alianza
+        OUTPUT: La Alianza
+        """
+        new_alliance = cls(name=name, game=game)
+        return new_alliance

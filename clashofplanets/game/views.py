@@ -9,8 +9,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, JsonResponse
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
@@ -20,7 +19,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from game.forms import *
 from game.models import *
 from random import *
-
+from haikunator import Haikunator
 
 # Create your views here.
 
@@ -231,6 +230,10 @@ def make_game(request):
             # Game.joinGame(g, request.user, planet_name, rseed)
             p = Planet.create(request.user, g, planet_name, rseed)
             p.save()  # creates player
+
+            haikunator = Haikunator() # random name generator for alliances
+            random_name = haikunator.haikunate(token_length=0, delimiter=' ')
+
             data = {'gameNumber': game_id}
     else:
         return HttpResponseBadRequest("Bad Request")

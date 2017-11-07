@@ -24,3 +24,8 @@ admin.site.register(
     ],
     list_display_links=["id", "name",],
 )
+admin.site.register(
+    Alliance,
+    list_display=["id", "name", "game"],
+    list_display_links=["id", "name",],
+)
