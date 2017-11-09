@@ -24,12 +24,11 @@ function timeStamp() {
 }
 
 function listPlanets() {
-    var csrftoken = getCookie('csrftoken');
     var num = $('#gamenum').text();
     var timest = timeStamp();
     $.ajax({
-        type: 'POST',
-        data: {csrfmiddlewaretoken: csrftoken, num: num},
+        type: 'GET',
+        data: {num: num},
         url: "get_planets/",
         success: function (json) {
             var plist = json.planets;

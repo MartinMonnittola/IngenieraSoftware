@@ -246,8 +246,8 @@ def send_planets(request):
     Send list of planets
     :return: JSON Response object
     """
-    if request.method == 'POST' and request.is_ajax():
-        game_num = request.POST.get('num')
+    if request.method == 'GET' and request.is_ajax():
+        game_num = request.GET.get('num')
         planets = Planet.objects.filter(game=game_num)  # players in game
         plist = []
         current_user = request.user.username
@@ -276,7 +276,7 @@ def send_games(request):
     """
     Send open games
     """
-    if request.method == 'POST' and request.is_ajax():
+    if request.method == 'GET' and request.is_ajax():
         games = Game.objects.filter(game_started=False)  # all open games
         glist = []
         for tmpgame in games:
@@ -302,8 +302,8 @@ def send_game_state(request):
     """
     Send game room state
     """
-    if request.method == 'POST' and request.is_ajax():
-        game_num = request.POST.get('num')
+    if request.method == 'GET' and request.is_ajax():
+        game_num = request.GET.get('num')
         room = Game.objects.get(pk=game_num)  # players in game
         current_room_state = room.game_started
         players_in_room = room.connected_players

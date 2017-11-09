@@ -6,11 +6,8 @@ function fillOutGame(game_num) {
 
 //List available games
 function listGames() {
-    var csrftoken2 = getCookie('csrftoken');
     $.ajax({
-        type: 'POST',
-        data: {csrfmiddlewaretoken: csrftoken2},
-        ifModified: true,
+        type: 'GET',
         url: "get_games/",
         success: function (json) {
             if (status != "notmodified") {
