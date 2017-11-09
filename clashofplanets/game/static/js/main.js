@@ -1,31 +1,6 @@
-//LOBBY JS
-//For getting CSRF token
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-var scrollFunction = function (idstring) {
-    $('html, body').animate({
-        scrollTop: $(idstring).offset().top
-    }, 400);
-};
-
 function fillOutGame(game_num) {
     $('#JoinError').empty();
-    $('#room_num').val(game_num);
-    scrollFunction('.cardb');
+    $('#game_num').val(game_num);
     $('#planet_name').focus();
 }
 
@@ -49,13 +24,16 @@ function listGames() {
                         var num = glist[i];
                         buildListElementItem = $(
                             '<tr>'
-                            + '<td>' + glist[i].id + '</td>'
+                            + '<td class=\"game-'+glist[i].id+'\">' + glist[i].id + '</td>'
                             + '<td>' + glist[i].name + '</td>'
                             + '<td>' + glist[i].owner + '</td>'
                             + '<td>' + glist[i].connected_players + '</td>'
                             + '<td>' + glist[i].max_players + '</td>'
                             + '</tr>');
                         $("#openGames").append(buildListElementItem)
+                        $(".game-"+glist[i].id).bind('click', function (){
+                            fillOutGame($(this).text());
+                        });
                     }
                 }
                 else {

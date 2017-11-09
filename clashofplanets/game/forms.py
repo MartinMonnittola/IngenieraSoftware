@@ -43,19 +43,31 @@ class gameForm(forms.ModelForm):
             'max': 50,
             'value': 0,
             'class': 'bar',
-            'onchange': 'rangevalue.value=value'}
+            'onchange': 'rangevalueplayers.value=value'}
+            )
+        )
+    num_alliances = forms.IntegerField(widget=forms.NumberInput(
+        attrs={
+            'id':'num_alliancesC',
+            'required': True,
+            'type': 'range',
+            'min': 0,
+            'max': 10,
+            'value': 0,
+            'class': 'bar',
+            'onchange': 'rangevaluealliances.value=value'}
             )
         )
     class Meta:
         model = Game
-        fields = ('game_name', 'max_players') # bot_players - #game_mode
+        fields = ('game_name', 'max_players', 'num_alliances') # bot_players - #game_mode
 
     def __init__(self, *args, **kwargs):
         super(gameForm, self).__init__(*args, **kwargs)
         self.fields['game_name'].help_text = 'Write a name for your Game. Required.'
         self.fields['max_players'].help_text = 'How many players can join your Game?. Required. Min 2 Max 50.'
+        self.fields['num_alliances'].help_text = 'How many alliances will exist on your game?. Required. Min 0 Max 10.'
         self.fields['planet_name'].help_text = 'Write a name for your planet. Required'
-
 
 class joinForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_name', 'required': True}))

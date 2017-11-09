@@ -9,8 +9,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, JsonResponse
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
@@ -20,7 +19,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from game.forms import *
 from game.models import *
 from random import *
-
+from haikunator import Haikunator
 
 # Create your views here.
 
@@ -176,8 +175,7 @@ def make_player(request):
         planet_owner = request.user.id
         planets_from_user = Planet.objects.filter(player=planet_owner,
                                                   game=g.id)
-        if (int(g.game_started) == 0) and (g.connected_players <
-                                           g.max_players):
+        if (int(g.game_started) == 0) and (g.connected_players < g.max_players):
             # game hasn't started and players < max players
             # seed will be used for randomization
             rseed = randint(1, 90001)
@@ -185,10 +183,9 @@ def make_player(request):
                 if planet_name == "":
                     planet_name = "Planet "+request.user.username
                 g.joinGame(planet_owner, planet_name, rseed)
-                data = {'gameNumber': game_room_num}
+            data = {'gameNumber': game_room_num}
             return JsonResponse(data, safe=False)
-        if (int(g.game_started) == 0) and (g.connected_players ==
-                                           g.max_players):
+        if (int(g.game_started) == 0) and (g.connected_players == g.max_players):
             # game hasn't started and is full
             if len(planets_from_user) > 0:
                 data = {'gameNumber': game_room_num}
@@ -233,6 +230,10 @@ def make_game(request):
             # Game.joinGame(g, request.user, planet_name, rseed)
             p = Planet.create(request.user, g, planet_name, rseed)
             p.save()  # creates player
+
+            haikunator = Haikunator() # random name generator for alliances
+            random_name = haikunator.haikunate(token_length=0, delimiter=' ')
+
             data = {'gameNumber': game_id}
     else:
         return HttpResponseBadRequest("Bad Request")
