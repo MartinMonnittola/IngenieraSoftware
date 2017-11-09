@@ -217,7 +217,7 @@ class InGameViewsTest(TestCase):
         data = {
             'num': 1
         }
-        response = self.client.post(
+        response = self.client.get(
             '/game_rooms/1/get_planets/', data,
             **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
         data = json.loads(response.content)
@@ -229,7 +229,7 @@ class InGameViewsTest(TestCase):
         data = {
             'num': 1
         }
-        response = self.client.post(
+        response = self.client.get(
             '/game_rooms/1/get_game_state/', data,
             **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
         data = json.loads(response.content)
