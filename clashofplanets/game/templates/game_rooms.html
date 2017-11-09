@@ -120,6 +120,12 @@
                                 <output id="rangevaluealliances">0</output>
                             </div>
                             {{ field }}
+                            {% elif field == game_form.bot_players %}
+                            <div id="slider">
+                                <span class="highlight"></span>
+                                <output id="rangevaluebot">2</output>
+                            </div>
+                            {{ field }}
                             {% else %}
                                 {{ field }}
                             {% endif %}
