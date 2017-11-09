@@ -30,7 +30,6 @@ class SignUpForm(UserCreationForm):
             raise forms.ValidationError(u'Email addresses must be unique.')
         return email
 
-
 class gameForm(forms.ModelForm):
     planet_name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_nameC', 'required': True}))
     game_name = forms.CharField(widget=forms.TextInput(attrs={'id':'game_nameC', 'required': True}))
@@ -58,9 +57,23 @@ class gameForm(forms.ModelForm):
             'onchange': 'rangevaluealliances.value=value'}
             )
         )
+    bot_players = forms.IntegerField(widget=forms.NumberInput(
+        attrs={
+            'id':'bot_playersC',
+            'required': True,
+            'type': 'range',
+            'min': 0,
+            'max': 10,
+            'value': 0,
+            'class': 'bar',
+            'step': 2,
+            'onchange': 'rangevaluebot.value=value'}
+            )
+        )
+
     class Meta:
         model = Game
-        fields = ('game_name', 'max_players', 'num_alliances') # bot_players - #game_mode
+        fields = ('game_name', 'max_players', 'num_alliances', 'bot_players') # bot_players - #game_mode
 
     def __init__(self, *args, **kwargs):
         super(gameForm, self).__init__(*args, **kwargs)
@@ -68,6 +81,7 @@ class gameForm(forms.ModelForm):
         self.fields['max_players'].help_text = 'How many players can join your Game?. Required. Min 2 Max 50.'
         self.fields['num_alliances'].help_text = 'How many alliances will exist on your game?. Required. Min 0 Max 10.'
         self.fields['planet_name'].help_text = 'Write a name for your planet. Required'
+        self.fields['bot_players'].help_text = 'How many bots do you want to be in game?. Required. Min 2 Max 10. 0 to deactivate'
 
 class joinForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_name', 'required': True}))
