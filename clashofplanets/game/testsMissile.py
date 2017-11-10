@@ -27,9 +27,15 @@ class MissileModelTestCase(TestCase):
         game = Game.create(user, "TestGame", 4)
         game.save()
         
-        origin = Planet.create(user, game, "TestLand", 1234)
+        team1 = Alliance.create("Team 1", game)
+        team1.save()
+        
+        team2 = Alliance.create("Team 2", game)
+        team2.save()
+        
+        origin = Planet.create(user, game, "TestLand", 1234, team1)
         origin.save()
-        target = Planet.create(oponent, game, "GonnaLose", 4321)
+        target = Planet.create(oponent, game, "GonnaLose", 4321, team2)
         target.save()
         
         missile = Missile.create(origin, target)

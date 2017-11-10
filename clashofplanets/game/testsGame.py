@@ -10,9 +10,14 @@ class GameModelTestsCase(TestCase):
         user = User(username="GGG", first_name="GGGLJH", last_name= "GGGLKJLVG",
                     email="dvdfv@gmail.com", password="Aa12345678")
         user.save()
+        
         game = Game.create(name="GuerraPlanetaria", max_players=20, owner=user)
         game.save()
-        planet = Planet.create(player=user, game=game, name="Tierra",seed =1)
+        
+        team1 = Alliance.create("Team 1", game)
+        team1.save()
+        
+        planet = Planet.create(player=user, game=game, name="Tierra",seed =1, alliance=team1)
         planet.save()
 
     """ 
