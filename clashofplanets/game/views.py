@@ -251,6 +251,7 @@ def send_planets(request):
     """
     if request.method == 'GET' and request.is_ajax():
         game_num = request.GET.get('num')
+        g = Game.objects.get(id=game_num)
         planets = Planet.objects.filter(game=game_num)  # players in game
         plist = []
         current_user = request.user.username
@@ -261,6 +262,14 @@ def send_planets(request):
             planet_pop = tmpplanet.population_qty
             planet_shield = tmpplanet.shield_perc
             planet_missiles = tmpplanet.missiles_qty
+
+            cantidad_asig = tmpplanet.population_qty * tmpplanet.population_distr / 100
+            calculo_generar_pop = cantidad_asig / g.const_population
+            cant_asig_shield = tmpplanet.population_qty * tmpplanet.shield_distr / 100
+            calculo_generar_shield = cant_asig_shield / g.const_shield
+            cant_asig_mis = tmpplanet.population_qty * tmpplanet.missile_distr / 100
+            calculo_generar_missile = cant_asig_mis / g.const_missile
+
             record = {
                 'name': planet_name,
                 'id': planet_id,
@@ -268,6 +277,9 @@ def send_planets(request):
                 'pop': planet_pop,
                 'shield': planet_shield,
                 'missiles': planet_missiles,
+                'pop_per_second': calculo_generar_pop/2,
+                'shield_per_second': calculo_generar_shield/2,
+                'missiles_per_second': calculo_generar_missile/2,
             }
             plist.append(record)
         pdict = {'planets': plist, 'user': current_user}
