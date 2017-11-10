@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils import timezone
-#from abc import ABCMeta, abstractmethod
+import numpy
 import random
 from haikunator import Haikunator
 
@@ -43,9 +43,9 @@ class Game(models.Model):
                                             verbose_name='Connected players',
                                             validators=[MinValueValidator(0)])
     # Numero de bots que se agregaron a la partida a la partida.
-    bot_players = models.IntegerField(default=2,
+    bot_players = models.IntegerField(default=0,
                                       verbose_name='Amount of bot players',
-                                      validators=[MinValueValidator(2)])
+                                      validators=[MinValueValidator(0)])
     # Tiempo de viaje del misil.
     time_missile = models.IntegerField(default=1,
                                        verbose_name='Missile Delay',
@@ -188,7 +188,7 @@ class Planet(models.Model):
     Clase Planet: Contiene toda la informacion acerca del planeta de cada
     jugador que sera generado luego de comenzado el juego (estado in-game)
     """
-    player = models.ForeignKey(User, default=1, on_delete=models.CASCADE)
+    player = models.ForeignKey(User, null = True, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE)
     name = models.CharField(max_length=20,
                             default='Default Name',
@@ -321,6 +321,96 @@ class Planet(models.Model):
         return times
 
 
+class Bot(models.Model):
+    # Probabilidad de decidir atacar.
+    probability_attack = models.IntegerField(default=30,
+                                      help_text='probability of attack',
+                                      blank=False)
+
+    # Probabilidad de decidir modificar los recursos.
+    probability_modify_resources = models.IntegerField(default=60,
+                                 help_text='probability of modifying resources',
+                                 blank=False)
+
+    # Probabilidad de decidir esperar y no realizar acciones.
+    probability_not_acting = models.IntegerField(default=10,
+                                 help_text='probability of not acting',
+                                 blank=False)
+
+    # Partida a la que pertenece el bot.
+    game = models.ForeignKey(Game, default = 1, on_delete = models.CASCADE)
+
+    # Nombre del bot.
+    name = models.CharField(max_length=20, blank=False, verbose_name='Bot name')
+
+    # Planeta perteneciente al bot.
+    planet = models.ForeignKey(Planet, on_delete = models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+    """
+    Clase abstracta que representa a los bot.
+    """
+    def attack(self):
+        """
+        Decide aleatoriamente si ataca a uno o mas planetas.
+        """
+        pass
+
+    def defense(self):
+        """
+        Decide aleatoriamente si modifica los recursos del planeta propio.
+        """
+        pass
+
+
+class Defensive(Bot):
+    """
+    #Contiene informacion sobre los bot de caracteristica defensiva.
+    """
+    def attack(self):
+        # Elegimos aleatoriamente el numero de misiles lanzados.
+        count_attack = numpy.random.binomial(self.planet.missiles_qty,
+                                             (self.probability_attack / 999.0))
+        planets = Planet.objects.filter(game=self.game).exclude(
+                                                               pk = self.planet,
+                                                             population_qty = 0)
+        # Seleccionamos aleatoriamente los planetas a atacar.
+        planets_attack = numpy.random.poisson(1.5, count_attack)
+
+        if not planets:
+            for planet_id in planets_attack:
+                if abs(planet_id) > (planets.count() - 1):
+                    planet_id = planets.count() - 1
+                self.planet.launch_missile(planets[abs(planet_id)])
+                #print planets[abs(planet_id)]
+
+    def defense(self):
+        pass
+
+class Alliance (models.Model):
+    """
+    Clase Alliance: Agrupa los planetas en alianzas si las hay en partida bajo un nombre.
+    """
+    name = models.CharField(max_length=30,default='Team',verbose_name='Alliance Name')
+    game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE,verbose_name='Game Name')
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def create(cls, name, game):
+        """
+        Create Alliance:
+        Permite crear una alianza (equipo-team)
+        INPUT: Partida donde vive la alianza
+        OUTPUT: La Alianza
+        """
+        new_alliance = cls(name=name, game=game)
+        return new_alliance
+
+
 class Missile (models.Model):
     """
     Clase Missile: Contiene el planeta origen, planeta destino, y hora de
@@ -368,84 +458,3 @@ class Missile (models.Model):
         time_to_impact = missile_delay - time_elapsed
 
         return time_to_impact
-
-
-class Bot(models.Model):
-    # Probabilidad de decidir atacar.
-    problability_attack = models.IntegerField(default=30,
-                                      help_text='probability of attack',
-                                      blank=False)
-
-    # Probabilidad de decidir atacar otra vez despues de haber atacado.
-    probability_attacking_again  = models.IntegerField(default=30,
-                                     help_text='probability of attacking again',
-                                     blank=False)
-
-    # Probabilidad de decidir modificar los recursos.
-    problability_modify_resources = models.IntegerField(default=60,
-                                 help_text='probability of modifying resources',
-                                 blank=False)
-
-    # Probabilidad de decidir esperar y no realizar acciones.
-    probability_not_acting = models.IntegerField(default=10,
-                                 help_text='probability of not acting',
-                                 blank=False)
-
-    # Partida a la que pertenece el bot.
-    game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE)
-
-    # Nombre del bot.
-    name = models.CharField(max_length=20, blank=False, verbose_name='Bot name')
-
-    class Meta:
-        abstract = True
-
-    """
-    Clase abstracta que representa a los bot.
-    """
-    #@abstractmethod
-    def attack(self):
-        """
-        Decide aleatoriamente si ataca a uno o mas planetas.
-        """
-        return True
-
-    #def decide_to_modify_resources(self):
-    #@abstractmethod
-    def defense(self):
-        """
-        Decide aleatoriamente si modifica los recursos del planeta propio.
-        """
-        return True
-
-
-class Defensive(Bot):
-    """
-    #Contiene informacion sobre los bot de caracteristica defensiva.
-    """
-    def attack(self):
-        return True
-
-    def defense(self):
-        return True
-
-class Alliance (models.Model):
-    """
-    Clase Alliance: Agrupa los planetas en alianzas si las hay en partida bajo un nombre.
-    """
-    name = models.CharField(max_length=30,default='Team',verbose_name='Alliance Name')
-    game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE,verbose_name='Game Name')
-
-    def __str__(self):
-        return self.name
-
-    @classmethod
-    def create(cls, name, game):
-        """
-        Create Alliance:
-        Permite crear una alianza (equipo-team)
-        INPUT: Partida donde vive la alianza
-        OUTPUT: La Alianza
-        """
-        new_alliance = cls(name=name, game=game)
-        return new_alliance
