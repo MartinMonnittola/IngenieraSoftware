@@ -236,15 +236,31 @@ input[type="text"],
 input[type="tel"],
 input[type="url"],
 input[type="password"],
-textarea,
-select {
+textarea {
     height: 30px;
+    width: 200px;
     color: rgb(53, 244, 232);
     background-color: #000;
     border: 0px solid #D1D1D1;
     border-radius: 1px;
     box-shadow: none;
-    box-sizing: border-box; }
+    box-sizing: border-box;
+}
+
+select{
+    height: 30px;
+    width: 200px;
+    color: rgb(53, 244, 232);
+    background-color: #000;
+    border: 0px solid #D1D1D1;
+    border-radius: 1px;
+    box-shadow: none;
+    box-sizing: border-box;
+    -moz-appearance:none; /* Firefox */
+    -webkit-appearance:none; /* Safari and Chrome */
+    text-align-last: center;
+}
+
 
 /* Removes awkward default styles on some inputs for iOS */
 input[type="email"],
