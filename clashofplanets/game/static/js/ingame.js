@@ -30,6 +30,7 @@ function listPlanets() {
         type: 'GET',
         data: {num: num},
         url: "get_planets/",
+        dataType: 'json',
         success: function (json) {
             var plist = json.planets;
             var user = json.user;
@@ -40,11 +41,34 @@ function listPlanets() {
                     $('#mypopAvailable').append(plist[i].pop);
                     $('#mymissilesAvailable').empty();
                     $('#mymissilesAvailable').append(plist[i].missiles);
+                    if (plist[i].missiles == 0) { // Player doesnt have missiles to attack
+                        var msg = "You dont have missiles to attack!!!";  // Writes message, disable attack
+                        $('#attackError').empty();
+                        $('#attackError').append(msg);
+                        $('.attack-planet').prop("disabled",true);
+                    }
+                    if (plist[i].pop == 0) {
+                        alert("You have been defeated!!");
+                        var msg = "You don't have more population, you lost the game!!!";  // Writes message, disable attack
+                        $('#attackError').empty();
+                        $('#attackError').append(msg);
+                        $('.attack-planet').prop("disabled",true);
+                    }
+                    else { // Player has missiles, enable button again, delete msg on div
+                        $('#attackError').empty();
+                        $('.attack-planet').prop("disabled",false);
+                    }
                 }
                 $('#planet-' + plist[i].id + ' .tb_planet_pop').empty();
                 $('#planet-' + plist[i].id + ' .tb_planet_pop').append(plist[i].pop);
                 $('#planet-' + plist[i].id + ' .tb_planet_shield').empty();
                 $('#planet-' + plist[i].id + ' .tb_planet_shield').append(plist[i].shield);
+                if (plist[i].pop == 0) {
+                    var msg = 'DEAD PLANET';
+                    var planet_id = plist[i].id
+                    $('#planet-' + planet_id).find('.tb_attack_order').empty();
+                    $('#planet-' + planet_id).find('.tb_attack_order').append(msg);
+                }
             }
             setTimeout(listPlanets, 2000);
         },
