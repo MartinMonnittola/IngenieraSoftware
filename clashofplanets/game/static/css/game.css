@@ -60,6 +60,10 @@ ul.openGamesC{
   text-shadow: 0.1em 0.1em 0.2em black;
 }
 
+#JoinError {
+    color: #ef3245;
+}
+
 .cardb h1{
     color: white;
 }
@@ -87,7 +91,7 @@ ul.openGamesC{
     rgba(13, 22, 16, 0.5) 0%, rgba(73, 90, 83, 0.5) 30%, rgba(50, 62, 57, 0.5) 50%,
     rgba(78, 86, 81, 0.5) 70%, rgba(37, 50, 41, 0.5) 100%),
     linear-gradient(75deg, #1d1c1b 0, #030302 35%, #000000 65%, #000000 100%);
-    height: 100%;
+    height: auto;
 }
 
 .cardr h1{
@@ -215,6 +219,11 @@ input[type="button"] {
     hsla(210,100%,75%, 0) 0  0px 3px 2px, /* outer SD */
     hsla(210,50%,40%, 0) 0 -5px 6px 4px, /* outer SD */
     hsla(210,80%,95%, 0) 0  5px 6px 4px; /* outer HL */
+}
+
+.metal:disabled {
+    background-color: #cccccc;
+    color: #999;
 }
 
 
