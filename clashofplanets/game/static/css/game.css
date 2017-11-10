@@ -60,7 +60,7 @@ ul.openGamesC{
   text-shadow: 0.1em 0.1em 0.2em black;
 }
 
-#JoinError {
+#JoinError, #attackError{
     color: #ef3245;
 }
 
