@@ -216,6 +216,9 @@ def make_game(request):
         planet_name = request.POST.get('pname')
         room_name = request.POST.get('rname')
         max_players = int(request.POST.get('max_players'))
+        bot_players = int(request.POST.get('bot_players'))
+        num_alliances = int(request.POST.get('num_alliances'))
+        game_mode = request.POST.get('game_mode')
 
         if max_players < 2:
             data = {'gameNumber': -1,

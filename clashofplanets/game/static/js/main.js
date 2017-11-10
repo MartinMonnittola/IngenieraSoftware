@@ -58,10 +58,21 @@ $(document).ready(function () {
         var pname = $('#planet_nameC').val();
         var rname = $('#game_nameC').val();
         var max_players = $('#max_playersC').val();
+        var bot_players = $('#bot_playersC').val();
+        var num_alliances = $('#num_alliancesC').val();
+        var game_mode = $('#game_modesC').text();
         //Ajax post
         $.ajax({
             type: 'POST',
-            data: {csrfmiddlewaretoken: csrftoken, pname: pname, rname: rname, max_players: max_players},
+            data: {
+                csrfmiddlewaretoken: csrftoken,
+                pname: pname,
+                rname: rname,
+                max_players: max_players,
+                bot_players: bot_players,
+                num_alliances: num_alliances,
+                game_mode: game_mode,
+            },
             url: 'make_game/',
             success: function (json) {
                 //console.log(json);
