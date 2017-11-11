@@ -172,6 +172,8 @@ class GameRoomsListJoinCreateViewTest(TestCase):
     def test_join_game_full(self):
         game = Game.create(User.objects.get(pk=2), "Game", 2)
         game.save()
+        alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
+        alliance1.save()
         game.joinGame(3, "Planet2", 12345)
         data = {
             'pname': 'Planet3',
