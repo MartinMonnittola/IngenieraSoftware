@@ -116,7 +116,9 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         data = {
             'pname': 'Planet1',
             'rname': 'Room1',
-            'max_players': 10
+            'max_players': 10,
+            'num_alliances': 2,
+            'bot_players': 0
         }
 
         response = self.client.post(
@@ -133,7 +135,9 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         data = {
             'pname': 'Planet1',
             'rname': 'Room1',
-            'max_players': -10
+            'max_players': -10,
+            'num_alliances': 2,
+            'bot_players': 0
         }
 
         response = self.client.post(
@@ -172,6 +176,7 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         data = {
             'pname': 'Planet3',
             'num': 1,
+            'num_alliances': 2
         }
         response = self.client.post(
             '/game_rooms/make_player/',

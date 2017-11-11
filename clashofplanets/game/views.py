@@ -216,7 +216,9 @@ def make_game(request):
         planet_name = request.POST.get('pname')
         room_name = request.POST.get('rname')
         max_players = int(request.POST.get('max_players'))
+        bot_players = int(request.POST.get('bot_players'))
         num_alliances = int(request.POST.get('num_alliances'))
+        game_mode = request.POST.get('game_mode')
 
         if max_players < 2:
             data = {'gameNumber': -1,
@@ -232,11 +234,12 @@ def make_game(request):
             
             # create alliances
             i = 0
-            for i in range(0, num_alliances):
+            for i in range(num_alliances):
             	name = haikunator.haikunate(token_length=0, delimiter=' ')
             	alliance = Alliance.create(name, g)
             	alliance.save()
             fst_alliance = Alliance.objects.all()[0]
+            
             # create planet
             rseed = randint(1, 90001)
             # Game.joinGame(g, request.user, planet_name, rseed)
@@ -259,6 +262,7 @@ def send_planets(request):
     """
     if request.method == 'GET' and request.is_ajax():
         game_num = request.GET.get('num')
+        g = Game.objects.get(id=game_num)
         planets = Planet.objects.filter(game=game_num)  # players in game
         plist = []
         current_user = request.user.username
@@ -269,6 +273,14 @@ def send_planets(request):
             planet_pop = tmpplanet.population_qty
             planet_shield = tmpplanet.shield_perc
             planet_missiles = tmpplanet.missiles_qty
+
+            cantidad_asig = tmpplanet.population_qty * tmpplanet.population_distr / 100
+            calculo_generar_pop = cantidad_asig / g.const_population
+            cant_asig_shield = tmpplanet.population_qty * tmpplanet.shield_distr / 100
+            calculo_generar_shield = cant_asig_shield / g.const_shield
+            cant_asig_mis = tmpplanet.population_qty * tmpplanet.missile_distr / 100
+            calculo_generar_missile = cant_asig_mis / g.const_missile
+
             record = {
                 'name': planet_name,
                 'id': planet_id,
@@ -276,6 +288,9 @@ def send_planets(request):
                 'pop': planet_pop,
                 'shield': planet_shield,
                 'missiles': planet_missiles,
+                'pop_per_second': calculo_generar_pop/2,
+                'shield_per_second': calculo_generar_shield/2,
+                'missiles_per_second': calculo_generar_missile/2,
             }
             plist.append(record)
         pdict = {'planets': plist, 'user': current_user}

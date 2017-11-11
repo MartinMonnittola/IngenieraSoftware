@@ -4,9 +4,8 @@
 
 {% block main_content %}
 
-    <script src="{% static 'js/inroom.js' %}?v=00003" type="text/javascript">
-    </script>
-<div class="container">
+    <script src="{% static 'js/inroom.js' %}?v=00003" type="text/javascript"></script>
+
     <div class="row text-center">
         <div class="col">
             <h1>
@@ -21,21 +20,23 @@
             </h1>
         </div>
     </div>
-    <div class="container">
-        <div class="row text-center">
-                <table class="table metal-effect2">
-                    <thead>
-                        <tr>
-                            <th class="text-center">Planet ID</th>
-                            <th class="text-center">Planet Name</th>
-                            <th class="text-center">Planet Owner</th>
-                        </tr>
-                    </thead>
-                    <tbody id="playerList" class="text-center">
-                    </tbody>
-                </table>
+
+    <div class="row text-center">
+        <div class="col table-responsive">
+            <table class="table metal-effect2">
+                <thead>
+                    <tr>
+                        <th class="text-center">Planet ID</th>
+                        <th class="text-center">Planet Name</th>
+                        <th class="text-center">Planet Owner</th>
+                    </tr>
+                </thead>
+                <tbody id="playerList" class="text-center">
+                </tbody>
+            </table>
         </div>
     </div>
+
     <div class="row text-center">
         <div class="col">
             {% if request.user == game.user %}
@@ -55,5 +56,5 @@
             </form>
         </div>
     </div>
-</div>
+
 {% endblock %}
