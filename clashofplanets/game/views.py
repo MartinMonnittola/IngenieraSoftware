@@ -228,14 +228,25 @@ def make_game(request):
             g = Game.create(request.user, room_name, max_players)
             g.save()
             game_id = g.id
+            
+            # random name generator for alliances
+            haikunator = Haikunator()
+            
+            # create alliances
+            i = 0
+            for i in range(num_alliances):
+            	name = haikunator.haikunate(token_length=0, delimiter=' ')
+            	alliance = Alliance.create(name, g)
+            	alliance.save()
+            fst_alliance = Alliance.objects.all()[0]
+            
             # create planet
             rseed = randint(1, 90001)
             # Game.joinGame(g, request.user, planet_name, rseed)
-            p = Planet.create(request.user, g, planet_name, rseed)
+            p = Planet.create(request.user, g, planet_name, rseed, fst_alliance)
             p.save()  # creates player
 
-            haikunator = Haikunator() # random name generator for alliances
-            random_name = haikunator.haikunate(token_length=0, delimiter=' ')
+
 
             data = {'gameNumber': game_id}
     else:

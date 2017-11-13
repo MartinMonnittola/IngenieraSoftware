@@ -89,13 +89,17 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         """
         game1 = Game.create(User.objects.get(pk=2), "Game1", 10)
         game1.save()
-        planet1 = Planet.create(User.objects.get(pk=2),
-                                Game.objects.get(pk=1), "Planet1", 123456)
+        alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
+        alliance1.save()
+        planet1 = Planet.create(User.objects.get(pk=2), Game.objects.get(pk=1),
+        						"Planet1", 123456, Alliance.objects.get(pk=1))
         planet1.save()
         game2 = Game.create(User.objects.get(pk=3), "Game2", 10)
         game2.save()
-        planet2 = Planet.create(User.objects.get(pk=3),
-                                Game.objects.get(pk=2), "Planet2", 1234532)
+        alliance2 = Alliance.create("Alliance2", Game.objects.get(pk=2))
+        alliance2.save()
+        planet2 = Planet.create(User.objects.get(pk=3), Game.objects.get(pk=2),
+        						"Planet2", 1234532, Alliance.objects.get(pk=2))
         planet2.save()
 
     def test_no_games(self):
@@ -112,7 +116,9 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         data = {
             'pname': 'Planet1',
             'rname': 'Room1',
-            'max_players': 10
+            'max_players': 10,
+            'num_alliances': 2,
+            'bot_players': 0
         }
 
         response = self.client.post(
@@ -129,7 +135,9 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         data = {
             'pname': 'Planet1',
             'rname': 'Room1',
-            'max_players': -10
+            'max_players': -10,
+            'num_alliances': 2,
+            'bot_players': 0
         }
 
         response = self.client.post(
@@ -164,10 +172,13 @@ class GameRoomsListJoinCreateViewTest(TestCase):
     def test_join_game_full(self):
         game = Game.create(User.objects.get(pk=2), "Game", 2)
         game.save()
+        alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
+        alliance1.save()
         game.joinGame(3, "Planet2", 12345)
         data = {
             'pname': 'Planet3',
             'num': 1,
+            'num_alliances': 2
         }
         response = self.client.post(
             '/game_rooms/make_player/',
@@ -203,8 +214,10 @@ class InGameViewsTest(TestCase):
         """
         game1 = Game.create(User.objects.get(pk=1), "Game1", 10)
         game1.save()
-        planet1 = Planet.create(User.objects.get(pk=1),
-                                Game.objects.get(pk=1), "Planet1", 123456)
+        alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
+        alliance1.save()
+        planet1 = Planet.create(User.objects.get(pk=1), Game.objects.get(pk=1),
+        						"Planet1", 123456, Alliance.objects.get(pk=1))
         planet1.save()
         game1.joinGame(2, "Planet2", 12345)
         game1.joinGame(3, "Planet3", 123345)
