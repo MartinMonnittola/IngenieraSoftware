@@ -144,6 +144,10 @@ class Game(models.Model):
 
                 planet = Planet.create(user, self, name, seed, alliance)
                 planet.save()
+
+                alliance.add_player()
+                alliance.save()
+
                 self.connected_players += 1
                 self.save()
                 succesfull = True
@@ -206,11 +210,31 @@ class Alliance (models.Model):
         """
         Create Alliance:
         Permite crear una alianza (equipo-team)
-        INPUT: Partida donde vive la alianza
-        OUTPUT: La Alianza
+        INPUT: Nombre de la alianza, partida a la que pertenece
+        OUTPUT: La alianza
         """
         new_alliance = cls(name=name, game=game)
         return new_alliance
+
+    def add_player(self):
+        """
+        Add Player:
+        Aumenta el contador de jugadores pertenecientes a la alianza
+        INPUT: Ninguno
+        OUTPUT: Ninguno
+        """
+        self.num_players += 1
+        self.save()
+
+    def remove_player(self):
+        """
+        Add Player:
+        Decrementa el contador de jugadores pertenecientes a la alianza
+        INPUT: Ninguno
+        OUTPUT: Ninguno
+        """
+        self.num_players -= 1
+        self.save()
 
 class Planet(models.Model):
     """
