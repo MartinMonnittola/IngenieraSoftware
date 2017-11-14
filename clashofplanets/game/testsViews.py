@@ -87,14 +87,14 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         Create some games for listing, owners are testuser2 and testuser3,
         so testuser1 can join
         """
-        game1 = Game.create(User.objects.get(pk=2), "Game1", 10)
+        game1 = Game.create(User.objects.get(pk=2), "Game1", 10, 1)
         game1.save()
         alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
         alliance1.save()
         planet1 = Planet.create(User.objects.get(pk=2), Game.objects.get(pk=1),
         						"Planet1", 123456, Alliance.objects.get(pk=1))
         planet1.save()
-        game2 = Game.create(User.objects.get(pk=3), "Game2", 10)
+        game2 = Game.create(User.objects.get(pk=3), "Game2", 10, 1)
         game2.save()
         alliance2 = Alliance.create("Alliance2", Game.objects.get(pk=2))
         alliance2.save()
@@ -165,12 +165,12 @@ class GameRoomsListJoinCreateViewTest(TestCase):
             **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
         data = json.loads(response.content)
         self.assertEqual(Planet.objects.count(), 3)
-        self.assertEqual(Game.objects.get(pk=1).connected_players, 2)
+        self.assertEqual(Game.objects.get(pk=1).connected_players, 1)
         self.assertEqual(Planet.objects.get(pk=3).name.__str__(), "Planet3")
         self.assertEqual(data["gameNumber"], 1)
 
     def test_join_game_full(self):
-        game = Game.create(User.objects.get(pk=2), "Game", 2)
+        game = Game.create(User.objects.get(pk=2), "Game", 1, 1)
         game.save()
         alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
         alliance1.save()
@@ -212,7 +212,7 @@ class InGameViewsTest(TestCase):
         """
         Create some games with planets joined
         """
-        game1 = Game.create(User.objects.get(pk=1), "Game1", 10)
+        game1 = Game.create(User.objects.get(pk=1), "Game1", 10, 1)
         game1.save()
         alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
         alliance1.save()

@@ -24,7 +24,7 @@ class MissileModelTestCase(TestCase):
                        password="oponent123")
         oponent.save()
         
-        game = Game.create(user, "TestGame", 4)
+        game = Game.create(user, "TestGame", 4, 2)
         game.save()
         
         team1 = Alliance.create("Team 1", game)
