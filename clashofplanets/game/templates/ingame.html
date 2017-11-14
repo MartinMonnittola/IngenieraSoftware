@@ -43,7 +43,7 @@
                             {% elif p.alliance == your_planet.alliance %}
                                 <form action="" method="post">
                                     {% csrf_token %}
-                                    <input type="hidden" value="{{p.id}}" name="name_of_var_2">
+                                    <input type="hidden" value="{{p.id}}" name="name_of_var">
                                     <input class="send-pop-planet metal" type="submit" value="send pop"/>
                                 </form>
                             {% else %}

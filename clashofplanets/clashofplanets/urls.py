@@ -39,4 +39,6 @@ urlpatterns = [
         name='change_distribution'),
     url(r'^game_rooms/game/\d+/send_attack/$', send_attack,
         name='send_attack'),
+    url(r'^game_rooms/game/\d+/send_pop/$', send_pop,
+        name='send_pop'),
 ]

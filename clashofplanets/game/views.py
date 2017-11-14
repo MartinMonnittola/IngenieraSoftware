@@ -412,3 +412,36 @@ def send_attack(request):
     else:
         attack_dict = {'error': 'bad_request'}
     return JsonResponse(attack_dict, safe=False)
+
+# Allow players to attack their enemies
+def send_pop(request):
+    """
+    View to send pop to ally planets
+    """
+    if request.method == 'POST' and request.is_ajax():
+        # get game room data
+        planet_gameroom = int(request.POST.get('game_num'))
+        game = Game.objects.get(pk=planet_gameroom)
+        # get planet target data
+        planet_target_id = int(request.POST.get('planet_id'))
+        planet_target = Planet.objects.get(pk=planet_target_id,
+                                           game=planet_gameroom)
+        # get planet pop data
+        planet_sending_owner = request.user
+        planet_sending = Planet.objects.get(player=planet_sending_owner,
+                                             game=planet_gameroom)
+        # planet data
+        if planet_sending.population_qty > 100: # planet has pop to send
+            planet_sending.population_qty -= 100
+            planet_sending.save()
+            planet_target.population_qty += 100
+            planet_target.save()
+            send_pop_message = 1
+        else:  # planet doesnt have pop to planet
+            send_pop_message = 0
+        send_pop_dict = {'origin_id': planet_sending.id,
+                       'target_id': planet_target.id,
+                       'message': send_pop_message}
+    else:
+        send_pop_dict = {'error': 'bad_request'}
+    return JsonResponse(send_pop_dict, safe=False)

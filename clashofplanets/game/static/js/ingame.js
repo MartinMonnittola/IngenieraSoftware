@@ -202,8 +202,29 @@ function attackPlanet() {
     });
 }
 
+
+function sendPopPlanet() {
+    $('.send-pop-planet').on("click", function (event) {
+        event.preventDefault();
+        var planet_id = $(this).closest('tr').find('td:nth-child(1)').text();
+        //battleLog(planet_id); //Uncomment to check attack is working OK
+        var num = $('#gamenum').text();
+        var csrftoken = getCookie('csrftoken');
+        $.ajax({
+            type: "POST",
+            url: "send_pop/",
+            data: {
+                csrfmiddlewaretoken: csrftoken,
+                planet_id: planet_id,
+                game_num: num,
+            },
+        });
+    });
+}
+
 $(document).ready(function () {
     planetDistribution();
     listPlanets();
     attackPlanet();
+    sendPopPlanet();
 });
