@@ -213,41 +213,32 @@ def make_game(request):
     # create game
     if request.method == 'POST' and request.is_ajax():
         # form related stuff, gets data submitted in the template
-        planet_name = request.POST.get('pname')
+        planet_name = str(request.POST.get('pname'))
         room_name = request.POST.get('rname')
         max_players = int(request.POST.get('max_players'))
         bot_players = int(request.POST.get('bot_players'))
         num_alliances = int(request.POST.get('num_alliances'))
         game_mode = request.POST.get('game_mode')
-
         if max_players < 2:
             data = {'gameNumber': -1,
                     'message': "Max_players can't be less than 2."}
         else:
             # creates game
-            g = Game.create(request.user, room_name, max_players)
+            g = Game.create(request.user, room_name, max_players, num_alliances)
             g.save()
             game_id = g.id
-            
             # random name generator for alliances
             haikunator = Haikunator()
-            
             # create alliances
-            i = 0
             for i in range(num_alliances):
             	name = haikunator.haikunate(token_length=0, delimiter=' ')
             	alliance = Alliance.create(name, g)
             	alliance.save()
-            fst_alliance = Alliance.objects.all()[0]
-            
+            fst_alliance = Alliance.objects.filter(game=g).first()
             # create planet
             rseed = randint(1, 90001)
-            # Game.joinGame(g, request.user, planet_name, rseed)
-            p = Planet.create(request.user, g, planet_name, rseed, fst_alliance)
-            p.save()  # creates player
-
-
-
+            planet_owner = request.user
+            g.joinGame(planet_owner.id, planet_name, rseed)
             data = {'gameNumber': game_id}
     else:
         return HttpResponseBadRequest("Bad Request")
@@ -273,7 +264,7 @@ def send_planets(request):
             planet_pop = tmpplanet.population_qty
             planet_shield = tmpplanet.shield_perc
             planet_missiles = tmpplanet.missiles_qty
-
+            planet_alliance = str(tmpplanet.alliance)
             cantidad_asig = tmpplanet.population_qty * tmpplanet.population_distr / 100
             calculo_generar_pop = cantidad_asig / g.const_population
             cant_asig_shield = tmpplanet.population_qty * tmpplanet.shield_distr / 100
@@ -288,6 +279,7 @@ def send_planets(request):
                 'pop': planet_pop,
                 'shield': planet_shield,
                 'missiles': planet_missiles,
+                'alliance': planet_alliance,
                 'pop_per_second': calculo_generar_pop/2,
                 'shield_per_second': calculo_generar_shield/2,
                 'missiles_per_second': calculo_generar_missile/2,
@@ -311,12 +303,14 @@ def send_games(request):
             g_id = tmpgame.id
             g_connected_players = tmpgame.connected_players
             g_owner = tmpgame.user.username
+            g_num_alliances = tmpgame.num_alliances
             record = {
                 'name': g_name,
                 'max_players': g_max_players,
                 'owner': g_owner,
                 'connected_players': g_connected_players,
                 'id': g_id,
+                'num_alliances': g_num_alliances,
             }
             glist.append(record)
         gdict = {'games': glist}

@@ -22,9 +22,10 @@
                         <th class="text-center">Planet ID</th>
                         <th class="text-center">Planet Name</th>
                         <th class="text-center">Planet Owner</th>
+                        <th class="text-center">Alliance Name</th>
                         <th class="text-center">Planet Pop</th>
                         <th class="text-center">Planet Shield</th>
-                        <th class="text-center">Attack Order</th>
+                        <th class="text-center">Planet Orders</th>
                     </tr>
                 </thead>
                 <tbody class="text-center">
@@ -33,11 +34,18 @@
                         <td class="tb_planet_id">{{p.id}}</td>
                         <td class="tb_planet_name">{{p.name}}</td>
                         <td class="tb_planet_owner">{{p.player}}</td>
+                        <td class="tb_planet_alliance">{{p.alliance}}</td>
                         <td class="tb_planet_pop"></td>
                         <td class="tb_planet_shield"></td>
                         <td class="tb_attack_order">
-                            {% if p.player == request.user %}
+                            {% if p == your_planet %}
                                 YOUR PLANET!!!
+                            {% elif p.alliance == your_planet.alliance %}
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{p.id}}" name="name_of_var_2">
+                                    <input class="send-pop-planet metal" type="submit" value="send pop"/>
+                                </form>
                             {% else %}
                                 <form action="" method="post">
                                     {% csrf_token %}

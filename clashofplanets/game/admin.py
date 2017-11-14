@@ -9,7 +9,7 @@ from .models import *
 admin.site.register(
     Game,
     list_display=[
-        "id", "game_name", "user", "connected_players", "max_players", "bot_players",
+        "id", "game_name", "user", "connected_players", "num_alliances", "max_players", "bot_players",
         "game_started", "initial_population", "const_population",
         "const_shield", "const_missile", "hurt_to_population",
         "hurt_to_shield"],
@@ -19,7 +19,7 @@ admin.site.register(
     Planet,
     list_display=[
         "id", "name", "player", "game",
-        "seed", "population_qty", "shield_perc", "missiles_qty",
+        "seed", "alliance", "population_qty", "shield_perc", "missiles_qty",
         "population_distr", "shield_distr", "missile_distr",
     ],
     list_display_links=["id", "name",],

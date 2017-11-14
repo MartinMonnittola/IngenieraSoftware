@@ -82,29 +82,10 @@ class Game(models.Model):
         """
         Retorna la representacion del objeto en forma de string.
         """
-        representation = (('User: %d, ' % self.user.id) +
-                          ('initial_poblation: %d, ' %
-                           self.initial_population) +
-                          ('const_misil: %d, ' % self.const_missile) +
-                          ('const_shield: %d, ' % self.const_shield) +
-                          ('const_poblation: %d, ' % self.const_population) +
-                          ('time_missile: %d, ' % self.time_missile) +
-                          ('game_name: %s, ' % self.game_name) +
-                          ('pub_date: %s, ' %
-                           self.pub_date.strftime("%Y-%m-%d %H:%M:%S")) +
-                          ('game_started: %r, ' % self.game_started) +
-                          ('max_players: %s, ' % self.max_players) +
-                          ('bot_players: %s, ' % self.bot_players) +
-                          ('connected_players: %s, ' %
-                           self.connected_players) +
-                          ('game_name: %s, ' % self.game_name) +
-                          ('hurt_to_population: %d, ' %
-                           self.hurt_to_population) +
-                          ('hurt_to_shield: %d' % self.hurt_to_shield))
-        return representation
+        return self.game_name
 
     @classmethod
-    def create(cls, owner, name, max_players):
+    def create(cls, owner, name, max_players, num_alliances):
         """
         Crea una partida en estado de espera.
 
@@ -118,8 +99,8 @@ class Game(models.Model):
                    game_name=name,
                    max_players=max_players,
                    game_started=False,
-                   user=owner)
-        game.connected_players += 1
+                   user=owner,
+                   num_alliances = num_alliances)
         return game
 
     def joinGame(self, user_id, name, seed):
@@ -140,7 +121,7 @@ class Game(models.Model):
                 succesfull = False
             else:
                 alliances = Alliance.objects.all().filter(game = self).order_by('num_players')
-                alliance = alliances.last()
+                alliance = alliances.first()
 
                 planet = Planet.create(user, self, name, seed, alliance)
                 planet.save()
@@ -425,5 +406,3 @@ class Missile (models.Model):
         time_to_impact = missile_delay - time_elapsed
 
         return time_to_impact
-
-
