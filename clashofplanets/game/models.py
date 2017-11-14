@@ -367,6 +367,7 @@ class Missile (models.Model):
     owner = models.ForeignKey(Planet, default=1, related_name="owner")
     target = models.ForeignKey(Planet, default=2, related_name="target")
     launch_time = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     @classmethod
     def create(cls, owner, target):
@@ -390,6 +391,9 @@ class Missile (models.Model):
 
         target.save()
 
+        self.is_active = False
+        self.save()
+
     def time_to_target(self):
         """
         Time to target:
@@ -402,7 +406,7 @@ class Missile (models.Model):
         now = timezone.datetime.now(timezone.utc)
         missile_delay = timezone.timedelta(seconds=gameroom.time_missile)
 
-        time_elapsed = self.launch_time - now
+        time_elapsed = now - self.launch_time
         time_to_impact = missile_delay - time_elapsed
 
         return time_to_impact

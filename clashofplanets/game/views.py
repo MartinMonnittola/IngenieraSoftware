@@ -399,7 +399,7 @@ def send_attack(request):
         # attack data
         if planet_attacker.missiles_qty > 0: # planet has missiles to launch
             m = Missile.create(owner=planet_attacker,target=planet_target)
-            m.deal_damage()
+            m.save()
             planet_attacker.missiles_qty -= 1
             planet_attacker.save()
             attack_message = 1

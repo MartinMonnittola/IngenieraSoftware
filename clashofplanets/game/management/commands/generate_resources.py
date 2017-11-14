@@ -28,4 +28,11 @@ class Command(BaseCommand):
                 calculo_generar_missile = cant_asig_mis / g.const_missile
                 p.missiles_qty += calculo_generar_missile
                 p.save()
+                ##### MISSILES ####
+                missiles_from_planet = Missile.objects.filter(owner=p,is_active=True)
+                for m in missiles_from_planet:
+                    m_2_t = m.time_to_target()
+                    if m_2_t.total_seconds() <= 0:
+                        m.deal_damage()
+
         return "Planets have been refilled"

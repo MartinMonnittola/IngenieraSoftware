@@ -12,7 +12,7 @@ admin.site.register(
         "id", "game_name", "user", "connected_players", "num_alliances", "max_players", "bot_players",
         "game_started", "initial_population", "const_population",
         "const_shield", "const_missile", "hurt_to_population",
-        "hurt_to_shield"],
+        "hurt_to_shield", "time_missile"],
     list_display_links=["id", "game_name"],
 )
 admin.site.register(
@@ -28,4 +28,10 @@ admin.site.register(
     Alliance,
     list_display=["id", "name", "game"],
     list_display_links=["id", "name",],
+)
+
+admin.site.register(
+    Missile,
+    list_display=["id", "owner", "target", "is_active"],
+    list_display_links=["id"],
 )
