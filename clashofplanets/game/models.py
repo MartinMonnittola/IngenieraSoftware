@@ -41,40 +41,40 @@ class Game(models.Model):
                                             verbose_name='Connected players',
                                             validators=[MinValueValidator(0)])
     # Numero de bots que se agregaron a la partida a la partida.
-    bot_players = models.IntegerField(default=2,
+    bot_players = models.IntegerField(default=0,
                                       verbose_name='Amount of bot players',
                                       validators=[MinValueValidator(2)])
     # Tiempo de viaje del misil.
-    time_missile = models.IntegerField(default=1,
+    time_missile = models.IntegerField(default=10,
                                        verbose_name='Missile Delay',
                                        validators=[MinValueValidator(1)])
     # Poblacion inicial al comenzar la partida.
-    initial_population = models.IntegerField(default=5000,
+    initial_population = models.IntegerField(default=1000,
                                              verbose_name='Initial Population',
                                              validators=[MinValueValidator(0)])
     # Procentaje de poblacion asignado al recurso poblacion.
     const_population = models.IntegerField(
-                                  default=1,
+                                  default=400,
                                   verbose_name='Population Genration Constant',
                                   validators=[MinValueValidator(1)])
     # Procentaje de poblacion asignado al recurso escudo.
     const_shield = models.IntegerField(
-                                     default=1,
+                                     default=500,
                                      verbose_name='Shield Generation Constant',
                                      validators=[MinValueValidator(1)])
     # Procentaje de poblacion asignado al recurso misil.
     const_missile = models.IntegerField(
-                                    default=1,
+                                    default=700,
                                     verbose_name='Missile Generation Constant',
                                     validators=[MinValueValidator(1)])
     # Daño a la poblacion por misil.
     hurt_to_population = models.IntegerField(
-                                  default=1,
+                                  default=100,
                                   verbose_name='Population damage per missile',
                                   validators=[MinValueValidator(1)])
     # Daño a la escudo por misil.
     hurt_to_shield = models.IntegerField(
-                                      default=1,
+                                      default=10,
                                       verbose_name='Shield damage per missile',
                                       validators=[MinValueValidator(1)])
 
