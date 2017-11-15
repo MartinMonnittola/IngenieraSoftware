@@ -32,6 +32,6 @@ admin.site.register(
 
 admin.site.register(
     Missile,
-    list_display=["id", "owner", "target", "is_active"],
+    list_display=["id", "owner", "target", "is_active", "launch_time"],
     list_display_links=["id"],
 )
