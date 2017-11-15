@@ -4,6 +4,64 @@ function fillOutGame(game_num) {
     $('#planet_name').focus();
 }
 
+var gaps = [1];
+function transform(num) {
+    var pos = gaps.indexOf(num);
+    // skip value from gaps array
+    if (pos !== -1) {
+        return num - 1;
+    }
+    return num;
+}
+
+function max_Players_slider() {
+    var $range = $(".max_playersC-slider");
+    $range.ionRangeSlider({
+        type: 'single',
+        min: 2,
+        max: 50,
+        from: 2,
+    });
+    var slider = $(".max_playersC-slider").data("ionRangeSlider");
+    $(".range-slider-players").mouseleave(function(){
+      slider.dragging = false;
+    });
+}
+
+function num_Alliances_slider() {
+    var $range = $(".num_alliancesC-slider");
+    $range.ionRangeSlider({
+        type: 'single',
+        min: 1,
+        max: 10,
+        from: 1,
+        prettify: function(num) {
+            return transform(num);
+        },
+    });
+    var slider = $(".num_alliancesC-slider").data("ionRangeSlider");
+    $(".range-slider-alliances").mouseleave(function(){
+      slider.dragging = false;
+    });
+}
+
+function num_Bots_slider() {
+    var $range = $(".bot_playersC-slider");
+    $range.ionRangeSlider({
+        type: 'single',
+        min: 1,
+        max: 10,
+        from: 1,
+        prettify: function(num) {
+            return transform(num);
+        },
+    });
+    var slider = $(".bot_playersC-slider").data("ionRangeSlider");
+    $(".range-slider-bots").mouseleave(function(){
+      slider.dragging = false;
+    });
+}
+
 //List available games
 function listGames() {
     $.ajax({
@@ -50,6 +108,10 @@ function listGames() {
 //For doing AJAX post
 $(document).ready(function () {
     listGames();
+    max_Players_slider();
+    num_Alliances_slider();
+    num_Bots_slider();
+
     //Create game is clicked
     $("#create").click(function (e) {
         console.log("creando");
