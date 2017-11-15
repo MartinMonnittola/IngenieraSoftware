@@ -41,7 +41,7 @@
                             {% if p == your_planet %}
                                 YOUR PLANET!!!
                             {% elif p.alliance == your_planet.alliance %}
-                                {% if p.alliance == mode %}
+                                {% if game.num_alliances >= 2 %}
                                     <form action="" method="post">
                                         {% csrf_token %}
                                         <input type="hidden" value="{{p.id}}" name="name_of_var_1">

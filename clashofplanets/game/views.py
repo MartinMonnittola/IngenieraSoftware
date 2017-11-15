@@ -236,7 +236,7 @@ def make_game(request):
                     alliance = Alliance.create(name, g)
                     alliance.save()
             else:
-                alliance = Alliance.create("FREE FOR ALL", g)
+                alliance = Alliance.create("-", g)
                 alliance.save()
             fst_alliance = Alliance.objects.filter(game=g).first()
             # create planet
@@ -357,8 +357,6 @@ def start_game(request, game_num):
         'planets': planets,
         'your_planet': your_planet,
         'game': g,
-        'mode': "FREE FOR ALL"
-        # 'attack_form': form,
     }
     return render(request, 'ingame.html', context)
 
