@@ -43,6 +43,7 @@ main() {
         while true
         do
             sleep $UPDATE_TIME
+            python manage.py missiles
             python manage.py generate_resources
         done
     else
