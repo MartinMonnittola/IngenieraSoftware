@@ -230,10 +230,14 @@ def make_game(request):
             # random name generator for alliances
             haikunator = Haikunator()
             # create alliances
-            for i in range(num_alliances):
-            	name = haikunator.haikunate(token_length=0, delimiter=' ')
-            	alliance = Alliance.create(name, g)
-            	alliance.save()
+            if num_alliances >= 2:
+                for i in range(num_alliances):
+                    name = haikunator.haikunate(token_length=0, delimiter=' ')
+                    alliance = Alliance.create(name, g)
+                    alliance.save()
+            else:
+                alliance = Alliance.create("FREE FOR ALL", g)
+                alliance.save()
             fst_alliance = Alliance.objects.filter(game=g).first()
             # create planet
             rseed = randint(1, 90001)
@@ -265,11 +269,11 @@ def send_planets(request):
             planet_shield = tmpplanet.shield_perc
             planet_missiles = tmpplanet.missiles_qty
             planet_alliance = str(tmpplanet.alliance)
-            cantidad_asig = tmpplanet.population_qty * tmpplanet.population_distr / 100
+            cantidad_asig = tmpplanet.population_qty * tmpplanet.population_distr / 100.0
             calculo_generar_pop = cantidad_asig / g.const_population
-            cant_asig_shield = tmpplanet.population_qty * tmpplanet.shield_distr / 100
+            cant_asig_shield = tmpplanet.population_qty * tmpplanet.shield_distr / 100.0
             calculo_generar_shield = cant_asig_shield / g.const_shield
-            cant_asig_mis = tmpplanet.population_qty * tmpplanet.missile_distr / 100
+            cant_asig_mis = tmpplanet.population_qty * tmpplanet.missile_distr / 100.0
             calculo_generar_missile = cant_asig_mis / g.const_missile
 
             record = {
@@ -280,9 +284,9 @@ def send_planets(request):
                 'shield': planet_shield,
                 'missiles': planet_missiles,
                 'alliance': planet_alliance,
-                'pop_per_second': calculo_generar_pop/2,
-                'shield_per_second': calculo_generar_shield/2,
-                'missiles_per_second': calculo_generar_missile/2,
+                'pop_per_second': round(calculo_generar_pop/2,2),
+                'shield_per_second': round(calculo_generar_shield/2,2),
+                'missiles_per_second': round(calculo_generar_missile/2,2)
             }
             plist.append(record)
         pdict = {'planets': plist, 'user': current_user}
@@ -352,7 +356,8 @@ def start_game(request, game_num):
     context = {
         'planets': planets,
         'your_planet': your_planet,
-        'game': game_num,
+        'game': g,
+        'mode': "FREE FOR ALL"
         # 'attack_form': form,
     }
     return render(request, 'ingame.html', context)

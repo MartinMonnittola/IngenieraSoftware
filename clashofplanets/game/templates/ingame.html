@@ -10,7 +10,7 @@
         <div class="col">
             <h1>
                 Welcome {% if request.user.is_authenticated %}<span class="text-primary" >{{request.user.username}}</span> to {% endif %}
-                Game Room ID: <span id="gamenum">{{game}}</span>
+                Game Room ID: <span id="gamenum">{{game.id}}</span>
             </h1>
         </div>
     </div>
@@ -41,15 +41,23 @@
                             {% if p == your_planet %}
                                 YOUR PLANET!!!
                             {% elif p.alliance == your_planet.alliance %}
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="{{p.id}}" name="name_of_var">
-                                    <input class="send-pop-planet metal" type="submit" value="send pop"/>
-                                </form>
+                                {% if p.alliance == mode %}
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{p.id}}" name="name_of_var_1">
+                                        <input class="send-pop-planet metal" type="submit" value="send pop"/>
+                                    </form>
+                                {% else %}
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{p.id}}" name="name_of_var_2">
+                                        <input class="attack-planet metal" type="submit" value="Attack"/>
+                                    </form>
+                                {% endif %}
                             {% else %}
                                 <form action="" method="post">
                                     {% csrf_token %}
-                                    <input type="hidden" value="{{p.id}}" name="name_of_var">
+                                    <input type="hidden" value="{{p.id}}" name="name_of_var_2">
                                     <input class="attack-planet metal" type="submit" value="Attack"/>
                                 </form>
                             {% endif %}

@@ -51,17 +51,13 @@ function listPlanets() {
                         $('#shield_per_second').empty();
                         $('#shield_per_second').append('FULL');
                     }
-                    if (plist[i].pop == 10000) {
-                        $('#pop_per_second').empty();
-                        $('#pop_per_second').append('FULL');
-                    }
                     if (plist[i].missiles < 1) { // Player doesnt have missiles to attack
                         var msg = "You dont have missiles to attack!!!";  // Writes message, disable attack
                         $('#attackError').empty();
                         $('#attackError').append(msg);
                         $('.attack-planet').prop("disabled",true);
                     }
-                    if (plist[i].pop < 1) {
+                    else if (plist[i].pop < 1) {
                         alert("You have been defeated!!");
                         var msg = "You don't have more population, you lost the game!!!";  // Writes message, disable attack
                         $('#attackError').empty();
