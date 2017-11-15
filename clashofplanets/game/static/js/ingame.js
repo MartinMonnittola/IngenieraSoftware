@@ -47,19 +47,14 @@ function listPlanets() {
                     $('#pop_per_second').append(plist[i].pop_per_second+'/seg');
                     $('#shield_per_second').append(plist[i].shield_per_second+'/seg');
                     $('#missiles_per_second').append(plist[i].missiles_per_second+'/seg');
+
                     if (plist[i].shield == 100) {
                         $('#shield_per_second').empty();
                         $('#shield_per_second').append('FULL');
                     }
+
                     if (plist[i].missiles < 1) { // Player doesnt have missiles to attack
                         var msg = "You dont have missiles to attack!!!";  // Writes message, disable attack
-                        $('#attackError').empty();
-                        $('#attackError').append(msg);
-                        $('.attack-planet').prop("disabled",true);
-                    }
-                    else if (plist[i].pop < 1) {
-                        alert("You have been defeated!!");
-                        var msg = "You don't have more population, you lost the game!!!";  // Writes message, disable attack
                         $('#attackError').empty();
                         $('#attackError').append(msg);
                         $('.attack-planet').prop("disabled",true);
@@ -68,6 +63,22 @@ function listPlanets() {
                         $('#attackError').empty();
                         $('.attack-planet').prop("disabled",false);
                     }
+
+                    if (plist[i].pop <= 100 && plist[i].pop >= 1) {
+                        $('.send-pop-planet').prop("disabled",true);
+                    }
+                    else {
+                        $('.send-pop-planet').prop("disabled",false);
+                    }
+
+                    if (plist[i].pop < 1) {
+                        alert("You have been defeated!!");
+                        var msg = "You don't have more population, you lost the game!!!";  // Writes message, disable attack
+                        $('#attackError').empty();
+                        $('#attackError').append(msg);
+                        $('.attack-planet').prop("disabled",true);
+                    }
+
                 }
                 $('#planet-' + plist[i].id + ' .tb_planet_pop').empty();
                 $('#planet-' + plist[i].id + ' .tb_planet_pop').append(plist[i].pop);
