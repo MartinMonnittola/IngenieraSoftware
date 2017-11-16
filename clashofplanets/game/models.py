@@ -182,6 +182,44 @@ class Game(models.Model):
             succesfull = False
         return succesfull
 
+class Bot(models.Model):
+    # Probabilidad de decidir atacar.
+    probability_attack = models.IntegerField(default=30,
+                                      help_text='probability of attack',
+                                      blank=False)
+
+    # Probabilidad de decidir modificar los recursos.
+    probability_modify_resources = models.IntegerField(default=60,
+                                 help_text='probability of modifying resources',
+                                 blank=False)
+
+    # Probabilidad de decidir esperar y no realizar acciones.
+    probability_not_acting = models.IntegerField(default=10,
+                                 help_text='probability of not acting',
+                                 blank=False)
+
+    # Partida a la que pertenece el bot.
+    game = models.ForeignKey(Game, default = 1, on_delete = models.CASCADE)
+
+    # Nombre del bot.
+    name = models.CharField(max_length=20, blank=False, verbose_name='Bot name')
+
+    """
+    Clase abstracta que representa a los bot.
+    """
+    def attack(self):
+        """
+        Decide aleatoriamente si ataca a uno o mas planetas.
+        """
+        pass
+
+    def defense(self):
+        """
+        Decide aleatoriamente si modifica los recursos del planeta propio.
+        """
+        pass
+
+
 
 class Planet(models.Model):
     """
@@ -189,6 +227,7 @@ class Planet(models.Model):
     jugador que sera generado luego de comenzado el juego (estado in-game)
     """
     player = models.ForeignKey(User, null = True, on_delete=models.CASCADE)
+    bot = models.ForeignKey(Bot, null = True, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE)
     name = models.CharField(max_length=20,
                             default='Default Name',
@@ -321,60 +360,18 @@ class Planet(models.Model):
         return times
 
 
-class Bot(models.Model):
-    # Probabilidad de decidir atacar.
-    probability_attack = models.IntegerField(default=30,
-                                      help_text='probability of attack',
-                                      blank=False)
-
-    # Probabilidad de decidir modificar los recursos.
-    probability_modify_resources = models.IntegerField(default=60,
-                                 help_text='probability of modifying resources',
-                                 blank=False)
-
-    # Probabilidad de decidir esperar y no realizar acciones.
-    probability_not_acting = models.IntegerField(default=10,
-                                 help_text='probability of not acting',
-                                 blank=False)
-
-    # Partida a la que pertenece el bot.
-    game = models.ForeignKey(Game, default = 1, on_delete = models.CASCADE)
-
-    # Nombre del bot.
-    name = models.CharField(max_length=20, blank=False, verbose_name='Bot name')
-
-    # Planeta perteneciente al bot.
-    planet = models.ForeignKey(Planet, on_delete = models.CASCADE)
-
-    class Meta:
-        abstract = True
-
-    """
-    Clase abstracta que representa a los bot.
-    """
-    def attack(self):
-        """
-        Decide aleatoriamente si ataca a uno o mas planetas.
-        """
-        pass
-
-    def defense(self):
-        """
-        Decide aleatoriamente si modifica los recursos del planeta propio.
-        """
-        pass
-
-
 class Defensive(Bot):
     """
     #Contiene informacion sobre los bot de caracteristica defensiva.
     """
+
     def attack(self):
+        planet = PLanet.objects.get(bot = self)
         # Elegimos aleatoriamente el numero de misiles lanzados.
         count_attack = numpy.random.binomial(self.planet.missiles_qty,
                                              (self.probability_attack / 999.0))
         planets = Planet.objects.filter(game=self.game).exclude(
-                                                               pk = self.planet,
+                                                               pk = planet,
                                                              population_qty = 0)
         # Seleccionamos aleatoriamente los planetas a atacar.
         planets_attack = numpy.random.poisson(1.5, count_attack)
@@ -388,6 +385,31 @@ class Defensive(Bot):
 
     def defense(self):
         pass
+
+class Offensive(Bot):
+    """
+    Representa al Bot ofensivo.
+    """
+
+    def attack(self):
+        planet = Planet.objects.get(bot = self)
+        planets=Planet.objects.filter(game=self.game).exclude(pk=planet,
+                                                                population_qty=0);
+        psorted=planets.sort(key=lambda x: x.shield_perc/x.population_qty)
+        
+        planets_to_attack=psorted[:planet.missiles_qty]
+        if len(planets_to_attack) > 0:
+            for p in planets_to_attack:
+                planet.launch_missile(p)
+
+    def change_distribution(self):
+        planet = Planet.objects.get(bot = self)
+        if planet.population_qty < 50:
+            planet.assign_perc_rate(40, 10, 50)
+        else:
+            planet.assign_perc_rate(10, 10, 80)
+        
+            
 
 class Alliance (models.Model):
     """
