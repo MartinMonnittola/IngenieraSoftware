@@ -434,14 +434,7 @@ def send_pop(request):
         planet_sending = Planet.objects.get(player=planet_sending_owner,
                                              game=planet_gameroom)
         # planet data
-        if planet_sending.population_qty > 100: # planet has pop to send
-            planet_sending.population_qty -= 100
-            planet_sending.save()
-            planet_target.population_qty += 100
-            planet_target.save()
-            send_pop_message = 1
-        else:  # planet doesnt have pop to planet
-            send_pop_message = 0
+        send_pop_message = planet_sending.send_population(planet_target)
         send_pop_dict = {'origin_id': planet_sending.id,
                        'target_id': planet_target.id,
                        'message': send_pop_message}

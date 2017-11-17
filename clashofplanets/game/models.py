@@ -357,6 +357,24 @@ class Planet(models.Model):
             times[missile.target.name] = missile.time_to_target()
 
         return times
+        
+    def send_population(self, target_planet):
+        """
+        Send population:
+        Envia poblacion a un planeta
+        INPUT: Objetos Planet de origen (self) y destino (target_planet)
+        OUTPUT: Mensaje indicando exito (1) o fallo (0)
+        """
+        if self.population_qty > 100 and target_planet.population_qty > 1:
+            self.population_qty -= 100
+            self.save()
+            target.population_qty += 100
+            target.save()
+            send_pop_message = 1
+        else:
+            send_pop_message = 0
+        
+        return send_pop_message
 
 
 class Missile (models.Model):
