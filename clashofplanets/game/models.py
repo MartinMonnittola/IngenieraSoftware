@@ -368,8 +368,8 @@ class Planet(models.Model):
         if self.population_qty > 100 and target_planet.population_qty > 1:
             self.population_qty -= 100
             self.save()
-            target.population_qty += 100
-            target.save()
+            target_planet.population_qty += 100
+            target_planet.save()
             send_pop_message = 1
         else:
             send_pop_message = 0
