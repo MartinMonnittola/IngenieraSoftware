@@ -357,7 +357,7 @@ class Planet(models.Model):
             times[missile.target.name] = missile.time_to_target()
 
         return times
-        
+
     def send_population(self, target_planet):
         """
         Send population:
@@ -373,7 +373,7 @@ class Planet(models.Model):
             send_pop_message = 1
         else:
             send_pop_message = 0
-        
+
         return send_pop_message
 
 
