@@ -6,7 +6,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from game.models import *
-from game.modes import *
 
 # Create your forms here.
 
@@ -34,7 +33,7 @@ class SignUpForm(UserCreationForm):
 class gameForm(forms.ModelForm):
     planet_name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_nameC', 'required': True}))
     game_name = forms.CharField(widget=forms.TextInput(attrs={'id':'game_nameC', 'required': True}))
-    game_mode = forms.ChoiceField(choices=MODE_CHOICES, widget=forms.Select(attrs={'id': 'game_modesC', 'required': True}))
+    game_mode = forms.ChoiceField(choices=Game.MODE_CHOICES, widget=forms.Select(attrs={'id': 'game_modesC', 'required': True}))
     max_players = forms.IntegerField(widget=forms.TextInput(
         attrs={
             'value': "",

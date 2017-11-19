@@ -31,4 +31,4 @@ class Command(BaseCommand):
                 print calculo_generar_missile
                 p.missiles_qty += calculo_generar_missile
                 p.save()
-            return "Planets have been refilled"
+        return "Planets have been refilled"
