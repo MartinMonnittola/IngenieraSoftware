@@ -24,7 +24,7 @@ class MissileModelTestCase(TestCase):
                        password="oponent123")
         oponent.save()
 
-        game = Game.create(user, "TestGame", 4, 2)
+        game = Game.create(user, "TestGame", 4, 2, 1)
         game.save()
 
         team1 = Alliance.create("Team 1", game)
@@ -64,7 +64,9 @@ class MissileModelTestCase(TestCase):
         target.save()
         missile = Missile.objects.get(pk=1)
         missile.deal_damage()
-        self.assertLess(Planet.objects.get(pk=2).population_qty, 5000)
+        planet = Planet.objects.get(pk=2)
+        self.assertLess(planet.population_qty,
+                        planet.game.initial_population)
 
     def test_time_to_target_returns_right_value(self):
         missile = Missile.objects.get(pk=1)

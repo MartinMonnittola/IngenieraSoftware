@@ -25,7 +25,7 @@ class AllianceModelTestCase(TestCase):
                        password="ally123")
         ally.save()
         
-        game = Game.create(user, "TestGame", 4, 2)
+        game = Game.create(user, "TestGame", 4, 2, 1)
         game.save()
         
         team1 = Alliance.create("Team 1", game)
