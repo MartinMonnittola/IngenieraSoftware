@@ -5,9 +5,12 @@ class Command(BaseCommand):
     help = 'Generates the planet resources that belongs to an active room, everytime it gets executed.'
 
     def handle(self, *args, **options):
+        print Game.objects.all().count()
         active_games = Game.objects.filter(game_started=True)
         for g in active_games:
+            print g.id
             planets_in_active_rooms = Planet.objects.filter(game=g)
+            print planets_in_active_rooms.count()
             for p in planets_in_active_rooms:
                 ##### DISTRIBUTION #####
                 cantidad_asig = p.population_qty * p.population_distr / 100
@@ -22,7 +25,10 @@ class Command(BaseCommand):
                     else:
                         p.shield_perc += calculo_generar_shield
                 cant_asig_mis = p.population_qty * p.missile_distr / 100
+                print p.missile_distr
                 calculo_generar_missile = cant_asig_mis / g.const_missile
+                print "Nuevos misiles: "
+                print calculo_generar_missile
                 p.missiles_qty += calculo_generar_missile
                 p.save()
-            return "Planets have been refilled"
+        return "Planets have been refilled"

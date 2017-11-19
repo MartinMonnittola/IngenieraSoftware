@@ -25,7 +25,7 @@ class PlanetModelTestCase(TestCase):
                        password="oponent123")
         oponent.save()
 
-        game = Game.create(user, "TestGame", 4, 2)
+        game = Game.create(user, "TestGame", 4, 2, 1)
         game.save()
 
         team1 = Alliance.create("Team 1", game)
@@ -78,7 +78,8 @@ class PlanetModelTestCase(TestCase):
     def test_planet_decrease_population(self):
         planet = Planet.objects.get(pk=1)
         planet.decrease_population(25)
-        self.assertEqual(planet.population_qty, 975)
+        correct_qty = planet.game.initial_population - 25
+        self.assertEqual(planet.population_qty, correct_qty)
 
     def test_planet_doesnt_have_missiles(self):
         planet = Planet.objects.get(pk=1)

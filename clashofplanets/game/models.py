@@ -7,6 +7,7 @@ from django.core.validators import MinValueValidator
 from django.utils import timezone
 from haikunator import Haikunator
 
+
 class Game(models.Model):
     """
     Clase Game contiene informacion sobre las partidas en espera y en ejecucion.
@@ -77,6 +78,17 @@ class Game(models.Model):
                                       default=10,
                                       verbose_name='Shield damage per missile',
                                       validators=[MinValueValidator(1)])
+    FAST = 1
+    SLOW = 2
+    MODE_CHOICES = (
+        (FAST, 'Fast'),
+        (SLOW, 'Slow')
+    )
+    mode = models.CharField(
+        max_length=1,
+        choices=MODE_CHOICES,
+        default=FAST,
+    )
 
     def __str__(self):
         """
@@ -85,7 +97,7 @@ class Game(models.Model):
         return self.game_name
 
     @classmethod
-    def create(cls, owner, name, max_players, num_alliances):
+    def create(cls, owner, name, max_players, num_alliances, mode):
         """
         Crea una partida en estado de espera.
 
@@ -100,8 +112,32 @@ class Game(models.Model):
                    max_players=max_players,
                    game_started=False,
                    user=owner,
-                   num_alliances = num_alliances)
+                   num_alliances=num_alliances)
+        game.configure_mode(mode)
         return game
+
+    def configure_mode(self, mode):
+        if mode == self.FAST:
+            self.mode = self.mode
+            self.time_missile = '1'
+            self.initial_population = '1000'
+            self.const_missile = '300'
+            self.const_population = '500'
+            self.const_shield = '600'
+            self.hurt_to_population = '200'
+            self.hurt_to_shield = '25'
+        elif mode == self.SLOW:
+            self.mode = self.SLOW
+            self.time_missile = '2'
+            self.initial_population = '1000'
+            self.const_missile = '700'
+            self.const_population = '500'
+            self.const_shield = '300'
+            self.hurt_to_population = '100'
+            self.hurt_to_shield = '10'
+        else:
+            raise NameError('Wrong Mode')
+
 
     def joinGame(self, user_id, name, seed):
         """
