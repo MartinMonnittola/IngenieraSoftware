@@ -269,6 +269,7 @@ def send_planets(request):
             planet_id = tmpplanet.id
             planet_pop = tmpplanet.population_qty
             planet_shield = tmpplanet.shield_perc
+            planet_is_alive = tmpplanet.is_alive
             planet_missiles = tmpplanet.missiles_qty
             planet_alliance = str(tmpplanet.alliance)
             cantidad_asig = tmpplanet.population_qty * tmpplanet.population_distr / 100.0
@@ -286,6 +287,7 @@ def send_planets(request):
                 'shield': planet_shield,
                 'missiles': planet_missiles,
                 'alliance': planet_alliance,
+                'is_alive': planet_is_alive,
                 'pop_per_second': round(calculo_generar_pop/2,2),
                 'shield_per_second': round(calculo_generar_shield/2,2),
                 'missiles_per_second': round(calculo_generar_missile/2,2)

@@ -19,7 +19,7 @@ admin.site.register(
     Planet,
     list_display=[
         "id", "name", "player", "game",
-        "seed", "alliance", "population_qty", "shield_perc", "missiles_qty",
+        "seed", "alliance", "is_alive", "population_qty", "shield_perc", "missiles_qty",
         "population_distr", "shield_distr", "missile_distr",
     ],
     list_display_links=["id", "name",],

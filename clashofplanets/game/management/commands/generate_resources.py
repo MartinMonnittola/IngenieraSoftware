@@ -30,5 +30,7 @@ class Command(BaseCommand):
                 print "Nuevos misiles: "
                 print calculo_generar_missile
                 p.missiles_qty += calculo_generar_missile
+                if p.population_qty < 1:
+                    p.is_alive = False
                 p.save()
         return "Planets have been refilled"

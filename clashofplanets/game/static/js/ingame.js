@@ -23,9 +23,12 @@ function timeStamp() {
     return time.join(":") + " " + suffix;
 }
 
+var showAlert_SinglePlayer = true; // True by default.
+var showAlert_MultiPlayer = true; // True by default.
 function listPlanets() {
     var num = $('#gamenum').text();
     var timest = timeStamp();
+    var msg = "";
     $.ajax({
         type: 'GET',
         data: {num: num},
@@ -36,7 +39,7 @@ function listPlanets() {
             var user = json.user;
             $('#playerList').empty();
             for (var i = 0; i < plist.length; i++) {
-                if ((plist[i].owner) == (user)) {
+                if (plist[i].owner == user) {
                     $('#mypopAvailable').empty();
                     $('#mymissilesAvailable').empty();
                     $('#pop_per_second').empty();
@@ -48,47 +51,53 @@ function listPlanets() {
                     $('#shield_per_second').append(plist[i].shield_per_second+'/seg');
                     $('#missiles_per_second').append(plist[i].missiles_per_second+'/seg');
 
-                    if (plist[i].shield == 100) {
-                        $('#shield_per_second').empty();
-                        $('#shield_per_second').append('FULL');
-                    }
-
-                    if (plist[i].missiles < 1) { // Player doesnt have missiles to attack
-                        var msg = "You dont have missiles to attack!!!";  // Writes message, disable attack
+                    if (plist[i].is_alive == 0) {
+                        // Writes message, disable attack
                         $('#attackError').empty();
-                        $('#attackError').append(msg);
+                        $('#attackError').append("You lost the game!!!");
                         $('.attack-planet').prop("disabled",true);
-                    }
-                    else { // Player has missiles, enable button again, delete msg on div
-                        $('#attackError').empty();
-                        $('.attack-planet').prop("disabled",false);
-                    }
-
-                    if (plist[i].pop <= 100 && plist[i].pop >= 1) {
-                        $('.send-pop-planet').prop("disabled",true);
+                        if (showAlert_SinglePlayer) {
+                            alert("You have been defeated!!");
+                            showAlert_SinglePlayer = false; // True by default.
+                        }
                     }
                     else {
-                        $('.send-pop-planet').prop("disabled",false);
+                        if (plist[i].shield == 100) {
+                            $('#shield_per_second').empty();
+                            $('#shield_per_second').append('FULL');
+                        }
+                        if (plist[i].missiles < 1) { // Player doesnt have missiles to attack
+                            // Writes message, disable attack
+                            $('#attackError').empty();
+                            $('#attackError').append("You dont have missiles to attack!!!");
+                            $('.attack-planet').prop("disabled",true);
+                        }
+                        else { // Player has missiles, enable button again, delete msg on div
+                            $('#attackError').empty();
+                            $('.attack-planet').prop("disabled",false);
+                        }
+                        if (plist[i].pop <= 100) {
+                            $('.send-pop-planet').prop("disabled",true);
+                        }
+                        else {
+                            $('.send-pop-planet').prop("disabled",false);
+                        }
                     }
-
-                    if (plist[i].pop < 1) {
-                        alert("You have been defeated!!");
-                        var msg = "You don't have more population, you lost the game!!!";  // Writes message, disable attack
-                        $('#attackError').empty();
-                        $('#attackError').append(msg);
-                        $('.attack-planet').prop("disabled",true);
-                    }
-
+                    $('#planet-' + plist[i].id + ' .tb_planet_pop').empty();
+                    $('#planet-' + plist[i].id + ' .tb_planet_pop').append(plist[i].pop);
+                    $('#planet-' + plist[i].id + ' .tb_planet_shield').empty();
+                    $('#planet-' + plist[i].id + ' .tb_planet_shield').append(plist[i].shield);
                 }
-                $('#planet-' + plist[i].id + ' .tb_planet_pop').empty();
-                $('#planet-' + plist[i].id + ' .tb_planet_pop').append(plist[i].pop);
-                $('#planet-' + plist[i].id + ' .tb_planet_shield').empty();
-                $('#planet-' + plist[i].id + ' .tb_planet_shield').append(plist[i].shield);
-                if (plist[i].pop < 1) {
-                    var msg = 'DEAD PLANET';
-                    var planet_id = plist[i].id
-                    $('#planet-' + planet_id).find('.tb_attack_order').empty();
-                    $('#planet-' + planet_id).find('.tb_attack_order').append(msg);
+                else {
+                    $('#planet-' + plist[i].id + ' .tb_planet_pop').empty();
+                    $('#planet-' + plist[i].id + ' .tb_planet_pop').append(plist[i].pop);
+                    $('#planet-' + plist[i].id + ' .tb_planet_shield').empty();
+                    $('#planet-' + plist[i].id + ' .tb_planet_shield').append(plist[i].shield);
+                    if (plist[i].is_alive == 0) {
+                        var planet_id = plist[i].id
+                        $('#planet-' + planet_id).find('.tb_attack_order').empty();
+                        $('#planet-' + planet_id).find('.tb_attack_order').append('DEAD PLANET');
+                    }
                 }
             }
             setTimeout(listPlanets, 2000);

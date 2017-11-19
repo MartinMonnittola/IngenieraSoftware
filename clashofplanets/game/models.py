@@ -266,6 +266,7 @@ class Planet(models.Model):
     name = models.CharField(max_length=20,
                             default='Default Name',
                             verbose_name='Planet name')
+    is_alive = models.BooleanField(default=True, verbose_name='Planet Alive')
     seed = models.BigIntegerField(default=0, verbose_name='Planet seed')
     population_qty = models.IntegerField(default=5000,
                                          verbose_name='Population Amout',
