@@ -213,18 +213,20 @@ def make_game(request):
     # create game
     if request.method == 'POST' and request.is_ajax():
         # form related stuff, gets data submitted in the template
-        planet_name = str(request.POST.get('pname'))
-        room_name = request.POST.get('rname')
-        max_players = int(request.POST.get('max_players'))
-        bot_players = int(request.POST.get('bot_players'))
-        num_alliances = int(request.POST.get('num_alliances'))
-        game_mode = request.POST.get('game_mode')
+        planet_name = request.POST.get("pname")
+        room_name = request.POST.get("rname")
+        max_players = int(request.POST.get("max_players"))
+        bot_players = int(request.POST.get("bot_players"))
+        num_alliances = int(request.POST.get("num_alliances"))
+        game_mode = int(request.POST.get("game_mode"))
+
         if max_players < 2:
             data = {'gameNumber': -1,
                     'message': "Max_players can't be less than 2."}
         else:
             # creates game
-            g = Game.create(request.user, room_name, max_players, num_alliances)
+            g = Game.create(request.user, room_name, max_players, num_alliances,
+                            game_mode)
             g.save()
             game_id = g.id
             # random name generator for alliances

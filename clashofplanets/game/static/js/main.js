@@ -112,7 +112,7 @@ $(document).ready(function () {
     num_Alliances_slider();
     num_Bots_slider();
 
-    //Create game is clicked
+
     $("#create").click(function (e) {
         console.log("creando");
         $("#join").prop('disabled', true);
@@ -123,7 +123,8 @@ $(document).ready(function () {
         var max_players = $('#max_playersC').val();
         var bot_players = $('#bot_playersC').val();
         var num_alliances = $('#num_alliancesC').val();
-        var game_mode = $('#game_modesC').text();
+        var game_mode = $('#game_modesC').val();
+
         //Ajax post
         $.ajax({
             type: 'POST',
