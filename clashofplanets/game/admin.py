@@ -10,7 +10,7 @@ admin.site.register(
     Game,
     list_display=[
         "id", "game_name", "user", "connected_players", "num_alliances", "max_players", "bot_players",
-        "game_started", "initial_population", "const_population",
+        "game_started", "game_finished", "initial_population", "const_population",
         "const_shield", "const_missile", "hurt_to_population",
         "hurt_to_shield", "time_missile"],
     list_display_links=["id", "game_name"],
