@@ -418,6 +418,7 @@ def send_attack(request):
         attack_dict = {'error': 'bad_request'}
     return JsonResponse(attack_dict, safe=False)
 
+
 # Allow players to attack their enemies
 def send_pop(request):
     """
@@ -443,3 +444,30 @@ def send_pop(request):
     else:
         send_pop_dict = {'error': 'bad_request'}
     return JsonResponse(send_pop_dict, safe=False)
+
+
+# Show destination of active missiles
+def missiles_status(request):
+    """
+    :param request:
+    :return: Json Response with destination of active missiles
+    """
+    if request.method == 'POST' and request.is_ajax():
+        game_id = int(request.POST.get("game_id"))
+        planet = Planet.objects.get(game_id=game_id,
+                                    player_id=request.user.id)
+        missiles = Missile.objects.filter(owner__exact=planet,
+                                          is_active__exact=True)
+
+        data = {}
+        for missile in missiles:
+            if missile.target.name in data:
+                data[missile.target.name] += 1
+            else:
+                data[missile.target.name] = 1
+
+        return JsonResponse(data, safe=False)
+    else:
+        data = {'error': 'bad_request'}
+
+    return JsonResponse(data, safe=False)

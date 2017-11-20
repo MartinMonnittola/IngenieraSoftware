@@ -119,7 +119,7 @@ class Game(models.Model):
     def configure_mode(self, mode):
         if mode == self.FAST:
             self.mode = self.mode
-            self.time_missile = '1'
+            self.time_missile = '5'
             self.initial_population = '1000'
             self.const_missile = '300'
             self.const_population = '500'
@@ -128,7 +128,7 @@ class Game(models.Model):
             self.hurt_to_shield = '25'
         elif mode == self.SLOW:
             self.mode = self.SLOW
-            self.time_missile = '2'
+            self.time_missile = '10'
             self.initial_population = '1000'
             self.const_missile = '700'
             self.const_population = '500'
