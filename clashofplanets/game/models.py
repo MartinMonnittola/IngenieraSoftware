@@ -8,7 +8,6 @@ from django.utils import timezone
 import numpy
 import random
 from haikunator import Haikunator
-
 class Game(models.Model):
     """
     Clase Game contiene informacion sobre las partidas en espera y en ejecucion.
@@ -29,7 +28,7 @@ class Game(models.Model):
                                       default=0,
                                       verbose_name='Game started (True/False)')
     # Numero de alianzas
-    num_alliances = models.IntegerField(default=0,
+    num_alliances = models.IntegerField(default=1,
                                       verbose_name='Number of Alliances',
                                       blank=True,
                                       validators=[MinValueValidator(0)])
@@ -45,38 +44,38 @@ class Game(models.Model):
     # Numero de bots que se agregaron a la partida a la partida.
     bot_players = models.IntegerField(default=0,
                                       verbose_name='Amount of bot players',
-                                      validators=[MinValueValidator(0)])
+                                      validators=[MinValueValidator(2)])
     # Tiempo de viaje del misil.
-    time_missile = models.IntegerField(default=1,
+    time_missile = models.IntegerField(default=10,
                                        verbose_name='Missile Delay',
                                        validators=[MinValueValidator(1)])
     # Poblacion inicial al comenzar la partida.
-    initial_population = models.IntegerField(default=5000,
+    initial_population = models.IntegerField(default=1000,
                                              verbose_name='Initial Population',
                                              validators=[MinValueValidator(0)])
     # Procentaje de poblacion asignado al recurso poblacion.
     const_population = models.IntegerField(
-                                  default=1,
+                                  default=400,
                                   verbose_name='Population Genration Constant',
                                   validators=[MinValueValidator(1)])
     # Procentaje de poblacion asignado al recurso escudo.
     const_shield = models.IntegerField(
-                                     default=1,
+                                     default=500,
                                      verbose_name='Shield Generation Constant',
                                      validators=[MinValueValidator(1)])
     # Procentaje de poblacion asignado al recurso misil.
     const_missile = models.IntegerField(
-                                    default=1,
+                                    default=700,
                                     verbose_name='Missile Generation Constant',
                                     validators=[MinValueValidator(1)])
-    # Daño a la poblacion por misil.
+    # DaÃ±o a la poblacion por misil.
     hurt_to_population = models.IntegerField(
-                                  default=1,
+                                  default=100,
                                   verbose_name='Population damage per missile',
                                   validators=[MinValueValidator(1)])
-    # Daño a la escudo por misil.
+    # DaÃ±o a la escudo por misil.
     hurt_to_shield = models.IntegerField(
-                                      default=1,
+                                      default=10,
                                       verbose_name='Shield damage per missile',
                                       validators=[MinValueValidator(1)])
 
@@ -84,32 +83,12 @@ class Game(models.Model):
         """
         Retorna la representacion del objeto en forma de string.
         """
-        representation = (('User: %d, ' % self.user.id) +
-                          ('initial_poblation: %d, ' %
-                           self.initial_population) +
-                          ('const_misil: %d, ' % self.const_missile) +
-                          ('const_shield: %d, ' % self.const_shield) +
-                          ('const_poblation: %d, ' % self.const_population) +
-                          ('time_missile: %d, ' % self.time_missile) +
-                          ('game_name: %s, ' % self.game_name) +
-                          ('pub_date: %s, ' %
-                           self.pub_date.strftime("%Y-%m-%d %H:%M:%S")) +
-                          ('game_started: %r, ' % self.game_started) +
-                          ('max_players: %s, ' % self.max_players) +
-                          ('bot_players: %s, ' % self.bot_players) +
-                          ('connected_players: %s, ' %
-                           self.connected_players) +
-                          ('game_name: %s, ' % self.game_name) +
-                          ('hurt_to_population: %d, ' %
-                           self.hurt_to_population) +
-                          ('hurt_to_shield: %d' % self.hurt_to_shield))
-        return representation
+        return self.game_name
 
     @classmethod
-    def create(cls, owner, name, max_players):
+    def create(cls, owner, name, max_players, num_alliances):
         """
         Crea una partida en estado de espera.
-
         Entrada: cls, Clase Game.
                  game_name, nombre del partida.
                  owner, usurio creador del partida.
@@ -120,14 +99,13 @@ class Game(models.Model):
                    game_name=name,
                    max_players=max_players,
                    game_started=False,
-                   user=owner)
-        game.connected_players += 1
+                   user=owner,
+                   num_alliances = num_alliances)
         return game
 
     def joinGame(self, user_id, name, seed):
         """
         Une a un usuario al usuario a la partida.
-
         Entrada: self, el objeto partida mismo.
                  user_id, entero que representa la clave primaria del user
                           que se unira a la partida.
@@ -141,8 +119,15 @@ class Game(models.Model):
             if Planet.objects.filter(player=user, game=self).exists():
                 succesfull = False
             else:
-                planet = Planet.create(user, self, name, seed)
+                alliances = Alliance.objects.all().filter(game = self).order_by('num_players')
+                alliance = alliances.first()
+
+                planet = Planet.create(user, self, name, seed, alliance)
                 planet.save()
+
+                alliance.add_player()
+                alliance.save()
+
                 self.connected_players += 1
                 self.save()
                 succesfull = True
@@ -153,7 +138,6 @@ class Game(models.Model):
     def startGame(self):
         """
         Marca como iniciada una partida.
-
         Entrada: self, el objeto game.
         Salida:  nada.
         """
@@ -164,7 +148,6 @@ class Game(models.Model):
     def desactivatePlanet(self, planet_id):
         """
         Desactiva un planeta y elimina sus recursos.
-
         Entrada: planet_id, clave primaria del planeta.
         Salida:  bool que indica si elimino el planeta.
         """
@@ -183,13 +166,125 @@ class Game(models.Model):
         return succesfull
 
 
+
+class Bot(models.Model):
+    """
+    Clase abstracta que representa a los bot.
+    """
+
+    # Probabilidad de decidir atacar.
+    probability_attack = models.IntegerField(default=30,
+                                      help_text='probability of attack',
+                                      blank=False)
+
+    # Probabilidad de decidir modificar los recursos.
+    probability_modify_resources = models.IntegerField(default=60,
+                                 help_text='probability of modifying resources',
+                                 blank=False)
+    # Probabilidad de enviar poblacion a otro planeta.
+    probability_send_population = models.IntegerField(default=60,
+                                 help_text='probability of send population',
+                                 blank=False)
+    # Partida a la que pertenece el bot.
+    game = models.ForeignKey(Game, default = 1, on_delete = models.CASCADE)
+
+    # Nombre del bot.
+    name = models.CharField(max_length=20, blank=False, verbose_name='Bot name')
+
+    @classmethod
+    def create(cls, game):
+        """
+        Permite crear un bot.
+        Entrada: Game, la partida a la que pertenece.
+        Salida: objeto Bot.
+        """
+        try:
+            max_pk = Bot.objects.all().order_by("-pk").first().pk
+            max_pk = max_pk + 1
+        except:
+            max_pk = 1
+        bot = cls(name = ('Bot'+ str(max_pk)), game=game,
+                          probability_attack = 30, 
+                          probability_modify_resources = 60,
+                          probability_send_population = 60
+                         )
+        bot.save()
+        return bot
+
+    def attack(self):
+        """
+        Decide aleatoriamente si ataca a uno o mas planetas.
+        """
+        pass
+
+    def change_distribution(self):
+        """
+        Decide aleatoriamente si modifica los recursos del planeta propio.
+        """
+        pass
+
+
+class Alliance (models.Model):
+    """
+    Clase Alliance: Agrupa los planetas en alianzas si las hay en partida bajo
+    un nombre.
+    """
+    name = models.CharField(max_length=30,
+                            default='Team',
+                            verbose_name='Alliance Name')
+    game = models.ForeignKey(Game,
+                             default=1,
+                             on_delete=models.CASCADE,
+                             verbose_name='Game Name')
+    num_players = models.IntegerField(default=0,
+                                      verbose_name='Players Quantity')
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def create(cls, name, game):
+        """
+        Create Alliance:
+        Permite crear una alianza (equipo-team)
+        INPUT: Nombre de la alianza, partida a la que pertenece
+        OUTPUT: La alianza
+        """
+        new_alliance = cls(name=name, game=game)
+        return new_alliance
+
+    def add_player(self):
+        """
+        Add Player:
+        Aumenta el contador de jugadores pertenecientes a la alianza
+        INPUT: Ninguno
+        OUTPUT: Ninguno
+        """
+        self.num_players += 1
+        self.save()
+
+    def remove_player(self):
+        """
+        Add Player:
+        Decrementa el contador de jugadores pertenecientes a la alianza
+        INPUT: Ninguno
+        OUTPUT: Ninguno
+        """
+        self.num_players -= 1
+        self.save()
+
+
 class Planet(models.Model):
     """
     Clase Planet: Contiene toda la informacion acerca del planeta de cada
     jugador que sera generado luego de comenzado el juego (estado in-game)
     """
     player = models.ForeignKey(User, null = True, on_delete=models.CASCADE)
+    bot = models.ForeignKey(Bot, null = True, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE)
+    alliance = models.ForeignKey(Alliance,
+    							 default = 1,
+    							 on_delete=models.CASCADE)
     name = models.CharField(max_length=20,
                             default='Default Name',
                             verbose_name='Planet name')
@@ -217,11 +312,11 @@ class Planet(models.Model):
         return self.name
 
     @classmethod
-    def create(cls, player, game, name, seed):
+    def create(cls, player, game, name, seed, alliance):
         """
         Create Planet:
         Permite a los jugadores crear sus planetas
-        INPUT: Dueño del planeta, partida a la que pertenece,
+        INPUT: DueÃ±o del planeta, partida a la que pertenece,
                nombre del planeta y un seed al azar
         OUTPUT: Objeto Planet
         """
@@ -229,7 +324,8 @@ class Planet(models.Model):
                          game=game,
                          name=name,
                          population_qty=game.initial_population,
-                         seed=seed)
+                         seed=seed,
+                         alliance=alliance,)
         return new_planet
 
     def assign_perc_rate(self, perc_pop, perc_shield, perc_missile):
@@ -253,7 +349,7 @@ class Planet(models.Model):
         """
         Decrease shield:
         Dana el escudo del planeta
-        INPUT: Objeto Planet, cantidad de daño
+        INPUT: Objeto Planet, cantidad de daÃ±o
         OUTPUT: Ninguno
         """
         if (ammount <= 100):
@@ -269,7 +365,7 @@ class Planet(models.Model):
         """
         Decrease population:
         Dana la poblacion del planeta
-        INPUT: Objeto Planet, cantidad de daño
+        INPUT: Objeto Planet, cantidad de daÃ±o
         OUTPUT: Ninguno
         """
         if (self.population_qty >= ammount):
@@ -320,95 +416,114 @@ class Planet(models.Model):
 
         return times
 
-
-class Bot(models.Model):
-    # Probabilidad de decidir atacar.
-    probability_attack = models.IntegerField(default=30,
-                                      help_text='probability of attack',
-                                      blank=False)
-
-    # Probabilidad de decidir modificar los recursos.
-    probability_modify_resources = models.IntegerField(default=60,
-                                 help_text='probability of modifying resources',
-                                 blank=False)
-
-    # Probabilidad de decidir esperar y no realizar acciones.
-    probability_not_acting = models.IntegerField(default=10,
-                                 help_text='probability of not acting',
-                                 blank=False)
-
-    # Partida a la que pertenece el bot.
-    game = models.ForeignKey(Game, default = 1, on_delete = models.CASCADE)
-
-    # Nombre del bot.
-    name = models.CharField(max_length=20, blank=False, verbose_name='Bot name')
-
-    # Planeta perteneciente al bot.
-    planet = models.ForeignKey(Planet, on_delete = models.CASCADE)
-
-    class Meta:
-        abstract = True
-
-    """
-    Clase abstracta que representa a los bot.
-    """
-    def attack(self):
+    def send_population(self, target_planet):
         """
-        Decide aleatoriamente si ataca a uno o mas planetas.
+        Send population:
+        Envia poblacion a un planeta
+        INPUT: Objetos Planet de origen (self) y destino (target_planet)
+        OUTPUT: Mensaje indicando exito (1) o fallo (0)
         """
-        pass
+        if self.population_qty > 100 and target_planet.population_qty > 1:
+            self.population_qty -= 100
+            self.save()
+            target_planet.population_qty += 100
+            target_planet.save()
+            send_pop_message = 1
+        else:
+            send_pop_message = 0
 
-    def defense(self):
-        """
-        Decide aleatoriamente si modifica los recursos del planeta propio.
-        """
-        pass
-
+        return send_pop_message
 
 class Defensive(Bot):
     """
-    #Contiene informacion sobre los bot de caracteristica defensiva.
+    Contiene informacion sobre los bot de caracteristica defensiva.
     """
     def attack(self):
+        planet = Planet.objects.get(bot = self)
         # Elegimos aleatoriamente el numero de misiles lanzados.
-        count_attack = numpy.random.binomial(self.planet.missiles_qty,
-                                             (self.probability_attack / 999.0))
-        planets = Planet.objects.filter(game=self.game).exclude(
-                                                               pk = self.planet,
-                                                             population_qty = 0)
+        count_attack = numpy.random.binomial(planet.missiles_qty,
+                                            (self.probability_attack / 4999.0))
+
+        planets_game = Planet.objects.filter(game=self.game).exclude(bot = self)
+        planets_alive = planets_game.exclude(population_qty = 0)
+        planets_rival = planets_alive.exclude(alliance = planet.alliance)
+
+        # Ordenamos los planetas a atacar segun su poblacion y escudo en orden
+        # creciente.
+        planets = planets_rival.order_by('population_qty', 'shield_perc')
+
         # Seleccionamos aleatoriamente los planetas a atacar.
         planets_attack = numpy.random.poisson(1.5, count_attack)
-
-        if not planets:
+        if not (planets is None):
             for planet_id in planets_attack:
                 if abs(planet_id) > (planets.count() - 1):
                     planet_id = planets.count() - 1
-                self.planet.launch_missile(planets[abs(planet_id)])
-                #print planets[abs(planet_id)]
+                planet.launch_missile(planets[abs(planet_id)])
+                planets[abs(planet_id)].save()
+                print planets[abs(planet_id)]
 
-    def defense(self):
-        pass
+    def change_distribution(self):
+        # Obtenemos la cantidad de habitantes del planeta mas poblado. 
+        planets = Planet.objects.filter(game=self.game).exclude(bot = self)
+        planet_max = planets.order_by('-population_qty').first()
 
-class Alliance (models.Model):
-    """
-    Clase Alliance: Agrupa los planetas en alianzas si las hay en partida bajo un nombre.
-    """
-    name = models.CharField(max_length=30,default='Team',verbose_name='Alliance Name')
-    game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE,verbose_name='Game Name')
+        # Calculamos la cantidad maxima de poblacion que se tomara como
+        # referencia.
+        max_popult = planet_max.population_qty + planet_max.population_qty * 0.6
 
-    def __str__(self):
-        return self.name
+        # Calculamos la nueva distribucion de cada atributo.
+        planet = Planet.objects.get(bot = self)
+        if planet.population_qty < max_popult :
+            media =  100 * (1 - (planet.population_qty / max_popult))
+            std_dev = planet.population_qty / max_popult
+        else:
+            media = 0.000001
+            std_dev = 0.000001
+        population_distr = numpy.random.normal(media, std_dev)
+        if population_distr > 100:
+            population_distr = 100
+        if population_distr < 0:
+            population_distr = 0
+        media = (100 - population_distr) * 0.7
+        std_dev = 0.8
+        shield_distr = numpy.random.normal(media, std_dev)
+        if shield_distr > (100 - population_distr):
+            population_distr = (100 - population_distr)
+        if shield_distr < 0:
+            shield_distr = 0
+        missile_distr = 100 - (shield_distr + population_distr)
 
-    @classmethod
-    def create(cls, name, game):
-        """
-        Create Alliance:
-        Permite crear una alianza (equipo-team)
-        INPUT: Partida donde vive la alianza
-        OUTPUT: La Alianza
-        """
-        new_alliance = cls(name=name, game=game)
-        return new_alliance
+        planet.population_distr = population_distr
+        planet.shield_distr = shield_distr
+        planet.missile_distr = missile_distr
+        planet.save()
+
+    def send_population(self):
+        planet = Planet.objects.get(bot = self)
+
+        # Obtenemos la cantidad de habitantes del planeta mas poblado. 
+        planets_popult = Planet.objects.filter(game=self.game)
+        planet_max = planets_popult.order_by('-population_qty').first()
+
+        # Calculamos la cantidad maxima de poblacion que se tomara como
+        # referencia para estimar la pobabiidad de enviar pobladores.
+        max_popult = planet_max.population_qty
+
+        probability_send_population = ((planet.population_qty / max_popult) * 
+                                       self.probability_send_population)
+
+        planets_game = Planet.objects.filter(game=self.game).exclude(bot = self)
+        planets_friends = planets_game.filter(alliance = planet.alliance)
+        planets = planets_friends.exclude(population_qty = 0).order_by(
+                                                               'population_qty')
+        count_send = numpy.random.binomial(planets.count(),
+                                           (probability_send_population/ 999.0))
+        planets_sends = numpy.random.poisson(1.5, count_send)
+        if not (planets is None):
+            for planet_id in planets_sends:
+                if abs(planet_id) > (planets.count() - 1):
+                    planet_id = planets.count() - 1
+                planet.send_population(planets[abs(planet_id)])
 
 
 class Missile (models.Model):
@@ -419,6 +534,7 @@ class Missile (models.Model):
     owner = models.ForeignKey(Planet, default=1, related_name="owner")
     target = models.ForeignKey(Planet, default=2, related_name="target")
     launch_time = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     @classmethod
     def create(cls, owner, target):
@@ -428,19 +544,20 @@ class Missile (models.Model):
     def deal_damage(self):
         """
         Deal damage:
-        Calcula el daño a escudo y poblacion del planeta enemigo
+        Calcula el daÃ±o a escudo y poblacion del planeta enemigo
         INPUT: Objeto Missile
         OUTPUT: Ninguno
         """
         target = self.target
         gameroom = target.game
-
         damage_diminisher = (100.0 - float(self.target.shield_perc)) / 100.0
         damage = gameroom.hurt_to_population * damage_diminisher
         target.decrease_shield(gameroom.hurt_to_shield)
         target.decrease_population(damage)
 
         target.save()
+        self.is_active = False
+        self.save()
 
     def time_to_target(self):
         """
@@ -454,7 +571,7 @@ class Missile (models.Model):
         now = timezone.datetime.now(timezone.utc)
         missile_delay = timezone.timedelta(seconds=gameroom.time_missile)
 
-        time_elapsed = self.launch_time - now
+        time_elapsed = now - self.launch_time
         time_to_impact = missile_delay - time_elapsed
 
         return time_to_impact
