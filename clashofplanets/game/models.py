@@ -525,6 +525,30 @@ class Defensive(Bot):
                 planet.send_population(planets[abs(planet_id)])
 
 
+class Offensive(Bot):
+    """
+    Representa al Bot ofensivo.
+    """
+
+    def attack(self):
+        planet = Planet.objects.get(bot = self)
+        planets=Planet.objects.filter(game=self.game).exclude(pk=planet,
+                                                                population_qty=0);
+        psorted=planets.sort(key=lambda x: x.shield_perc/x.population_qty)
+
+        planets_to_attack=psorted[:planet.missiles_qty]
+        if len(planets_to_attack) > 0:
+            for p in planets_to_attack:
+                planet.launch_missile(p)
+
+    def change_distribution(self):
+        planet = Planet.objects.get(bot = self)
+        if planet.population_qty < 50:
+            planet.assign_perc_rate(40, 10, 50)
+        else:
+            planet.assign_perc_rate(10, 10, 80)
+
+
 class Missile (models.Model):
     """
     Clase Missile: Contiene el planeta origen, planeta destino, y hora de
