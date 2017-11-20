@@ -84,6 +84,26 @@ class Game(models.Model):
         (FAST, 'Fast'),
         (SLOW, 'Slow')
     )
+    FAST_CONSTANTS = {
+        'time_missile': 5,
+        'initial_population': 1000,
+        'const_missile': 300,
+        'const_population': 500,
+        'const_shield': 600,
+        'hurt_to_population': 200,
+        'hurt_to_shield': 25
+    }
+
+    SLOW_CONSTANTS = {
+        'time_missile': 10,
+        'initial_population': 1000,
+        'const_missile': 700,
+        'const_population': 500,
+        'const_shield': 300,
+        'hurt_to_population': 100,
+        'hurt_to_shield': 10
+    }
+
     mode = models.CharField(
         max_length=1,
         choices=MODE_CHOICES,
@@ -118,23 +138,23 @@ class Game(models.Model):
 
     def configure_mode(self, mode):
         if mode == self.FAST:
-            self.mode = self.mode
-            self.time_missile = '1'
-            self.initial_population = '1000'
-            self.const_missile = '300'
-            self.const_population = '500'
-            self.const_shield = '600'
-            self.hurt_to_population = '200'
-            self.hurt_to_shield = '25'
+            self.mode = self.FAST
+            self.time_missile = self.FAST_CONSTANTS['time_missile']
+            self.initial_population = self.FAST_CONSTANTS['initial_population']
+            self.const_missile = self.FAST_CONSTANTS['const_missile']
+            self.const_population = self.FAST_CONSTANTS['const_population']
+            self.const_shield = self.FAST_CONSTANTS['const_shield']
+            self.hurt_to_population = self.FAST_CONSTANTS['hurt_to_population']
+            self.hurt_to_shield = self.FAST_CONSTANTS['hurt_to_shield']
         elif mode == self.SLOW:
             self.mode = self.SLOW
-            self.time_missile = '2'
-            self.initial_population = '1000'
-            self.const_missile = '700'
-            self.const_population = '500'
-            self.const_shield = '300'
-            self.hurt_to_population = '100'
-            self.hurt_to_shield = '10'
+            self.time_missile = self.SLOW_CONSTANTS['time_missile']
+            self.initial_population = self.SLOW_CONSTANTS['initial_population']
+            self.const_missile = self.SLOW_CONSTANTS['const_missile']
+            self.const_population = self.SLOW_CONSTANTS['const_population']
+            self.const_shield = self.SLOW_CONSTANTS['const_shield']
+            self.hurt_to_population = self.SLOW_CONSTANTS['hurt_to_population']
+            self.hurt_to_shield = self.SLOW_CONSTANTS['hurt_to_shield']
         else:
             raise NameError('Wrong Mode')
 

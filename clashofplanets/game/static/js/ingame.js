@@ -232,10 +232,39 @@ function sendPopPlanet() {
             data: {
                 csrfmiddlewaretoken: csrftoken,
                 planet_id: planet_id,
-                game_num: num,
-            },
+                game_num: num
+            }
         });
     });
+}
+
+function missilesStatus(){
+    $('#missilesStatus').on("click", function (event) {
+        event.preventDefault();
+        var gameId = $('#gamenum').text();
+        var csrftoken = getCookie('csrftoken');
+        $.ajax({
+            type: "POST",
+            url: "missiles_status/",
+            data: {
+                csrfmiddlewaretoken: csrftoken,
+                game_id: gameId
+            },
+
+            success: function (data) {
+                if("error" in data){
+                    battleLog(data['error']);
+                }else if(Object.keys(data).length > 0){
+                    for (var key in data) {
+                        var line = data[key] + " missiles going to " + key;
+                        battleLog(line);
+                    }
+                } else {
+                    battleLog("No missiles in travel.");
+                }
+            }
+        })
+    })
 }
 
 $(document).ready(function () {
@@ -243,4 +272,5 @@ $(document).ready(function () {
     listPlanets();
     attackPlanet();
     sendPopPlanet();
+    missilesStatus();
 });

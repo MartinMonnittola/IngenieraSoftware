@@ -4,7 +4,7 @@
 
 {% block main_content %}
 
-<script src="{% static 'js/ingame.js' %}?v=00003" type="text/javascript"/></script>
+<script src="{% static 'js/ingame.js' %}?v=00003" type="text/javascript"></script>
 
     <div class="row text-center">
         <div class="col">
@@ -80,6 +80,7 @@
             <div class="row align-items-center">
                 <div class="col">
                     Population: <span id="mypopAvailable" class="population"></span> | Missiles: <span id="mymissilesAvailable" class="missiles"></span>
+                    | <span style="padding: 5px" id="missilesStatus" class="button missilesStatus">Missiles Status</span>
                     <div id="attackError"></div>
                 </div>
             </div>

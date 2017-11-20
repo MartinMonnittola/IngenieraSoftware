@@ -12,7 +12,8 @@ class Command(BaseCommand):
                 ##### MISSILES #####
                 missiles_from_planet = Missile.objects.filter(owner=p,is_active=True)
                 for m in missiles_from_planet:
+                    print "hols"
                     m_2_t = m.time_to_target()
                     if m_2_t.total_seconds() <= 0:
                         m.deal_damage()
-            return "Missiles have been checked"
+        return "Missiles have been checked"
