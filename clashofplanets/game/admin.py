@@ -26,7 +26,7 @@ admin.site.register(
 )
 admin.site.register(
     Alliance,
-    list_display=["id", "name", "game"],
+    list_display=["id", "name", "game", "is_winner"],
     list_display_links=["id", "name",],
 )
 
