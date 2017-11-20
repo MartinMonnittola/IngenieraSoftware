@@ -23,6 +23,8 @@ class Command(BaseCommand):
                 cant_asig_mis = p.population_qty * p.missile_distr / 100
                 calculo_generar_missile = cant_asig_mis / g.const_missile
                 p.missiles_qty += calculo_generar_missile
+                if p.population_qty < 1:
+                    p.is_alive = False
                 p.save()
 
             if g.bot_players > 0:
