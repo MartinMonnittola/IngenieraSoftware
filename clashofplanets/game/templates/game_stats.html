@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block main_content %}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 text-center">
+        <h1>
+            {% if game.num_alliances < 2 %}
+                {% if planet_user.is_alive %}
+                    <span class="neon-effect">YOU WON !!!</span>
+                {% else %}
+                    <span class="neon-effect-2">YOU LOSE !!!</span>
+                {% endif %}
+            {% else %}
+                {% if alliance_user.is_winner %}
+                    <span class="neon-effect">YOU WON !!!</span>
+                {% else %}
+                    <span class="neon-effect-2">YOU LOSE !!!</span>
+                {% endif %}
+            {% endif %}
+        </h1>
+        <hr>
+        <div class="row">
+            <div class="col table-responsive">
+                <table class="table metal-effect2">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Planet ID</th>
+                            <th class="text-center">Planet Name</th>
+                            <th class="text-center">Planet Owner</th>
+                            <th class="text-center">Planet Alliance</th>
+                            <th class="text-center">Planet Status</th>
+                            <th class="text-center">Missiles Created</th>
+                            <th class="text-center">Missiles Launched</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in plist %}
+                            <tr>
+                                <td>{{p.planet.id}}</td>
+                                <td>{{p.planet.name}}</td>
+                                <td>{{p.planet.player}}</td>
+                                <td>{{p.planet.alliance}}</td>
+                                <td>
+                                    {% if p.planet.is_alive %}
+                                        ALIVE
+                                    {% else %}
+                                        DEAD
+                                    {% endif %}
+                                </td>
+                                <td>{{p.missiles_created}}</td>
+                                <td>{{p.missiles_used}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
