@@ -42,5 +42,7 @@ urlpatterns = [
     url(r'^game_rooms/game/\d+/send_pop/$', send_pop,
         name='send_pop'),
     url(r'^game_rooms/game/\d+/missiles_status/$', missiles_status,
-        name='missiles_status')
+        name='missiles_status'),
+    url(r'^game_rooms/game/\d+/stats/$', game_status,
+        name='game_status')
 ]
