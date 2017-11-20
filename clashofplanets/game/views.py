@@ -87,12 +87,12 @@ def game_instructions_view(request):
 
 # game room list view
 @login_required
-def game_status(request):
+def game_status(request, game_num):
     """
     Render finished game stats view
     """
-    planet_user = Planet.objects.get(player=request.user)
-    game = Game.objects.get(pk=planet_user.game.id)
+    planet_user = Planet.objects.get(player=request.user, game=game_num)
+    game = Game.objects.get(pk=game_num)
     planets = Planet.objects.filter(game=game)
     missiles_created = Missile.objects.filter(owner=planet_user).count()
     missiles_used = Missile.objects.filter(owner=planet_user, is_active=False).count()

@@ -22,6 +22,7 @@ function timeStamp() {
     return time.join(":") + " " + suffix;
 }
 
+var alert_show = true;
 function listPlanets() {
     var num = $('#gamenum').text();
     var timest = timeStamp();
@@ -97,9 +98,10 @@ function listPlanets() {
                     }
                 }
             }
-            if (rst) {
+            if (rst && alert_show) {
                 alert("Game Has Finished!!!");
                 location.href = "stats/";
+                alert_show = false;
             }
             setTimeout(listPlanets, 2000);
         },
