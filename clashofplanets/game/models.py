@@ -169,7 +169,7 @@ class Game(models.Model):
 
 class Bot(models.Model):
     """
-    Clase abstracta que representa a los bot.
+    Modelo que representa a los bot.
     """
 
     # Probabilidad de decidir atacar.
@@ -460,7 +460,6 @@ class Defensive(Bot):
                     planet_id = planets.count() - 1
                 planet.launch_missile(planets[abs(planet_id)])
                 planets[abs(planet_id)].save()
-                print planets[abs(planet_id)]
 
     def change_distribution(self):
         # Obtenemos la cantidad de habitantes del planeta mas poblado. 
