@@ -261,40 +261,39 @@ class InGameViewsTest(TestCase):
         self.create_game_and_planets()
         game = Game.objects.get(pk=1)
         self.assertEqual(game.initial_population,
-                         game.FAST_CONSTANTS['initial_population'])
+                         Game.FAST_CONSTANTS['initial_population'])
         self.assertEqual(game.time_missile,
-                         game.FAST_CONSTANTS['time_missile'])
+                         Game.FAST_CONSTANTS['time_missile'])
         self.assertEqual(game.const_missile,
-                         game.FAST_CONSTANTS['const_missile'])
+                         Game.FAST_CONSTANTS['const_missile'])
         self.assertEqual(game.const_population,
-                         game.FAST_CONSTANTS['const_population'])
+                         Game.FAST_CONSTANTS['const_population'])
         self.assertEqual(game.const_shield,
-                         game.FAST_CONSTANTS['const_shield'])
+                         Game.FAST_CONSTANTS['const_shield'])
         self.assertEqual(game.hurt_to_population,
-                         game.FAST_CONSTANTS['hurt_to_population'])
+                         Game.FAST_CONSTANTS['hurt_to_population'])
         self.assertEqual(game.hurt_to_shield,
-                         game.FAST_CONSTANTS['hurt_to_shield'])
+                         Game.FAST_CONSTANTS['hurt_to_shield'])
 
     def test_slow_mode(self):
         self.create_game_and_planets()
         game = Game.objects.get(pk=1)
-        game.mode = 2
+        game.configure_mode(2)
         game.save()
         self.assertEqual(game.initial_population,
-                         game.SLOW_CONSTANTS['initial_population'])
+                         Game.SLOW_CONSTANTS['initial_population'])
         self.assertEqual(game.time_missile,
-                         game.SLOW_CONSTANTS['time_missile'])
+                         Game.SLOW_CONSTANTS['time_missile'])
         self.assertEqual(game.const_missile,
-                         game.SLOW_CONSTANTS['const_missile'])
+                         Game.SLOW_CONSTANTS['const_missile'])
         self.assertEqual(game.const_population,
-                         game.SLOW_CONSTANTS['const_population'])
+                         Game.SLOW_CONSTANTS['const_population'])
         self.assertEqual(game.const_shield,
-                         game.SLOW_CONSTANTS['const_shield'])
+                         Game.SLOW_CONSTANTS['const_shield'])
         self.assertEqual(game.hurt_to_population,
-                         game.SLOW_CONSTANTS['hurt_to_population'])
+                         Game.SLOW_CONSTANTS['hurt_to_population'])
         self.assertEqual(game.hurt_to_shield,
-                         game.SLOW_CONSTANTS['hurt_to_shield'])
-
+                         Game.SLOW_CONSTANTS['hurt_to_shield'])
 
     def test_missiles_status(self):
         self.create_game_and_planets()

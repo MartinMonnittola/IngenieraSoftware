@@ -95,13 +95,13 @@ class Game(models.Model):
     }
 
     SLOW_CONSTANTS = {
-        'time_missile': 5,
+        'time_missile': 10,
         'initial_population': 1000,
-        'const_missile': 300,
+        'const_missile': 700,
         'const_population': 500,
-        'const_shield': 600,
-        'hurt_to_population': 200,
-        'hurt_to_shield': 25
+        'const_shield': 300,
+        'hurt_to_population': 100,
+        'hurt_to_shield': 10
     }
 
     mode = models.CharField(
