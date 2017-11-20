@@ -23,7 +23,6 @@ from haikunator import Haikunator
 
 # Create your views here.
 
-
 class Login(FormView):
     """
     Login View
@@ -213,32 +212,42 @@ def make_game(request):
     # create game
     if request.method == 'POST' and request.is_ajax():
         # form related stuff, gets data submitted in the template
-        planet_name = request.POST.get('pname')
-        room_name = request.POST.get('rname')
-        max_players = int(request.POST.get('max_players'))
+        planet_name = request.POST.get("pname")
+        room_name = request.POST.get("rname")
+        max_players = int(request.POST.get("max_players"))
+        bot_players = int(request.POST.get("bot_players"))
+        num_alliances = int(request.POST.get("num_alliances"))
+        game_mode = int(request.POST.get("game_mode"))
 
         if max_players < 2:
             data = {'gameNumber': -1,
                     'message': "Max_players can't be less than 2."}
         else:
             # creates game
-            g = Game.create(request.user, room_name, max_players)
+            g = Game.create(request.user, room_name, max_players, num_alliances,
+                            game_mode)
             g.save()
             game_id = g.id
+            # random name generator for alliances
+            haikunator = Haikunator()
+            # create alliances
+            if num_alliances >= 2:
+                for i in range(num_alliances):
+                    name = haikunator.haikunate(token_length=0, delimiter=' ')
+                    alliance = Alliance.create(name, g)
+                    alliance.save()
+            else:
+                alliance = Alliance.create("-", g)
+                alliance.save()
+            fst_alliance = Alliance.objects.filter(game=g).first()
             # create planet
             rseed = randint(1, 90001)
-            # Game.joinGame(g, request.user, planet_name, rseed)
-            p = Planet.create(request.user, g, planet_name, rseed)
-            p.save()  # creates player
-
-            haikunator = Haikunator() # random name generator for alliances
-            random_name = haikunator.haikunate(token_length=0, delimiter=' ')
-
+            planet_owner = request.user
+            g.joinGame(planet_owner.id, planet_name, rseed)
             data = {'gameNumber': game_id}
     else:
         return HttpResponseBadRequest("Bad Request")
     return JsonResponse(data, safe=False)
-
 
 # send a list of players as a json to js file
 def send_planets(request):
@@ -246,37 +255,57 @@ def send_planets(request):
     Send list of planets
     :return: JSON Response object
     """
-    if request.method == 'POST' and request.is_ajax():
-        game_num = request.POST.get('num')
+    if request.method == 'GET' and request.is_ajax():
+        game_num = request.GET.get('num')
+        g = Game.objects.get(id=game_num)
         planets = Planet.objects.filter(game=game_num)  # players in game
         plist = []
         current_user = request.user.username
         for tmpplanet in planets:
             planet_name = tmpplanet.name
-            planet_owner = tmpplanet.player
+            if not (tmpplanet.player is None):
+                planet_owner = tmpplanet.player
+            else:
+                planet_owner = tmpplanet.bot
             planet_id = tmpplanet.id
             planet_pop = tmpplanet.population_qty
             planet_shield = tmpplanet.shield_perc
+            planet_is_alive = tmpplanet.is_alive
             planet_missiles = tmpplanet.missiles_qty
+            planet_alliance = str(tmpplanet.alliance)
+            cantidad_asig = tmpplanet.population_qty * tmpplanet.population_distr / 100.0
+            calculo_generar_pop = cantidad_asig / g.const_population
+            cant_asig_shield = tmpplanet.population_qty * tmpplanet.shield_distr / 100.0
+            calculo_generar_shield = cant_asig_shield / g.const_shield
+            cant_asig_mis = tmpplanet.population_qty * tmpplanet.missile_distr / 100.0
+            calculo_generar_missile = cant_asig_mis / g.const_missile
+            if isinstance(planet_owner, User):
+                owner = planet_owner.username
+            else:
+                owner = planet_owner.name
             record = {
                 'name': planet_name,
                 'id': planet_id,
-                'owner': planet_owner.username,
+                'owner': owner,
                 'pop': planet_pop,
                 'shield': planet_shield,
                 'missiles': planet_missiles,
+                'alliance': planet_alliance,
+                'is_alive': planet_is_alive,
+                'pop_per_second': round(calculo_generar_pop/2,2),
+                'shield_per_second': round(calculo_generar_shield/2,2),
+                'missiles_per_second': round(calculo_generar_missile/2,2)
             }
             plist.append(record)
         pdict = {'planets': plist, 'user': current_user}
         return JsonResponse(pdict, safe=False)
-
 
 # send a list of numbers of all open games as a json to js file
 def send_games(request):
     """
     Send open games
     """
-    if request.method == 'POST' and request.is_ajax():
+    if request.method == 'GET' and request.is_ajax():
         games = Game.objects.filter(game_started=False)  # all open games
         glist = []
         for tmpgame in games:
@@ -285,12 +314,14 @@ def send_games(request):
             g_id = tmpgame.id
             g_connected_players = tmpgame.connected_players
             g_owner = tmpgame.user.username
+            g_num_alliances = tmpgame.num_alliances
             record = {
                 'name': g_name,
                 'max_players': g_max_players,
                 'owner': g_owner,
                 'connected_players': g_connected_players,
                 'id': g_id,
+                'num_alliances': g_num_alliances,
             }
             glist.append(record)
         gdict = {'games': glist}
@@ -302,8 +333,8 @@ def send_game_state(request):
     """
     Send game room state
     """
-    if request.method == 'POST' and request.is_ajax():
-        game_num = request.POST.get('num')
+    if request.method == 'GET' and request.is_ajax():
+        game_num = request.GET.get('num')
         room = Game.objects.get(pk=game_num)  # players in game
         current_room_state = room.game_started
         players_in_room = room.connected_players
@@ -332,8 +363,7 @@ def start_game(request, game_num):
     context = {
         'planets': planets,
         'your_planet': your_planet,
-        'game': game_num,
-        # 'attack_form': form,
+        'game': g,
     }
     return render(request, 'ingame.html', context)
 
@@ -379,7 +409,7 @@ def send_attack(request):
         # attack data
         if planet_attacker.missiles_qty > 0: # planet has missiles to launch
             m = Missile.create(owner=planet_attacker,target=planet_target)
-            m.deal_damage()
+            m.save()
             planet_attacker.missiles_qty -= 1
             planet_attacker.save()
             attack_message = 1
@@ -392,3 +422,29 @@ def send_attack(request):
     else:
         attack_dict = {'error': 'bad_request'}
     return JsonResponse(attack_dict, safe=False)
+
+# Allow players to attack their enemies
+def send_pop(request):
+    """
+    View to send pop to ally planets
+    """
+    if request.method == 'POST' and request.is_ajax():
+        # get game room data
+        planet_gameroom = int(request.POST.get('game_num'))
+        game = Game.objects.get(pk=planet_gameroom)
+        # get planet target data
+        planet_target_id = int(request.POST.get('planet_id'))
+        planet_target = Planet.objects.get(pk=planet_target_id,
+                                           game=planet_gameroom)
+        # get planet pop data
+        planet_sending_owner = request.user
+        planet_sending = Planet.objects.get(player=planet_sending_owner,
+                                             game=planet_gameroom)
+        # planet data
+        send_pop_message = planet_sending.send_population(planet_target)
+        send_pop_dict = {'origin_id': planet_sending.id,
+                       'target_id': planet_target.id,
+                       'message': send_pop_message}
+    else:
+        send_pop_dict = {'error': 'bad_request'}
+    return JsonResponse(send_pop_dict, safe=False)
