@@ -11,7 +11,6 @@ function timeStamp() {
     time[0] = ( time[0] < 12 ) ? time[0] : time[0] - 12;
     // If hour is 0, set it to 12
     time[0] = time[0] || 12;
-
     // If seconds and minutes are less than 10, add a zero
     for (var i = 1; i < 3; i++) {
         if (time[i] < 10) {
@@ -23,8 +22,6 @@ function timeStamp() {
     return time.join(":") + " " + suffix;
 }
 
-var showAlert_SinglePlayer = true; // True by default.
-var showAlert_MultiPlayer = true; // True by default.
 function listPlanets() {
     var num = $('#gamenum').text();
     var timest = timeStamp();
@@ -37,6 +34,7 @@ function listPlanets() {
         success: function (json) {
             var plist = json.planets;
             var user = json.user;
+            var rst = json.game_status;
             $('#playerList').empty();
             for (var i = 0; i < plist.length; i++) {
                 if (plist[i].owner == user) {
@@ -54,12 +52,9 @@ function listPlanets() {
                     if (plist[i].is_alive == 0) {
                         // Writes message, disable attack
                         $('#attackError').empty();
-                        $('#attackError').append("You lost the game!!!");
+                        $('#attackError').append("Your planet is dead!!!");
                         $('.attack-planet').prop("disabled",true);
-                        if (showAlert_SinglePlayer) {
-                            alert("You have been defeated!!");
-                            showAlert_SinglePlayer = false; // True by default.
-                        }
+                        $('.send-pop-planet').prop("disabled",true);
                     }
                     else {
                         if (plist[i].shield == 100) {
@@ -77,6 +72,8 @@ function listPlanets() {
                             $('.attack-planet').prop("disabled",false);
                         }
                         if (plist[i].pop <= 100) {
+                            $('#attackError').empty();
+                            $('#attackError').append("You need more than 100 pop to send!!!");
                             $('.send-pop-planet').prop("disabled",true);
                         }
                         else {
@@ -99,6 +96,10 @@ function listPlanets() {
                         $('#planet-' + planet_id).find('.tb_attack_order').append('DEAD PLANET');
                     }
                 }
+            }
+            if (rst) {
+                alert("Game Has Finished!!!");
+                location.href = "stats/";
             }
             setTimeout(listPlanets, 2000);
         },
