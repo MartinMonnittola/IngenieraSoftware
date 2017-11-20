@@ -78,6 +78,17 @@ class Game(models.Model):
                                       default=10,
                                       verbose_name='Shield damage per missile',
                                       validators=[MinValueValidator(1)])
+    FAST = 1
+    SLOW = 2
+    MODE_CHOICES = (
+        (FAST, 'Fast'),
+        (SLOW, 'Slow')
+    )
+    mode = models.CharField(
+        max_length=1,
+        choices=MODE_CHOICES,
+        default=FAST,
+    )
 
     def __str__(self):
         """
@@ -86,9 +97,10 @@ class Game(models.Model):
         return self.game_name
 
     @classmethod
-    def create(cls, owner, name, max_players, num_alliances):
+    def create(cls, owner, name, max_players, num_alliances, mode):
         """
         Crea una partida en estado de espera.
+
         Entrada: cls, Clase Game.
                  game_name, nombre del partida.
                  owner, usurio creador del partida.
@@ -100,12 +112,37 @@ class Game(models.Model):
                    max_players=max_players,
                    game_started=False,
                    user=owner,
-                   num_alliances = num_alliances)
+                   num_alliances=num_alliances)
+        game.configure_mode(mode)
         return game
+
+    def configure_mode(self, mode):
+        if mode == self.FAST:
+            self.mode = self.mode
+            self.time_missile = '1'
+            self.initial_population = '1000'
+            self.const_missile = '300'
+            self.const_population = '500'
+            self.const_shield = '600'
+            self.hurt_to_population = '200'
+            self.hurt_to_shield = '25'
+        elif mode == self.SLOW:
+            self.mode = self.SLOW
+            self.time_missile = '2'
+            self.initial_population = '1000'
+            self.const_missile = '700'
+            self.const_population = '500'
+            self.const_shield = '300'
+            self.hurt_to_population = '100'
+            self.hurt_to_shield = '10'
+        else:
+            raise NameError('Wrong Mode')
+
 
     def joinGame(self, user_id, name, seed):
         """
         Une a un usuario al usuario a la partida.
+
         Entrada: self, el objeto partida mismo.
                  user_id, entero que representa la clave primaria del user
                           que se unira a la partida.
@@ -138,6 +175,7 @@ class Game(models.Model):
     def startGame(self):
         """
         Marca como iniciada una partida.
+
         Entrada: self, el objeto game.
         Salida:  nada.
         """
@@ -148,6 +186,7 @@ class Game(models.Model):
     def desactivatePlanet(self, planet_id):
         """
         Desactiva un planeta y elimina sus recursos.
+
         Entrada: planet_id, clave primaria del planeta.
         Salida:  bool que indica si elimino el planeta.
         """
@@ -166,10 +205,9 @@ class Game(models.Model):
         return succesfull
 
 
-
 class Bot(models.Model):
     """
-    Modelo que representa a los bot.
+    Clase abstracta que representa a los bot.
     """
 
     # Probabilidad de decidir atacar.
@@ -288,6 +326,7 @@ class Planet(models.Model):
     name = models.CharField(max_length=20,
                             default='Default Name',
                             verbose_name='Planet name')
+    is_alive = models.BooleanField(default=True, verbose_name='Planet Alive')
     seed = models.BigIntegerField(default=0, verbose_name='Planet seed')
     population_qty = models.IntegerField(default=5000,
                                          verbose_name='Population Amout',
@@ -434,6 +473,7 @@ class Planet(models.Model):
 
         return send_pop_message
 
+
 class Defensive(Bot):
     """
     Contiene informacion sobre los bot de caracteristica defensiva.
@@ -524,7 +564,6 @@ class Defensive(Bot):
                     planet_id = planets.count() - 1
                 planet.send_population(planets[abs(planet_id)])
 
-
 class Offensive(Bot):
     """
     Representa al Bot ofensivo.
@@ -547,6 +586,7 @@ class Offensive(Bot):
             planet.assign_perc_rate(40, 10, 50)
         else:
             planet.assign_perc_rate(10, 10, 80)
+
 
 
 class Missile (models.Model):
@@ -573,12 +613,14 @@ class Missile (models.Model):
         """
         target = self.target
         gameroom = target.game
+
         damage_diminisher = (100.0 - float(self.target.shield_perc)) / 100.0
         damage = gameroom.hurt_to_population * damage_diminisher
         target.decrease_shield(gameroom.hurt_to_shield)
         target.decrease_population(damage)
 
         target.save()
+
         self.is_active = False
         self.save()
 
