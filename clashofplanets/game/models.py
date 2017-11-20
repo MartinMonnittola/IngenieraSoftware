@@ -27,6 +27,10 @@ class Game(models.Model):
     game_started = models.BooleanField(
                                       default=0,
                                       verbose_name='Game started (True/False)')
+    # Juego finalizado
+    game_finished = models.BooleanField(
+                                      default=0,
+                                      verbose_name='Game Finished (True/False)')
     # Numero de alianzas
     num_alliances = models.IntegerField(default=1,
                                       verbose_name='Number of Alliances',
@@ -158,7 +162,6 @@ class Game(models.Model):
         else:
             raise NameError('Wrong Mode')
 
-
     def joinGame(self, user_id, name, seed):
         """
         Une a un usuario al usuario a la partida.
@@ -238,6 +241,7 @@ class Alliance (models.Model):
                              verbose_name='Game Name')
     num_players = models.IntegerField(default=0,
                                       verbose_name='Players Quantity')
+    is_winner = models.BooleanField(default=False, verbose_name='Winner Of Game')
 
     def __str__(self):
         return self.name
