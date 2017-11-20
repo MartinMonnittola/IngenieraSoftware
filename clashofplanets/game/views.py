@@ -86,6 +86,32 @@ def game_instructions_view(request):
 
 
 # game room list view
+@login_required
+def game_status(request):
+    """
+    Render finished game stats view
+    """
+    planet_user = Planet.objects.get(player=request.user)
+    game = Game.objects.get(pk=planet_user.game.id)
+    planets = Planet.objects.filter(game=game)
+    missiles_created = Missile.objects.filter(owner=planet_user).count()
+    missiles_used = Missile.objects.filter(owner=planet_user, is_active=False).count()
+    plist = []
+    for p in planets:
+        missiles = {
+            'planet': p,
+            'missiles_created': Missile.objects.filter(owner=p).count(),
+            'missiles_used': Missile.objects.filter(owner=p).count()
+        }
+        plist.append(missiles)
+    context = {'planets': planets,'planet_user': planet_user,'game': game,'plist': plist}
+    if game.num_alliances >= 2:
+        alliance_user = Alliance.objects.get(name=planet_user.alliance)
+        context['alliance_user'] = alliance_user
+        print alliance_user
+    return render(request, 'game_stats.html', context)
+
+# game room list view
 @method_decorator(login_required, name='dispatch')
 class GameRoomsListView(TemplateView):
     """List available games"""
@@ -278,7 +304,6 @@ def send_planets(request):
             calculo_generar_shield = cant_asig_shield / g.const_shield
             cant_asig_mis = tmpplanet.population_qty * tmpplanet.missile_distr / 100.0
             calculo_generar_missile = cant_asig_mis / g.const_missile
-
             record = {
                 'name': planet_name,
                 'id': planet_id,
@@ -293,7 +318,7 @@ def send_planets(request):
                 'missiles_per_second': round(calculo_generar_missile/2,2)
             }
             plist.append(record)
-        pdict = {'planets': plist, 'user': current_user}
+        pdict = {'planets': plist, 'user': current_user, 'game_status': g.game_finished}
         return JsonResponse(pdict, safe=False)
 
 
