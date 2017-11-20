@@ -456,10 +456,14 @@ def missiles_status(request):
     """
     if request.method == 'POST' and request.is_ajax():
         game_id = int(request.POST.get("game_id"))
-        planet = Planet.objects.get(game_id=game_id,
-                                    player_id=request.user.id)
-        missiles = Missile.objects.filter(owner__exact=planet,
-                                          is_active__exact=True)
+        if game_id:
+            planet = Planet.objects.get(game_id=game_id,
+                                        player_id=request.user.id)
+            missiles = Missile.objects.filter(owner__exact=planet,
+                                              is_active__exact=True)
+        else:
+            data = {'error': 'game_id missing'}
+            return JsonResponse(data, safe=False)
 
         data = {}
         for missile in missiles:
@@ -467,7 +471,6 @@ def missiles_status(request):
                 data[missile.target.name] += 1
             else:
                 data[missile.target.name] = 1
-
         return JsonResponse(data, safe=False)
     else:
         data = {'error': 'bad_request'}

@@ -197,18 +197,15 @@ class InGameViewsTest(TestCase):
         """
         Create users
         """
-        self.credentials1 = {
-            'username': 'testuser1',
-            'password': '12345'}
-        test_user1 = User.objects.create_user(**self.credentials1)
-        test_user1.save()
-        self.credentials2 = {
-            'username': 'testuser2',
-            'password': '12345'}
-        test_user2 = User.objects.create_user(**self.credentials2)
-        test_user2.save()
+        credentials = []
+        for i in range(0, 6, 1):
+            credentials.append({
+                'username': 'testuser'+str(i),
+                'password': 'password'+str(i)
+            })
+            User.objects.create_user(**credentials[i]).save()
         # testuser1 with id 1 log in
-        self.client.login(**self.credentials1)
+        self.client.login(**credentials[0])
 
     @staticmethod
     def create_game_and_planets():
@@ -259,6 +256,29 @@ class InGameViewsTest(TestCase):
         response = self.client.get('/game_rooms/game/1/')
         self.assertTrue((response.context["game"]).game_started)
         self.assertTemplateUsed(response, "ingame.html")
+
+    def test_missiles_status(self):
+        self.create_game_and_planets()
+        game = Game.objects.get(pk=1)
+        game.time_missile = 10
+        game.save()
+        Missile(owner_id=1, target_id=2, is_active=1).save()
+        Missile(owner_id=1, target_id=2, is_active=1).save()
+        Missile(owner_id=1, target_id=3, is_active=1).save()
+        data = {
+            'game_id': 1
+        }
+        response = self.client.post(
+            '/game_rooms/game/1/missiles_status/',
+            data,
+            **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
+        data = json.loads(response.content)
+        self.assertEqual(Missile.objects.filter(owner_id=1,
+                                                target_id=2).count(),
+                         data[Planet.objects.get(player_id=2).name])
+        self.assertEqual(Missile.objects.filter(owner_id=1,
+                                                target_id=3).count(),
+                         data[Planet.objects.get(player_id=3).name])
 
 
 class OtherViewsTest(TestCase):
