@@ -9,8 +9,7 @@
     <div class="row text-center">
         <div class="col">
             <h1>
-                Welcome {% if request.user.is_authenticated %}<span class="text-primary" >{{request.user.username}}</span> to {% endif %}
-                Game Room ID: <span id="gamenum">{{game.id}}</span>
+                Game Name: <span>{{game.game_name}}</span> | ID: <span id="gamenum">{{game.id}}</span>
             </h1>
         </div>
     </div>
