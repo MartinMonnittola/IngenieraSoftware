@@ -5,9 +5,26 @@ class Command(BaseCommand):
     help = 'Generates the planet resources that belongs to an active room, everytime it gets executed.'
 
     def handle(self, *args, **options):
-        active_games = Game.objects.filter(game_started=True)
+        active_games = Game.objects.filter(game_started=True, game_finished=False)
         for g in active_games:
             planets_in_active_rooms = Planet.objects.filter(game=g)
+            if g.num_alliances < 2:
+                planets_alive_in_game = Planet.objects.filter(game=g,is_alive=True).count() # planets alive in game
+                if planets_alive_in_game == 1:
+                    g.game_finished = True
+            else:
+                alliances_in_game = Alliance.objects.filter(game=g)
+                for alliance in alliances_in_game:
+                    planets_alive_in_alliance = Planet.objects.filter(game=g, alliance=alliance, is_alive=True).count()
+                    if planets_alive_in_alliance >= 1:
+                        alliance.is_winner = True
+                    else:
+                        alliance.is_winner = False
+                    alliance.save()
+                alliance_winner = Alliance.objects.filter(game=g,is_winner=True).count()
+                if alliance_winner == 1:
+                    g.game_finished = True
+            g.save()
             for p in planets_in_active_rooms:
                 if p.population_qty < 10000:
                     cantidad_asig = p.population_qty * p.population_distr / 100
@@ -40,4 +57,4 @@ class Command(BaseCommand):
                         bot.change_distribution()
                         print "Estamos enviando poblacion."
                         bot.send_population()
-        return "Planets have been refilled"
+        return "Command Generate Executed"
