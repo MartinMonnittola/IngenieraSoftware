@@ -159,7 +159,9 @@ class Game(models.Model):
                 alliances = Alliance.objects.all().filter(game = self).order_by('num_players')
                 alliance = alliances.first()
 
-                planet = Planet.create(user, self, name, seed, alliance)
+                planet = Planet.create(player = user, bot = None, game = self,
+                                       name = name, seed = seed,
+                                       alliance = alliance)
                 planet.save()
 
                 alliance.add_player()
@@ -351,7 +353,7 @@ class Planet(models.Model):
         return self.name
 
     @classmethod
-    def create(cls, player, game, name, seed, alliance):
+    def create(cls, player, bot, game, name, seed, alliance):
         """
         Create Planet:
         Permite a los jugadores crear sus planetas
@@ -361,6 +363,7 @@ class Planet(models.Model):
         """
         new_planet = cls(player=player,
                          game=game,
+                         bot=bot,
                          name=name,
                          population_qty=game.initial_population,
                          seed=seed,
@@ -563,30 +566,6 @@ class Defensive(Bot):
                 if abs(planet_id) > (planets.count() - 1):
                     planet_id = planets.count() - 1
                 planet.send_population(planets[abs(planet_id)])
-
-class Offensive(Bot):
-    """
-    Representa al Bot ofensivo.
-    """
-
-    def attack(self):
-        planet = Planet.objects.get(bot = self)
-        planets=Planet.objects.filter(game=self.game).exclude(pk=planet,
-                                                                population_qty=0);
-        psorted=planets.sort(key=lambda x: x.shield_perc/x.population_qty)
-
-        planets_to_attack=psorted[:planet.missiles_qty]
-        if len(planets_to_attack) > 0:
-            for p in planets_to_attack:
-                planet.launch_missile(p)
-
-    def change_distribution(self):
-        planet = Planet.objects.get(bot = self)
-        if planet.population_qty < 50:
-            planet.assign_perc_rate(40, 10, 50)
-        else:
-            planet.assign_perc_rate(10, 10, 80)
-
 
 
 class Missile (models.Model):
