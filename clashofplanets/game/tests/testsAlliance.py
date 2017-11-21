@@ -24,17 +24,17 @@ class AllianceModelTestCase(TestCase):
                        email="all@iance.com",
                        password="ally123")
         ally.save()
-        
-        game = Game.create(user, "TestGame", 4, 2, 1)
+
+        game = Game.create(user, "TestGame", 4, 2, 1, 0, 0)
         game.save()
-        
+
         team1 = Alliance.create("Team 1", game)
         team1.save()
-        
-        origin = Planet.create(user, game, "TestLand", 1234, team1)
+
+        origin = Planet.create(user, None, game, "TestLand", 1234, team1)
         origin.save()
 
-        target = Planet.create(ally, game, "Friends4ever", 4321, team1)
+        target = Planet.create(ally, None, game, "Friends4ever", 4321, team1)
         target.save()
 
     def test_associated_to_game(self):
@@ -61,7 +61,7 @@ class AllianceModelTestCase(TestCase):
         self.assertEqual(alliance.num_players, 1)
         alliance.remove_player()
         self.assertEqual(alliance.num_players, 0)
-    
+
     def test_send_population_target(self):
         alliance = Alliance.objects.get(pk=1)
         origin = Planet.objects.get(pk=1)
@@ -77,7 +77,7 @@ class AllianceModelTestCase(TestCase):
         old_population = origin.population_qty
         origin.send_population(target)
         self.assertEqual(origin.population_qty, (old_population - 100))
-        
+
     def test_send_population_to_dead_planet(self):
         alliance = Alliance.objects.get(pk=1)
         origin = Planet.objects.get(pk=1)
@@ -86,7 +86,7 @@ class AllianceModelTestCase(TestCase):
         target.save()
         error_msg = origin.send_population(target)
         self.assertEqual(error_msg, 0)
-        
+
     def test_send_population_from_dyng_planet(self):
         alliance = Alliance.objects.get(pk=1)
         origin = Planet.objects.get(pk=1)

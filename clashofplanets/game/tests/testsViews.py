@@ -88,19 +88,17 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         Create some games for listing, owners are testuser2 and testuser3,
         so testuser1 can join
         """
-        game1 = Game.create(User.objects.get(pk=2), "Game1", 10, 1, 1)
+        game1 = Game.create(User.objects.get(pk=2), "Game1", 10, 1, 1, 0, 0)
         game1.save()
         alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
         alliance1.save()
-        planet1 = Planet.create(User.objects.get(pk=2), Game.objects.get(pk=1),
-                                "Planet1", 123456, Alliance.objects.get(pk=1))
+        planet1 = Planet.create(User.objects.get(pk=2), None, Game.objects.get(pk=1),"Planet1", 123456, Alliance.objects.get(pk=1))
         planet1.save()
-        game2 = Game.create(User.objects.get(pk=3), "Game2", 10, 1, 1)
+        game2 = Game.create(User.objects.get(pk=3), "Game2", 10, 1, 1, 0, 0)
         game2.save()
         alliance2 = Alliance.create("Alliance2", Game.objects.get(pk=2))
         alliance2.save()
-        planet2 = Planet.create(User.objects.get(pk=3), Game.objects.get(pk=2),
-                                "Planet2", 1234532, Alliance.objects.get(pk=2))
+        planet2 = Planet.create(User.objects.get(pk=3), None, Game.objects.get(pk=2),"Planet2", 1234532, Alliance.objects.get(pk=2))
         planet2.save()
 
     def test_no_games(self):
@@ -119,7 +117,8 @@ class GameRoomsListJoinCreateViewTest(TestCase):
             'rname': 'Room1',
             'max_players': 10,
             'num_alliances': 2,
-            'bot_players': 0,
+            'bot_def_num': 0,
+            'bot_ofc_num': 0,
             'game_mode': 1
         }
 
@@ -139,7 +138,8 @@ class GameRoomsListJoinCreateViewTest(TestCase):
             'rname': 'Room1',
             'max_players': -10,
             'num_alliances': 2,
-            'bot_players': 0,
+            'bot_def_num': 0,
+            'bot_ofc_num': 0,
             'game_mode': 1
         }
 
@@ -173,7 +173,7 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         self.assertEqual(data["gameNumber"], 1)
 
     def test_join_game_full(self):
-        game = Game.create(User.objects.get(pk=2), "Game", 1, 1, 1)
+        game = Game.create(User.objects.get(pk=2), "Game", 1, 1, 1, 0, 0)
         game.save()
         alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
         alliance1.save()
@@ -212,12 +212,11 @@ class InGameViewsTest(TestCase):
         """
         Create some games with planets joined
         """
-        game1 = Game.create(User.objects.get(pk=1), "Game1", 10, 1, 1)
+        game1 = Game.create(User.objects.get(pk=1), "Game1", 10, 1, 1, 0, 0)
         game1.save()
         alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
         alliance1.save()
-        planet1 = Planet.create(User.objects.get(pk=1), Game.objects.get(pk=1),
-                                "Planet1", 123456, Alliance.objects.get(pk=1))
+        planet1 = Planet.create(User.objects.get(pk=1), None, Game.objects.get(pk=1), "Planet1", 123456, Alliance.objects.get(pk=1))
         planet1.save()
         game1.joinGame(2, "Planet2", 12345)
         game1.joinGame(3, "Planet3", 123345)
@@ -253,7 +252,7 @@ class InGameViewsTest(TestCase):
 
     def test_game_started(self):
         self.create_game_and_planets()
-        response = self.client.get('/game_rooms/game/1/')
+        response = self.client.get('/game_rooms/1/game/')
         self.assertTrue((response.context["game"]).game_started)
         self.assertTemplateUsed(response, "ingame.html")
 
@@ -307,7 +306,7 @@ class InGameViewsTest(TestCase):
             'game_id': 1
         }
         response = self.client.post(
-            '/game_rooms/game/1/missiles_status/',
+            '/game_rooms/1/game/missiles_status/',
             data,
             **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
         data = json.loads(response.content)

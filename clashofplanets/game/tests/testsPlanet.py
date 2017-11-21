@@ -25,7 +25,7 @@ class PlanetModelTestCase(TestCase):
                        password="oponent123")
         oponent.save()
 
-        game = Game.create(user, "TestGame", 4, 2, 1)
+        game = Game.create(user, "TestGame", 4, 2, 1, 0, 0)
         game.save()
 
         team1 = Alliance.create("Team 1", game)
@@ -34,10 +34,10 @@ class PlanetModelTestCase(TestCase):
         team2 = Alliance.create("Team 2", game)
         team2.save()
 
-        planet = Planet.create(user, game, "TestLand", 1234, team1)
+        planet = Planet.create(user, None, game, "TestLand", 1234, team1)
         planet.save()
 
-        target = Planet.create(oponent, game, "GonnaLose", 4321, team2)
+        target = Planet.create(oponent, None, game, "GonnaLose", 4321, team2)
         target.save()
 
     def test_planet_has_owner(self):
