@@ -65,7 +65,7 @@ class gameForm(forms.ModelForm):
         (DEFENSIVE, "Defensive"),
         (OFFENSIVE, "Offensive")
     )
-    bot_mode = forms.ChoiceField(choices= MODE_CHOICES, required = True)
+    bot_mode = forms.ChoiceField(choices= MODE_CHOICES, required = False)
 
     class Meta:
         model = Game
