@@ -8,6 +8,8 @@ from django.utils import timezone
 import numpy
 import random
 from haikunator import Haikunator
+
+
 class Game(models.Model):
     """
     Clase Game contiene informacion sobre las partidas en espera y en ejecucion.
@@ -27,6 +29,10 @@ class Game(models.Model):
     game_started = models.BooleanField(
                                       default=0,
                                       verbose_name='Game started (True/False)')
+    # Juego finalizado
+    game_finished = models.BooleanField(
+                                      default=0,
+                                      verbose_name='Game Finished (True/False)')
     # Numero de alianzas
     num_alliances = models.IntegerField(default=1,
                                       verbose_name='Number of Alliances',
@@ -84,6 +90,26 @@ class Game(models.Model):
         (FAST, 'Fast'),
         (SLOW, 'Slow')
     )
+    FAST_CONSTANTS = {
+        'time_missile': 5,
+        'initial_population': 1000,
+        'const_missile': 300,
+        'const_population': 500,
+        'const_shield': 600,
+        'hurt_to_population': 200,
+        'hurt_to_shield': 25
+    }
+
+    SLOW_CONSTANTS = {
+        'time_missile': 10,
+        'initial_population': 1000,
+        'const_missile': 700,
+        'const_population': 500,
+        'const_shield': 300,
+        'hurt_to_population': 100,
+        'hurt_to_shield': 10
+    }
+
     mode = models.CharField(
         max_length=1,
         choices=MODE_CHOICES,
@@ -118,26 +144,25 @@ class Game(models.Model):
 
     def configure_mode(self, mode):
         if mode == self.FAST:
-            self.mode = self.mode
-            self.time_missile = '1'
-            self.initial_population = '1000'
-            self.const_missile = '300'
-            self.const_population = '500'
-            self.const_shield = '600'
-            self.hurt_to_population = '200'
-            self.hurt_to_shield = '25'
+            self.mode = self.FAST
+            self.time_missile = self.FAST_CONSTANTS['time_missile']
+            self.initial_population = self.FAST_CONSTANTS['initial_population']
+            self.const_missile = self.FAST_CONSTANTS['const_missile']
+            self.const_population = self.FAST_CONSTANTS['const_population']
+            self.const_shield = self.FAST_CONSTANTS['const_shield']
+            self.hurt_to_population = self.FAST_CONSTANTS['hurt_to_population']
+            self.hurt_to_shield = self.FAST_CONSTANTS['hurt_to_shield']
         elif mode == self.SLOW:
             self.mode = self.SLOW
-            self.time_missile = '2'
-            self.initial_population = '1000'
-            self.const_missile = '700'
-            self.const_population = '500'
-            self.const_shield = '300'
-            self.hurt_to_population = '100'
-            self.hurt_to_shield = '10'
+            self.time_missile = self.SLOW_CONSTANTS['time_missile']
+            self.initial_population = self.SLOW_CONSTANTS['initial_population']
+            self.const_missile = self.SLOW_CONSTANTS['const_missile']
+            self.const_population = self.SLOW_CONSTANTS['const_population']
+            self.const_shield = self.SLOW_CONSTANTS['const_shield']
+            self.hurt_to_population = self.SLOW_CONSTANTS['hurt_to_population']
+            self.hurt_to_shield = self.SLOW_CONSTANTS['hurt_to_shield']
         else:
             raise NameError('Wrong Mode')
-
 
     def joinGame(self, user_id, name, seed):
         """
@@ -206,6 +231,21 @@ class Game(models.Model):
             succesfull = False
         return succesfull
 
+class Alliance (models.Model):
+    """
+    Clase Alliance: Agrupa los planetas en alianzas si las hay en partida bajo
+    un nombre.
+    """
+    name = models.CharField(max_length=30,
+                            default='Team',
+                            verbose_name='Alliance Name')
+    game = models.ForeignKey(Game,
+                             default=1,
+                             on_delete=models.CASCADE,
+                             verbose_name='Game Name')
+    num_players = models.IntegerField(default=0,
+                                      verbose_name='Players Quantity')
+    is_winner = models.BooleanField(default=False, verbose_name='Winner Of Game')
 
 class Bot(models.Model):
     """

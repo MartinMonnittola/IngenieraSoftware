@@ -1,9 +1,8 @@
 function listPlayers() {
-    var csrftoken = getCookie('csrftoken');
     var num = $('#gamenum').text();
     $.ajax({
-        type: 'POST',
-        data: {csrfmiddlewaretoken: csrftoken, num: num},
+        type: 'GET',
+        data: {num: num},
         ifModified: true,
         url: "get_planets/",
         success: function (json) {
@@ -16,6 +15,7 @@ function listPlayers() {
                         + '<td>' + plist[i].id + '</td>'
                         + '<td>' + plist[i].name + '</td>'
                         + '<td>' + plist[i].owner + '</td>'
+                        + '<td>' + plist[i].alliance + '</td>'
                         + '</tr>');
                 }
             }
@@ -28,11 +28,10 @@ function listPlayers() {
 }
 
 function gameState() {
-    var csrftoken = getCookie('csrftoken');
     var num = $('#gamenum').text();
     $.ajax({
-        type: 'POST',
-        data: {csrfmiddlewaretoken: csrftoken, num: num},
+        type: 'GET',
+        data: {num: num},
         url: "get_game_state/",
         success: function (json) {
             if (json.players_in_room < 2) {

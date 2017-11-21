@@ -81,6 +81,7 @@ class gameForm(forms.ModelForm):
         self.fields['game_mode'].help_text = 'Choose a game mode to play.'
         self.fields['bot_mode'].help_text = 'Choose the bot`s mode . No required'
 
+
 class joinForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_name', 'required': False}))
     game_id = forms.CharField(widget=forms.TextInput(attrs={'id':'game_num', 'required': True}))

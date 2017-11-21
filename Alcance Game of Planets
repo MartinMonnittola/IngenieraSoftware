@@ -31,6 +31,8 @@ Cualquier usuario es capaz de crear una partida.Al momento de crear una partida 
 
 Luego de ingresadas las constantes se ingresa a un lobby, en el cual se espera que otros jugadores se unan.
 
+El usuario creador de la partida puede elegir si jugar con alianzas y la cantidad deseada. Los jugadores que ingresen a la sala se repartirán equitativamente entre dichas alianzas.
+
 También está la opción de agregar bots (jugadores controlados por el sistema) que pueden ser ofensivos o defensivos.
 
 Una vez iniciada la partida no se pueden unir más jugadores ni bots.
@@ -41,6 +43,10 @@ Los usuarios pueden ver la cantidad de recursos de los demás jugadores, pero no
 
 Se puede personalizar el nombre del planeta.
 
-El juego termina una vez que queda un solo planeta con población.
+No se pueden atacar entre sí planetas que pertenecen a una misma alianza.
 
-Al crear una partida se pueden elegir configuraciones de constantes predefinidas (juego rápido, etc) o personalizadas
+Planetas de una misma alianza pueden enviarse población entre ellos, siempre y cuando no provoque que el planeta que envía pierda.
+
+El juego termina una vez que queda un solo planeta con población en modo todos contra todos, o cuando quedan planetas de una sola alianza en pie en modo alianza.
+
+Al crear una partida se pueden elegir configuraciones de constantes predefinidas (juego rápido o lento).

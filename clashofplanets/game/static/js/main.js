@@ -79,7 +79,7 @@ function listGames() {
                         var num = glist[i];
                         buildListElementItem = $(
                             '<tr>'
-                            + '<td class=\"game-'+glist[i].id+'\">' + glist[i].id + '</td>'
+                            + '<td class=\"game-'+glist[i].id+' neon-effect\">' + glist[i].id + '</td>'
                             + '<td>' + glist[i].name + '</td>'
                             + '<td>' + glist[i].owner + '</td>'
                             + '<td>' + glist[i].num_alliances + '</td>'

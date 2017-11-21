@@ -4,7 +4,8 @@ Views Tests
 from django.test import TestCase, Client
 from django.urls import reverse
 import json
-from .forms import *
+from game.forms import *
+
 
 # Create your tests here.
 
@@ -87,15 +88,19 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         Create some games for listing, owners are testuser2 and testuser3,
         so testuser1 can join
         """
-        game1 = Game.create(User.objects.get(pk=2), "Game1", 10)
+        game1 = Game.create(User.objects.get(pk=2), "Game1", 10, 1, 1)
         game1.save()
-        planet1 = Planet.create(User.objects.get(pk=2),
-                                Game.objects.get(pk=1), "Planet1", 123456)
+        alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
+        alliance1.save()
+        planet1 = Planet.create(User.objects.get(pk=2), Game.objects.get(pk=1),
+                                "Planet1", 123456, Alliance.objects.get(pk=1))
         planet1.save()
-        game2 = Game.create(User.objects.get(pk=3), "Game2", 10)
+        game2 = Game.create(User.objects.get(pk=3), "Game2", 10, 1, 1)
         game2.save()
-        planet2 = Planet.create(User.objects.get(pk=3),
-                                Game.objects.get(pk=2), "Planet2", 1234532)
+        alliance2 = Alliance.create("Alliance2", Game.objects.get(pk=2))
+        alliance2.save()
+        planet2 = Planet.create(User.objects.get(pk=3), Game.objects.get(pk=2),
+                                "Planet2", 1234532, Alliance.objects.get(pk=2))
         planet2.save()
 
     def test_no_games(self):
@@ -112,7 +117,10 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         data = {
             'pname': 'Planet1',
             'rname': 'Room1',
-            'max_players': 10
+            'max_players': 10,
+            'num_alliances': 2,
+            'bot_players': 0,
+            'game_mode': 1
         }
 
         response = self.client.post(
@@ -129,7 +137,10 @@ class GameRoomsListJoinCreateViewTest(TestCase):
         data = {
             'pname': 'Planet1',
             'rname': 'Room1',
-            'max_players': -10
+            'max_players': -10,
+            'num_alliances': 2,
+            'bot_players': 0,
+            'game_mode': 1
         }
 
         response = self.client.post(
@@ -157,17 +168,20 @@ class GameRoomsListJoinCreateViewTest(TestCase):
             **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
         data = json.loads(response.content)
         self.assertEqual(Planet.objects.count(), 3)
-        self.assertEqual(Game.objects.get(pk=1).connected_players, 2)
+        self.assertEqual(Game.objects.get(pk=1).connected_players, 1)
         self.assertEqual(Planet.objects.get(pk=3).name.__str__(), "Planet3")
         self.assertEqual(data["gameNumber"], 1)
 
     def test_join_game_full(self):
-        game = Game.create(User.objects.get(pk=2), "Game", 2)
+        game = Game.create(User.objects.get(pk=2), "Game", 1, 1, 1)
         game.save()
+        alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
+        alliance1.save()
         game.joinGame(3, "Planet2", 12345)
         data = {
             'pname': 'Planet3',
             'num': 1,
+            'num_alliances': 2
         }
         response = self.client.post(
             '/game_rooms/make_player/',
@@ -183,28 +197,27 @@ class InGameViewsTest(TestCase):
         """
         Create users
         """
-        self.credentials1 = {
-            'username': 'testuser1',
-            'password': '12345'}
-        test_user1 = User.objects.create_user(**self.credentials1)
-        test_user1.save()
-        self.credentials2 = {
-            'username': 'testuser2',
-            'password': '12345'}
-        test_user2 = User.objects.create_user(**self.credentials2)
-        test_user2.save()
+        credentials = []
+        for i in range(0, 6, 1):
+            credentials.append({
+                'username': 'testuser'+str(i),
+                'password': 'password'+str(i)
+            })
+            User.objects.create_user(**credentials[i]).save()
         # testuser1 with id 1 log in
-        self.client.login(**self.credentials1)
+        self.client.login(**credentials[0])
 
     @staticmethod
     def create_game_and_planets():
         """
         Create some games with planets joined
         """
-        game1 = Game.create(User.objects.get(pk=1), "Game1", 10)
+        game1 = Game.create(User.objects.get(pk=1), "Game1", 10, 1, 1)
         game1.save()
-        planet1 = Planet.create(User.objects.get(pk=1),
-                                Game.objects.get(pk=1), "Planet1", 123456)
+        alliance1 = Alliance.create("Alliance1", Game.objects.get(pk=1))
+        alliance1.save()
+        planet1 = Planet.create(User.objects.get(pk=1), Game.objects.get(pk=1),
+                                "Planet1", 123456, Alliance.objects.get(pk=1))
         planet1.save()
         game1.joinGame(2, "Planet2", 12345)
         game1.joinGame(3, "Planet3", 123345)
@@ -217,7 +230,7 @@ class InGameViewsTest(TestCase):
         data = {
             'num': 1
         }
-        response = self.client.post(
+        response = self.client.get(
             '/game_rooms/1/get_planets/', data,
             **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
         data = json.loads(response.content)
@@ -229,7 +242,7 @@ class InGameViewsTest(TestCase):
         data = {
             'num': 1
         }
-        response = self.client.post(
+        response = self.client.get(
             '/game_rooms/1/get_game_state/', data,
             **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
         data = json.loads(response.content)
@@ -241,9 +254,69 @@ class InGameViewsTest(TestCase):
     def test_game_started(self):
         self.create_game_and_planets()
         response = self.client.get('/game_rooms/game/1/')
-        self.assertTrue(Game.objects.get(
-            pk=response.context["game"]).game_started)
+        self.assertTrue((response.context["game"]).game_started)
         self.assertTemplateUsed(response, "ingame.html")
+
+    def test_fast_mode(self):
+        self.create_game_and_planets()
+        game = Game.objects.get(pk=1)
+        self.assertEqual(game.initial_population,
+                         Game.FAST_CONSTANTS['initial_population'])
+        self.assertEqual(game.time_missile,
+                         Game.FAST_CONSTANTS['time_missile'])
+        self.assertEqual(game.const_missile,
+                         Game.FAST_CONSTANTS['const_missile'])
+        self.assertEqual(game.const_population,
+                         Game.FAST_CONSTANTS['const_population'])
+        self.assertEqual(game.const_shield,
+                         Game.FAST_CONSTANTS['const_shield'])
+        self.assertEqual(game.hurt_to_population,
+                         Game.FAST_CONSTANTS['hurt_to_population'])
+        self.assertEqual(game.hurt_to_shield,
+                         Game.FAST_CONSTANTS['hurt_to_shield'])
+
+    def test_slow_mode(self):
+        self.create_game_and_planets()
+        game = Game.objects.get(pk=1)
+        game.configure_mode(2)
+        game.save()
+        self.assertEqual(game.initial_population,
+                         Game.SLOW_CONSTANTS['initial_population'])
+        self.assertEqual(game.time_missile,
+                         Game.SLOW_CONSTANTS['time_missile'])
+        self.assertEqual(game.const_missile,
+                         Game.SLOW_CONSTANTS['const_missile'])
+        self.assertEqual(game.const_population,
+                         Game.SLOW_CONSTANTS['const_population'])
+        self.assertEqual(game.const_shield,
+                         Game.SLOW_CONSTANTS['const_shield'])
+        self.assertEqual(game.hurt_to_population,
+                         Game.SLOW_CONSTANTS['hurt_to_population'])
+        self.assertEqual(game.hurt_to_shield,
+                         Game.SLOW_CONSTANTS['hurt_to_shield'])
+
+    def test_missiles_status(self):
+        self.create_game_and_planets()
+        game = Game.objects.get(pk=1)
+        game.time_missile = 10
+        game.save()
+        Missile(owner_id=1, target_id=2, is_active=1).save()
+        Missile(owner_id=1, target_id=2, is_active=1).save()
+        Missile(owner_id=1, target_id=3, is_active=1).save()
+        data = {
+            'game_id': 1
+        }
+        response = self.client.post(
+            '/game_rooms/game/1/missiles_status/',
+            data,
+            **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
+        data = json.loads(response.content)
+        self.assertEqual(Missile.objects.filter(owner_id=1,
+                                                target_id=2).count(),
+                         data[Planet.objects.get(player_id=2).name])
+        self.assertEqual(Missile.objects.filter(owner_id=1,
+                                                target_id=3).count(),
+                         data[Planet.objects.get(player_id=3).name])
 
 
 class OtherViewsTest(TestCase):

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .forms import * 
+from game.forms import * 
 
 
 class GameFormTestsCase(TestCase):

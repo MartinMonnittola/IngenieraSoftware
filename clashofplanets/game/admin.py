@@ -9,23 +9,29 @@ from .models import *
 admin.site.register(
     Game,
     list_display=[
-        "id", "game_name", "user", "connected_players", "max_players", "bot_players",
-        "game_started", "initial_population", "const_population",
+        "id", "game_name", "user", "connected_players", "num_alliances", "max_players", "bot_players",
+        "game_started", "game_finished", "initial_population", "const_population",
         "const_shield", "const_missile", "hurt_to_population",
-        "hurt_to_shield"],
+        "hurt_to_shield", "time_missile"],
     list_display_links=["id", "game_name"],
 )
 admin.site.register(
     Planet,
     list_display=[
         "id", "name", "player", "game",
-        "seed", "population_qty", "shield_perc", "missiles_qty",
+        "seed", "alliance", "is_alive", "population_qty", "shield_perc", "missiles_qty",
         "population_distr", "shield_distr", "missile_distr",
     ],
     list_display_links=["id", "name",],
 )
 admin.site.register(
     Alliance,
-    list_display=["id", "name", "game"],
+    list_display=["id", "name", "game", "is_winner"],
     list_display_links=["id", "name",],
+)
+
+admin.site.register(
+    Missile,
+    list_display=["id", "owner", "target", "is_active", "launch_time"],
+    list_display_links=["id"],
 )

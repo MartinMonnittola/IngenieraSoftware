@@ -85,6 +85,32 @@ def game_instructions_view(request):
 
 
 # game room list view
+@login_required
+def game_status(request, game_num):
+    """
+    Render finished game stats view
+    """
+    planet_user = Planet.objects.get(player=request.user, game=game_num)
+    game = Game.objects.get(pk=game_num)
+    planets = Planet.objects.filter(game=game)
+    missiles_created = Missile.objects.filter(owner=planet_user).count()
+    missiles_used = Missile.objects.filter(owner=planet_user, is_active=False).count()
+    plist = []
+    for p in planets:
+        missiles = {
+            'planet': p,
+            'missiles_created': Missile.objects.filter(owner=p).count(),
+            'missiles_used': Missile.objects.filter(owner=p).count()
+        }
+        plist.append(missiles)
+    context = {'planets': planets,'planet_user': planet_user,'game': game,'plist': plist}
+    if game.num_alliances >= 2:
+        alliance_user = Alliance.objects.get(name=planet_user.alliance)
+        context['alliance_user'] = alliance_user
+        print alliance_user
+    return render(request, 'game_stats.html', context)
+
+# game room list view
 @method_decorator(login_required, name='dispatch')
 class GameRoomsListView(TemplateView):
     """List available games"""
@@ -318,7 +344,7 @@ def send_planets(request):
                 'missiles_per_second': round(calculo_generar_missile/2,2)
             }
             plist.append(record)
-        pdict = {'planets': plist, 'user': current_user}
+        pdict = {'planets': plist, 'user': current_user, 'game_status': g.game_finished}
         return JsonResponse(pdict, safe=False)
 
 # send a list of numbers of all open games as a json to js file
@@ -444,6 +470,7 @@ def send_attack(request):
         attack_dict = {'error': 'bad_request'}
     return JsonResponse(attack_dict, safe=False)
 
+
 # Allow players to attack their enemies
 def send_pop(request):
     """
@@ -469,3 +496,33 @@ def send_pop(request):
     else:
         send_pop_dict = {'error': 'bad_request'}
     return JsonResponse(send_pop_dict, safe=False)
+
+
+# Show destination of active missiles
+def missiles_status(request):
+    """
+    :param request:
+    :return: Json Response with destination of active missiles
+    """
+    if request.method == 'POST' and request.is_ajax():
+        game_id = int(request.POST.get("game_id"))
+        if game_id:
+            planet = Planet.objects.get(game_id=game_id,
+                                        player_id=request.user.id)
+            missiles = Missile.objects.filter(owner__exact=planet,
+                                              is_active__exact=True)
+        else:
+            data = {'error': 'game_id missing'}
+            return JsonResponse(data, safe=False)
+
+        data = {}
+        for missile in missiles:
+            if missile.target.name in data:
+                data[missile.target.name] += 1
+            else:
+                data[missile.target.name] = 1
+        return JsonResponse(data, safe=False)
+    else:
+        data = {'error': 'bad_request'}
+
+    return JsonResponse(data, safe=False)

@@ -1,15 +1,24 @@
 {% extends "base.html" %}
 
-{% load static %}
-
 {% block main_content %}
 
-<p><montserratb>ERR....</montserratb></p>
-<p><montserratb>GAME ALREADY STARTED...SORRY</montserratb></p>
+<div class="row justify-content-center">
+    <div class="col-4 text-center">
+        <div class="top30">
+            <h1>
+                Oops!</h1>
+            <div>
+                Sorry, an error has occured.
+            </div>
+        </div>
+    </div>
+</div>
 
-<form action = "{% url 'game_rooms' %}" method="post">
-{% csrf_token %}
-<input type="submit" value="back to lobby" class="metal" >
-</form>
+<div class="row justify-content-center top30">
+    <form action ="{% url 'game_rooms' %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="back to lobby" class="metal">
+    </form>
+</div>
 
 {% endblock %}

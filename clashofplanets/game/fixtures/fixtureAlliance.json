@@ -1,0 +1,337 @@
+[{"model":"game.alliance",
+"pk": 1,
+"fields":{
+"name":"negro",
+"game":1,
+"num_players":2
+}},
+{"model":"game.alliance",
+"pk": 2,
+"fields":{
+"name":"negro",
+"game":2,
+"num_players":3
+}},
+{"model":"game.alliance",
+"pk": 3,
+"fields":{
+"name":"negro",
+"game":3,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 4,
+"fields":{
+"name":"negro",
+"game":4,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 5,
+"fields":{
+"name":"negro",
+"game":5,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 6,
+"fields":{
+"name":"negro",
+"game":6,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 7,
+"fields":{
+"name":"negro",
+"game": 7,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 8,
+"fields":{
+"name":"negro",
+"game":8,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 9,
+"fields":{
+"name":"negro",
+"game":9,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 10,
+"fields":{
+"name":"negro",
+"game":10,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 11,
+"fields":{
+"name":"negro",
+"game":11,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 12,
+"fields":{
+"name":"negro",
+"game":12,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 13,
+"fields":{
+"name":"negro",
+"game":13,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 14,
+"fields":{
+"name":"negro",
+"game":14,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 15,
+"fields":{
+"name":"negro",
+"game":15,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 16,
+"fields":{
+"name":"negro",
+"game":16,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 17,
+"fields":{
+"name":"negro",
+"game":17,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 18,
+"fields":{
+"name":"negro",
+"game":18,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 19,
+"fields":{
+"name":"negro",
+"game":19,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 20,
+"fields":{
+"name":"negro",
+"game":20,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 21,
+"fields":{
+"name":"negro",
+"game":21,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 22,
+"fields":{
+"name":"negro",
+"game":22,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 23,
+"fields":{
+"name":"negro",
+"game":23,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 24,
+"fields":{
+"name":"negro",
+"game":24,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 25,
+"fields":{
+"name":"blanco",
+"game":1,
+"num_players":2
+}},
+{"model":"game.alliance",
+"pk": 26,
+"fields":{
+"name":"blanco",
+"game":2,
+"num_players":4
+}},
+{"model":"game.alliance",
+"pk": 27,
+"fields":{
+"name":"blanco",
+"game":3,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 28,
+"fields":{
+"name":"blanco",
+"game":4,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 29,
+"fields":{
+"name":"blanco",
+"game":5,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 30,
+"fields":{
+"name":"blanco",
+"game":6,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 31,
+"fields":{
+"name":"blanco",
+"game":7,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 32,
+"fields":{
+"name":"blanco",
+"game":8,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 33,
+"fields":{
+"name":"blanco",
+"game":9,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 34,
+"fields":{
+"name":"blanco",
+"game":10,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 35,
+"fields":{
+"name":"blanco",
+"game":11,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 36,
+"fields":{
+"name":"blanco",
+"game":12,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 37,
+"fields":{
+"name":"blanco",
+"game":13,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 38,
+"fields":{
+"name":"blanco",
+"game":14,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 39,
+"fields":{
+"name":"blanco",
+"game":15,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 40,
+"fields":{
+"name":"blanco",
+"game":16,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 41,
+"fields":{
+"name":"blanco",
+"game":17,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 42,
+"fields":{
+"name":"blanco",
+"game":18,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 43,
+"fields":{
+"name":"blanco",
+"game":19,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 44,
+"fields":{
+"name":"blanco",
+"game":20,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 45,
+"fields":{
+"name":"blanco",
+"game":21,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 46,
+"fields":{
+"name":"blanco",
+"game":22,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 47,
+"fields":{
+"name":"blanco",
+"game":23,
+"num_players":1
+}},
+{"model":"game.alliance",
+"pk": 48,
+"fields":{
+"name":"blanco",
+"game":24,
+"num_players":1
+}}
+]

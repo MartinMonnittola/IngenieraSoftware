@@ -24,14 +24,20 @@ class PlanetModelTestCase(TestCase):
                        email="arch@enemy.com",
                        password="oponent123")
         oponent.save()
-        
-        game = Game.create(user, "TestGame", 4)
+
+        game = Game.create(user, "TestGame", 4, 2, 1)
         game.save()
-        
-        planet = Planet.create(user, game, "TestLand", 1234)
+
+        team1 = Alliance.create("Team 1", game)
+        team1.save()
+
+        team2 = Alliance.create("Team 2", game)
+        team2.save()
+
+        planet = Planet.create(user, game, "TestLand", 1234, team1)
         planet.save()
 
-        target = Planet.create(oponent, game, "GonnaLose", 4321)
+        target = Planet.create(oponent, game, "GonnaLose", 4321, team2)
         target.save()
 
     def test_planet_has_owner(self):
@@ -72,7 +78,8 @@ class PlanetModelTestCase(TestCase):
     def test_planet_decrease_population(self):
         planet = Planet.objects.get(pk=1)
         planet.decrease_population(25)
-        self.assertEqual(planet.population_qty, 4975)
+        correct_qty = planet.game.initial_population - 25
+        self.assertEqual(planet.population_qty, correct_qty)
 
     def test_planet_doesnt_have_missiles(self):
         planet = Planet.objects.get(pk=1)
