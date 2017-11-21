@@ -215,6 +215,7 @@ def make_game(request):
         planet_name = request.POST.get("pname")
         room_name = request.POST.get("rname")
         max_players = int(request.POST.get("max_players"))
+        bot_mode = int(request.POST.get("bot_mode"))
         bot_players = int(request.POST.get("bot_players"))
         num_alliances = int(request.POST.get("num_alliances"))
         game_mode = int(request.POST.get("game_mode"))
@@ -222,12 +223,22 @@ def make_game(request):
         if max_players < 2:
             data = {'gameNumber': -1,
                     'message': "Max_players can't be less than 2."}
+        elif (max_players - 1) - bot_players < 0:
+            data = {'gameNumber': -3,
+                    'message': ("Bot_players can't be greater than" +
+                                str(max_players - 1) + ".")}
         else:
             # creates game
             g = Game.create(request.user, room_name, max_players, num_alliances,
                             game_mode)
             g.save()
             game_id = g.id
+            for num_bot in range(1, bot_players):
+                if bot_mode ==  1:
+                    bot = Defensive.create(g)
+                else:
+                    print "En ofensive"
+                    #bot = Offensive.create(g)
             # random name generator for alliances
             haikunator = Haikunator()
             # create alliances
