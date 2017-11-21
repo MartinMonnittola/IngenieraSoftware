@@ -24,14 +24,11 @@ function timeStamp() {
 
 var alert_show = true;
 function listPlanets() {
-    var num = $('#gamenum').text();
     var timest = timeStamp();
     var msg = "";
     $.ajax({
         type: 'GET',
-        data: {num: num},
         url: "get_planets/",
-        dataType: 'json',
         success: function (json) {
             var plist = json.planets;
             var user = json.user;
@@ -182,7 +179,6 @@ function battleLog(linelog) {
 
 function changeDistribution() {
     var csrftoken = getCookie('csrftoken');
-    var num = $('#gamenum').text();
     var population = $("#population_range").text();
     var shield = $("#shield_range").text();
     var missiles = $("#missiles_range").text();
@@ -195,7 +191,6 @@ function changeDistribution() {
             population: population,
             shield: shield,
             missiles: missiles,
-            game_num: num,
         },
         dataType: 'json',
     });
@@ -207,7 +202,6 @@ function attackPlanet() {
         event.preventDefault();
         var planet_id = $(this).closest('tr').find('td:nth-child(1)').text();
         //battleLog(planet_id); //Uncomment to check attack is working OK
-        var num = $('#gamenum').text();
         var csrftoken = getCookie('csrftoken');
         $.ajax({
             type: "POST",
@@ -215,7 +209,6 @@ function attackPlanet() {
             data: {
                 csrfmiddlewaretoken: csrftoken,
                 planet_id: planet_id,
-                game_num: num,
             },
         });
     });
@@ -227,7 +220,6 @@ function sendPopPlanet() {
         event.preventDefault();
         var planet_id = $(this).closest('tr').find('td:nth-child(1)').text();
         //battleLog(planet_id); //Uncomment to check attack is working OK
-        var num = $('#gamenum').text();
         var csrftoken = getCookie('csrftoken');
         $.ajax({
             type: "POST",
@@ -235,7 +227,6 @@ function sendPopPlanet() {
             data: {
                 csrfmiddlewaretoken: csrftoken,
                 planet_id: planet_id,
-                game_num: num
             }
         });
     });
@@ -244,16 +235,13 @@ function sendPopPlanet() {
 function missilesStatus(){
     $('#missilesStatus').on("click", function (event) {
         event.preventDefault();
-        var gameId = $('#gamenum').text();
         var csrftoken = getCookie('csrftoken');
         $.ajax({
             type: "POST",
             url: "missiles_status/",
             data: {
                 csrfmiddlewaretoken: csrftoken,
-                game_id: gameId
             },
-
             success: function (data) {
                 if("error" in data){
                     battleLog(data['error']);
@@ -271,8 +259,8 @@ function missilesStatus(){
 }
 
 $(document).ready(function () {
-    planetDistribution();
     listPlanets();
+    planetDistribution();
     attackPlanet();
     sendPopPlanet();
     missilesStatus();

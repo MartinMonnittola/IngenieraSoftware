@@ -1,9 +1,6 @@
 function listPlayers() {
-    var num = $('#gamenum').text();
     $.ajax({
         type: 'GET',
-        data: {num: num},
-        ifModified: true,
         url: "get_planets/",
         success: function (json) {
             if (status != "notmodified") {
@@ -19,7 +16,7 @@ function listPlayers() {
                         + '</tr>');
                 }
             }
-            setTimeout(listPlayers, 4000);
+            setTimeout(listPlayers, 2000);
         },
         error: function (xhr, errmsg, err) {
             console.log(xhr.status + ": " + xhr.responseText);
@@ -28,10 +25,8 @@ function listPlayers() {
 }
 
 function gameState() {
-    var num = $('#gamenum').text();
     $.ajax({
         type: 'GET',
-        data: {num: num},
         url: "get_game_state/",
         success: function (json) {
             if (json.players_in_room < 2) {
@@ -46,7 +41,7 @@ function gameState() {
             var rst = json.game_state;
             if (rst == 1) {
                 alert("Game has been started!!!");
-                location.href = "/game_rooms/game/" + num;
+                location.href = "game/";
             }
             setTimeout(gameState, 4000);
         },
