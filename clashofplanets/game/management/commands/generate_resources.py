@@ -26,10 +26,9 @@ class Command(BaseCommand):
                     g.game_finished = True
             g.save()
             for p in planets_in_active_rooms:
-                if p.population_qty < 10000:
-                    cantidad_asig = p.population_qty * p.population_distr / 100
-                    calculo_generar_pop = cantidad_asig / g.const_population
-                    p.population_qty += calculo_generar_pop
+                cantidad_asig = p.population_qty * p.population_distr / 100
+                calculo_generar_pop = cantidad_asig / g.const_population
+                p.population_qty += calculo_generar_pop
                 if p.shield_perc < 100:
                     cant_asig_shield = p.population_qty * p.shield_distr / 100
                     calculo_generar_shield = cant_asig_shield / g.const_shield

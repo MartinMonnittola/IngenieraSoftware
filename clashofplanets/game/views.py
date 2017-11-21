@@ -433,7 +433,6 @@ def change_distribution(request, game_num):
     Change distribution view
     """
     if request.method == 'POST' and request.is_ajax():
-        game_num = int(request.POST.get('game_num'))
         population = int(request.POST.get('population'))
         shield = int(request.POST.get('shield'))
         missiles = int(request.POST.get('missiles'))
