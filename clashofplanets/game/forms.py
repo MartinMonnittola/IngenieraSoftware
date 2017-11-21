@@ -30,37 +30,46 @@ class SignUpForm(UserCreationForm):
             raise forms.ValidationError(u'Email addresses must be unique.')
         return email
 
-
 class gameForm(forms.ModelForm):
     planet_name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_nameC', 'required': True}))
     game_name = forms.CharField(widget=forms.TextInput(attrs={'id':'game_nameC', 'required': True}))
-    max_players = forms.IntegerField(widget=forms.NumberInput(
+    game_mode = forms.ChoiceField(choices=Game.MODE_CHOICES, widget=forms.Select(attrs={'id': 'game_modesC', 'required': True}))
+    max_players = forms.IntegerField(widget=forms.TextInput(
         attrs={
-            'id':'max_playersC',
-            'required': True,
-            'type': 'range',
-            'min': 2,
-            'max': 50,
-            'value': 0,
-            'class': 'bar',
-            'onchange': 'rangevalueplayers.value=value'}
+            'value': "",
+            'id': 'max_playersC',
+            'type': 'text',
+            'class': 'max_playersC-slider'}
             )
         )
-    num_alliances = forms.IntegerField(widget=forms.NumberInput(
+    num_alliances = forms.IntegerField(label='Number Of Alliances',widget=forms.NumberInput(
         attrs={
+            'value': "",
             'id':'num_alliancesC',
-            'required': True,
-            'type': 'range',
-            'min': 0,
-            'max': 10,
-            'value': 0,
-            'class': 'bar',
-            'onchange': 'rangevaluealliances.value=value'}
+            'type': 'text',
+            'class': 'num_alliancesC-slider',}
             )
         )
+    bot_players = forms.IntegerField(label='Number Of Bot Players', widget=forms.NumberInput(
+        attrs={
+            'value': "",
+            'id':'bot_playersC',
+            'type': 'text',
+            'class': 'bot_playersC-slider',}
+            )
+        )
+
+    DEFENSIVE = 1
+    OFFENSIVE = 2
+    MODE_CHOICES = (
+        (DEFENSIVE, "Defensive"),
+        (OFFENSIVE, "Offensive")
+    )
+    bot_mode = forms.ChoiceField(choices= MODE_CHOICES, required = True)
+
     class Meta:
         model = Game
-        fields = ('game_name', 'max_players', 'num_alliances') # bot_players - #game_mode
+        fields = ('game_name', 'max_players', 'num_alliances', 'bot_players') # bot_players - #game_mode
 
     def __init__(self, *args, **kwargs):
         super(gameForm, self).__init__(*args, **kwargs)
@@ -68,9 +77,12 @@ class gameForm(forms.ModelForm):
         self.fields['max_players'].help_text = 'How many players can join your Game?. Required. Min 2 Max 50.'
         self.fields['num_alliances'].help_text = 'How many alliances will exist on your game?. Required. Min 0 Max 10.'
         self.fields['planet_name'].help_text = 'Write a name for your planet. Required'
+        self.fields['bot_players'].help_text = 'How many bots do you want to be in game?. Required. Min 2 Max 10. 0 to deactivate'
+        self.fields['game_mode'].help_text = 'Choose a game mode to play.'
+        self.fields['bot_mode'].help_text = 'Choose the bot`s mode . No required'
 
 class joinForm(forms.ModelForm):
-    name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_name', 'required': True}))
+    name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_name', 'required': False}))
     game_id = forms.CharField(widget=forms.TextInput(attrs={'id':'game_num', 'required': True}))
 
     class Meta:
