@@ -95,13 +95,13 @@ class Game(models.Model):
         (SLOW, 'Slow')
     )
     FAST_CONSTANTS = {
-        'time_missile': 5,
+        'time_missile': 1,
         'initial_population': 1000,
-        'const_missile': 300,
-        'const_population': 500,
-        'const_shield': 600,
-        'hurt_to_population': 200,
-        'hurt_to_shield': 25
+        'const_missile': 50000,
+        'const_population': 50,
+        'const_shield': 1500,
+        'hurt_to_population': 500,
+        'hurt_to_shield': 20
     }
 
     SLOW_CONSTANTS = {
