@@ -517,18 +517,12 @@ class Defensive(Bot):
     """
     def attack(self):
         planet = Planet.objects.get(bot = self)
-        game = Game.objects.get(pk=self.game.pk)
         # Elegimos aleatoriamente el numero de misiles lanzados.
         count_attack = numpy.random.binomial(planet.missiles_qty,
                                              (self.probability_attack/51.0))
-        print "Cantidad de jugadores a atacar."
-        print count_attack
-        print "Misiles disponibles."
-        print planet.missiles_qty
         planets_game = Planet.objects.filter(game=self.game).exclude(bot = self)
         planets_alive = planets_game.exclude(population_qty = 0)
-        if 2 <= game.num_alliances :
-            print "Estamo en el caso de que hay allianzas."
+        if 2 <= self.game.num_alliances :
             planets_rival = planets_alive.exclude(alliance = planet.alliance)
 
         # Ordenamos los planetas a atacar segun su poblacion y escudo en orden
@@ -543,8 +537,6 @@ class Defensive(Bot):
                     planet_id = planets.count() - 1
                 planet.launch_missile(planets[abs(planet_id)])
                 planets[abs(planet_id)].save()
-                print "Planeta atacado"
-                print planets[abs(planet_id)].name
 
     def change_distribution(self):
         # Obtenemos la cantidad de habitantes del planeta mas poblado.
@@ -584,7 +576,6 @@ class Defensive(Bot):
 
 
     def send_population(self):
-        game = Game.objects.get(pk=self.game.pk)
         planet = Planet.objects.get(bot = self)
 
         # Obtenemos la cantidad de habitantes del planeta mas poblado.
@@ -598,7 +589,7 @@ class Defensive(Bot):
         probability_send_population = ((planet.population_qty / max_popult) *
                                        self.probability_send_population)
 
-        if 2 <= game.num_alliances :
+        if 2 <= self.game.num_alliances :
             planets_game = Planet.objects.filter(game=self.game).exclude(bot = self)
             planets_friends = planets_game.filter(alliance = planet.alliance)
             planets = planets_friends.exclude(population_qty = 0).order_by(
@@ -606,9 +597,6 @@ class Defensive(Bot):
             count_send = numpy.random.binomial(planets.count(),
                                            (probability_send_population/ 999.0))
         else:
-            print "Estamos en el caso en el que no hay allianzas "
-            print "y ejecutamos el metodo send population."
-            print game.num_alliances
             planets = None
             count_send = 0
         planets_sends = numpy.random.poisson(1.5, count_send)
@@ -617,8 +605,6 @@ class Defensive(Bot):
                 if abs(planet_id) > (planets.count() - 1):
                     planet_id = planets.count() - 1
                 planet.send_population(planets[abs(planet_id)])
-                print "Planeta al que se le envia poblacion."
-                print planets[abs(planet_id)].name
 
 
 class Offensive(Bot):
