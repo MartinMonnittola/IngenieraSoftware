@@ -21,7 +21,8 @@ hr.style1{
 
 .range-slider-players,
 .range-slider-alliances,
-.range-slider-bots {
+.range-slider-bots-def,
+.range-slider-bots-ofc {
     text-align: center;
     max-width: 80%;
     margin: auto;
@@ -89,7 +90,7 @@ ul.openGamesC{
   text-shadow: 0.1em 0.1em 0.2em black;
 }
 
-#JoinError, #attackError{
+#JoinError, #attackError, #createError{
     color: #ef3245;
     padding-bottom: 5px;
 }

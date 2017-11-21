@@ -116,12 +116,12 @@
                                 <div class="range-slider-alliances">
                                  {{field}}
                                 </div>
-                            {% elif field == game_form.bot_players %}
-                                <div class="range-slider-bots">
+                            {% elif field == game_form.bot_def_num %}
+                                <div class="range-slider-bots-def">
                                  {{field}}
                                 </div>
-                            {% elif field == game_form.bot_mode %}
-                                <div class="range-slider-bots">
+                            {% elif field == game_form.bot_ofc_num %}
+                                <div class="range-slider-bots-ofc">
                                  {{field}}
                                 </div>
                             {% else %}
@@ -141,6 +141,7 @@
                     <hr class="style1">
                     <input type="submit" class="metal" value="create game" id="create">
                 </form>
+                <div id="createError"></div>
             </div>
         </div>
     </div>

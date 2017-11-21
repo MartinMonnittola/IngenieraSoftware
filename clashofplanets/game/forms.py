@@ -50,26 +50,25 @@ class gameForm(forms.ModelForm):
             'class': 'num_alliancesC-slider',}
             )
         )
-    bot_players = forms.IntegerField(label='Number Of Bot Players', widget=forms.NumberInput(
+    bot_def_num = forms.IntegerField(label='Number Of Bot Players (DEF)', widget=forms.NumberInput(
         attrs={
             'value': "",
-            'id':'bot_playersC',
+            'id':'bot_defC',
             'type': 'text',
-            'class': 'bot_playersC-slider',}
+            'class': 'bot_defC-slider',}
             )
         )
-
-    DEFENSIVE = 1
-    OFFENSIVE = 2
-    MODE_CHOICES = (
-        (DEFENSIVE, "Defensive"),
-        (OFFENSIVE, "Offensive")
+    bot_ofc_num = forms.IntegerField(label='Number Of Bot Players (OFC)', widget=forms.NumberInput(
+    attrs={
+        'value': "",
+        'id':'bot_ofcC',
+        'type': 'text',
+        'class': 'bot_ofcC-slider',}
+        )
     )
-    bot_mode = forms.ChoiceField(choices= MODE_CHOICES, required = False)
-
     class Meta:
         model = Game
-        fields = ('game_name', 'max_players', 'num_alliances', 'bot_players') # bot_players - #game_mode
+        fields = ('game_name', 'max_players', 'num_alliances', 'bot_def_num', 'bot_ofc_num') # bot_players - #game_mode
 
     def __init__(self, *args, **kwargs):
         super(gameForm, self).__init__(*args, **kwargs)
@@ -77,10 +76,9 @@ class gameForm(forms.ModelForm):
         self.fields['max_players'].help_text = 'How many players can join your Game?. Required. Min 2 Max 50.'
         self.fields['num_alliances'].help_text = 'How many alliances will exist on your game?. Required. Min 0 Max 10.'
         self.fields['planet_name'].help_text = 'Write a name for your planet. Required'
-        self.fields['bot_players'].help_text = 'How many bots do you want to be in game?. Required. Min 2 Max 10. 0 to deactivate'
+        self.fields['bot_def_num'].help_text = 'Number of Defensive Bots on game. 0 to 10.'
+        self.fields['bot_ofc_num'].help_text = 'Number of Ofensive Bots on game. 0 to 10.'
         self.fields['game_mode'].help_text = 'Choose a game mode to play.'
-        self.fields['bot_mode'].help_text = 'Choose the bot`s mode . No required'
-
 
 class joinForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'id':'planet_name', 'required': False}))

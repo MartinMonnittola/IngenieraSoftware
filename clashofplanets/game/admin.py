@@ -9,7 +9,7 @@ from .models import *
 admin.site.register(
     Game,
     list_display=[
-        "id", "game_name", "user", "connected_players", "num_alliances", "max_players", "bot_players",
+        "id", "game_name", "user", "connected_players", "num_alliances", "max_players", "bot_def_num", "bot_ofc_num",
         "game_started", "game_finished", "initial_population", "const_population",
         "const_shield", "const_missile", "hurt_to_population",
         "hurt_to_shield", "time_missile"],

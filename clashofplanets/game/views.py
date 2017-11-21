@@ -240,26 +240,28 @@ def make_game(request):
         planet_name = request.POST.get("pname")
         room_name = request.POST.get("rname")
         max_players = int(request.POST.get("max_players"))
-        bot_mode = int(request.POST.get("bot_mode"))
-        bot_players = int(request.POST.get("bot_players"))
+        bot_def_num = int(request.POST.get("bot_def_num"))
+        bot_ofc_num = int(request.POST.get("bot_ofc_num"))
         num_alliances = int(request.POST.get("num_alliances"))
         game_mode = int(request.POST.get("game_mode"))
 
         if max_players < 2:
             data = {'gameNumber': -1,
                     'message': "Max_players can't be less than 2."}
-        elif (max_players - 1) - bot_players < 0:
+        elif (max_players - 1) - (bot_def_num+bot_ofc_num) < 0:
             data = {'gameNumber': -3,
-                    'message': ("Bot_players can't be greater than" +
+                    'message': ("Bot players can't be greater than " +
                                 str(max_players - 1) + ".")}
         else:
             # creates game
             g = Game.create(request.user, room_name, max_players, num_alliances,
-                            game_mode)
+                            game_mode, bot_def_num, bot_ofc_num)
             g.save()
             game_id = g.id
+
             # random name generator for alliances
             haikunator = Haikunator()
+
             # create alliances
             if num_alliances >= 2:
                 for i in range(num_alliances):
@@ -270,27 +272,39 @@ def make_game(request):
                 alliance = Alliance.create("-", g)
                 alliance.save()
             fst_alliance = Alliance.objects.filter(game=g).first()
+
+            # game creator joins the game
+            rseed = randint(1, 90001)
+            planet_owner = request.user
+            g.joinGame(planet_owner.id, planet_name, rseed)
+
             # create bots
-            for num_bot in range(1, bot_players):
-                alliances = Alliance.objects.all().order_by("num_players")
+            for num_bot in range(bot_def_num):
+                alliances = Alliance.objects.filter(game=g).order_by("num_players")
                 bot_alliance = alliances.first()
                 seed = randint(1, 90001)
-                if bot_mode ==  1:
-                    bot = Defensive.create(g)
-                else:
-                    print "En ofensive"
-                    bot = Offensive.create(g)
+                bot = Defensive.create(g)
                 # create planet.
                 bot_planet = Planet.create(player = None, bot = bot, game = g,
                                            name = ('A' + str(bot.pk)),
                                            seed = seed, alliance = bot_alliance)
                 bot_planet.save()
-                bot_alliance.add_player
-                g.connected_players = g.connected_players + 1
+                bot_alliance.add_player()
+                g.connected_players += 1
                 g.save()
-            rseed = randint(1, 90001)
-            planet_owner = request.user
-            g.joinGame(planet_owner.id, planet_name, rseed)
+            for num_bot in range(bot_ofc_num):
+                alliances = Alliance.objects.filter(game=g).order_by("num_players")
+                bot_alliance = alliances.first()
+                seed = randint(1, 90001)
+                bot = Offensive.create(g)
+                # create planet.
+                bot_planet = Planet.create(player = None, bot = bot, game = g,
+                                           name = ('A' + str(bot.pk)),
+                                           seed = seed, alliance = bot_alliance)
+                bot_planet.save()
+                bot_alliance.add_player()
+                g.connected_players += 1
+                g.save()
             data = {'gameNumber': game_id}
     else:
         return HttpResponseBadRequest("Bad Request")

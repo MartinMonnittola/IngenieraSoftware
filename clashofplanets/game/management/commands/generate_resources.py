@@ -44,17 +44,27 @@ class Command(BaseCommand):
                     p.is_alive = False
                 p.save()
 
-            if g.bot_players > 0:
-                bots = Defensive.objects.filter(game = g)
-                if bots is None:
-                    bots = Offensive.objects.filter(game = g)
+            if (g.bot_def_num) > 0:
+                bots_def = Defensive.objects.filter(game = g)
+                for bot in bots_def:
+                    planet = Planet.objects.get(bot = bot)
+                    print planet, g
+                    if planet.population_qty > 0:
+                        bot.attack()
+                        #print "Estamos cambiando la distribucion."
+                        bot.change_distribution()
+                        #print "Estamos enviando poblacion."
+                        bot.send_population()
 
-                for bot in bots:
+            if (g.bot_ofc_num) > 0:
+                bots_ofc = Offensive.objects.filter(game = g)
+                for bot in bots_ofc:
                     planet = Planet.objects.get(bot = bot)
                     if planet.population_qty > 0:
                         bot.attack()
-                        print "Estamos cambiando la distribucion."
+                        #print "Estamos cambiando la distribucion."
                         bot.change_distribution()
-                        print "Estamos enviando poblacion."
+                        #print "Estamos enviando poblacion."
                         bot.send_population()
+
         return "Command Generate Executed"

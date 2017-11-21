@@ -48,9 +48,13 @@ class Game(models.Model):
                                             verbose_name='Connected players',
                                             validators=[MinValueValidator(0)])
     # Numero de bots que se agregaron a la partida a la partida.
-    bot_players = models.IntegerField(default=0,
-                                      verbose_name='Amount of bot players',
-                                      validators=[MinValueValidator(2)])
+    bot_def_num = models.IntegerField(default=0,
+                                      verbose_name='Amount of bot players (DEF)',
+                                      validators=[MinValueValidator(0)])
+
+    bot_ofc_num = models.IntegerField(default=0,
+                                      verbose_name='Amount of bot players (OFC)',
+                                      validators=[MinValueValidator(0)])
     # Tiempo de viaje del misil.
     time_missile = models.IntegerField(default=10,
                                        verbose_name='Missile Delay',
@@ -123,7 +127,7 @@ class Game(models.Model):
         return self.game_name
 
     @classmethod
-    def create(cls, owner, name, max_players, num_alliances, mode):
+    def create(cls, owner, name, max_players, num_alliances, mode, bot_def, bot_ofc):
         """
         Crea una partida en estado de espera.
 
@@ -137,6 +141,8 @@ class Game(models.Model):
                    game_name=name,
                    max_players=max_players,
                    game_started=False,
+                   bot_def_num=bot_def,
+                   bot_ofc_num=bot_ofc,
                    user=owner,
                    num_alliances=num_alliances)
         game.configure_mode(mode)
@@ -289,7 +295,7 @@ class Bot(models.Model):
     """
 
     # Probabilidad de decidir atacar.
-    probability_attack = models.IntegerField(default=30,
+    probability_attack = models.IntegerField(default=99,
                                       help_text='probability of attack',
                                       blank=False)
 
@@ -307,6 +313,9 @@ class Bot(models.Model):
     # Nombre del bot.
     name = models.CharField(max_length=20, blank=False, verbose_name='Bot name')
 
+    def __str__(self):
+        return self.name
+
     @classmethod
     def create(cls, game):
         """
@@ -320,7 +329,7 @@ class Bot(models.Model):
         except:
             max_pk = 1
         bot = cls(name = ('Bot'+ str(max_pk)), game=game,
-                          probability_attack = 30, 
+                          probability_attack = 30,
                           probability_modify_resources = 60,
                           probability_send_population = 60
                          )
@@ -486,7 +495,7 @@ class Planet(models.Model):
     def send_population(self, target_planet):
         """
         Send population:
-        Envia poblacion a un planeta
+        Envia poblaciona a un planeta
         INPUT: Objetos Planet de origen (self) y destino (target_planet)
         OUTPUT: Mensaje indicando exito (1) o fallo (0)
         """
@@ -509,8 +518,10 @@ class Defensive(Bot):
     def attack(self):
         planet = Planet.objects.get(bot = self)
         # Elegimos aleatoriamente el numero de misiles lanzados.
-        count_attack = numpy.random.binomial(planet.missiles_qty,
-                                            (self.probability_attack / 4999.0))
+        print planet.missiles_qty
+        print numpy.random.binomial(planet.missiles_qty,(self.probability_attack)/31)
+        count_attack = numpy.random.binomial(planet.missiles_qty,(self.probability_attack)/31)
+        print "attack", count_attack
 
         planets_game = Planet.objects.filter(game=self.game).exclude(bot = self)
         planets_alive = planets_game.exclude(population_qty = 0)
@@ -528,9 +539,10 @@ class Defensive(Bot):
                     planet_id = planets.count() - 1
                 planet.launch_missile(planets[abs(planet_id)])
                 planets[abs(planet_id)].save()
+                print planets[abs(planet_id)].name
 
     def change_distribution(self):
-        # Obtenemos la cantidad de habitantes del planeta mas poblado. 
+        # Obtenemos la cantidad de habitantes del planeta mas poblado.
         planets = Planet.objects.filter(game=self.game).exclude(bot = self)
         planet_max = planets.order_by('-population_qty').first()
 
@@ -569,7 +581,7 @@ class Defensive(Bot):
     def send_population(self):
         planet = Planet.objects.get(bot = self)
 
-        # Obtenemos la cantidad de habitantes del planeta mas poblado. 
+        # Obtenemos la cantidad de habitantes del planeta mas poblado.
         planets_popult = Planet.objects.filter(game=self.game)
         planet_max = planets_popult.order_by('-population_qty').first()
 
@@ -577,7 +589,7 @@ class Defensive(Bot):
         # referencia para estimar la pobabiidad de enviar pobladores.
         max_popult = planet_max.population_qty
 
-        probability_send_population = ((planet.population_qty / max_popult) * 
+        probability_send_population = ((planet.population_qty / max_popult) *
                                        self.probability_send_population)
 
         planets_game = Planet.objects.filter(game=self.game).exclude(bot = self)
@@ -601,9 +613,8 @@ class Offensive(Bot):
 
     def attack(self):
         planet = Planet.objects.get(bot = self)
-        planets=Planet.objects.filter(game=self.game).exclude(pk=planet,
-                                                                population_qty=0);
-        psorted=planets.sort(key=lambda x: x.shield_perc/x.population_qty)
+        planets=Planet.objects.filter(game=self.game).exclude(pk=planet.id,population_qty=0)
+        psorted=planets.order_by('shield_perc','population_qty')
 
         planets_to_attack=psorted[:planet.missiles_qty]
         if len(planets_to_attack) > 0:
