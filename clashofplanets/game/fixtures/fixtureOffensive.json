@@ -1,0 +1,290 @@
+[{"model":"game.bot",
+"pk": 48,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 2,
+    "name": "Bot1"
+}},
+{"model":"game.offensive",
+"pk": 48,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 2,
+    "name": "Bot1"
+}},
+{"model":"game.bot",
+"pk": 49,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 2,
+    "name": "Bot2"
+}},
+{"model":"game.offensive",
+"pk": 49,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 2,
+    "name": "Bot2"
+}},
+{"model":"game.bot",
+"pk": 50,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 2,
+    "name": "Bot3"
+}},
+{"model":"game.offensive",
+"pk": 50,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 2,
+    "name": "Bot3"
+}},
+{"model":"game.bot",
+"pk": 51,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 2,
+    "name": "Bot4"
+}},
+{"model":"game.offensive",
+"pk": 51,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 2,
+    "name": "Bot4"
+}},
+{"model":"game.bot",
+"pk": 52,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 3,
+    "name": "Bot1"
+}},
+{"model":"game.offensive",
+"pk": 52,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 3,
+    "name": "Bot1"
+}},
+{"model":"game.bot",
+"pk": 53,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 3,
+    "name": "Bot2"
+}},
+{"model":"game.offensive",
+"pk": 53,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 3,
+    "name": "Bot2"
+}},
+{"model":"game.bot",
+"pk": 54,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 3,
+    "name": "Bot3"
+}},
+{"model":"game.offensive",
+"pk": 54,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 3,
+    "name": "Bot3"
+}},
+{"model":"game.bot",
+"pk": 55,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 3,
+    "name": "Bot4"
+}},
+{"model":"game.offensive",
+"pk": 55,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 3,
+    "name": "Bot4"
+}},
+{"model":"game.bot",
+"pk": 56,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 4,
+    "name": "Bot1"
+}},
+{"model":"game.offensive",
+"pk": 56,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 4,
+    "name": "Bot1"
+}},
+{"model":"game.bot",
+"pk": 57,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 4,
+    "name": "Bot2"
+}},
+{"model":"game.offensive",
+"pk": 57,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 4,
+    "name": "Bot2"
+}},
+{"model":"game.bot",
+"pk": 58,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 4,
+    "name": "Bot3"
+}},
+{"model":"game.offensive",
+"pk": 58,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 4,
+    "name": "Bot3"
+}},
+{"model":"game.bot",
+"pk": 59,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 4,
+    "name": "Bot4"
+}},
+{"model":"game.offensive",
+"pk": 59,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 4,
+    "name": "Bot4"
+}},
+
+{"model":"game.bot",
+"pk": 60,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 5,
+    "name": "Bot1"
+}},
+{"model":"game.offensive",
+"pk": 60,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 5,
+    "name": "Bot1"
+}},
+{"model":"game.bot",
+"pk": 61,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 5,
+    "name": "Bot2"
+}},
+{"model":"game.offensive",
+"pk": 61,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 5,
+    "name": "Bot2"
+}},
+{"model":"game.bot",
+"pk": 62,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 5,
+    "name": "Bot3"
+}},
+{"model":"game.offensive",
+"pk": 62,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 5,
+    "name": "Bot3"
+}},
+{"model":"game.bot",
+"pk": 63,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 5,
+    "name": "Bot4"
+}},
+{"model":"game.offensive",
+"pk": 63,
+"fields":{
+    "probability_attack":30,
+    "probability_modify_resources": 60,
+    "probability_send_population":30,
+    "game": 5,
+    "name": "Bot4"
+}}
+]
