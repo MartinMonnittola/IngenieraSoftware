@@ -580,6 +580,7 @@ class Defensive(Bot):
         planet.missile_distr = missile_distr
         planet.save()
 
+
     def send_population(self):
         planet = Planet.objects.get(bot = self)
 
@@ -606,6 +607,33 @@ class Defensive(Bot):
                 if abs(planet_id) > (planets.count() - 1):
                     planet_id = planets.count() - 1
                 planet.send_population(planets[abs(planet_id)])
+
+
+class Offensive(Bot):
+    """
+    Representa al Bot ofensivo.
+    """
+
+    def attack(self):
+        planet = Planet.objects.get(bot = self)
+        planets=Planet.objects.filter(game=self.game).exclude(pk=planet,
+                                                                population_qty=0);
+        psorted=planets.sort(key=lambda x: x.shield_perc/x.population_qty)
+
+        planets_to_attack=psorted[:planet.missiles_qty]
+        if len(planets_to_attack) > 0:
+            for p in planets_to_attack:
+                planet.launch_missile(p)
+
+    def change_distribution(self):
+        planet = Planet.objects.get(bot = self)
+        if planet.population_qty < 50:
+            planet.assign_perc_rate(40, 10, 50)
+        else:
+            planet.assign_perc_rate(10, 10, 80)
+
+    def send_population(self):
+        pass
 
 
 class Missile (models.Model):
