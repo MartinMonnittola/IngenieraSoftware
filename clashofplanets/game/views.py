@@ -200,7 +200,6 @@ def make_player(request):
         # Redirects to lobby
         return HttpResponseRedirect('/game_rooms/')
 
-
 # make game room
 @login_required
 def make_game(request):
@@ -233,12 +232,6 @@ def make_game(request):
                             game_mode)
             g.save()
             game_id = g.id
-            for num_bot in range(1, bot_players):
-                if bot_mode ==  1:
-                    bot = Defensive.create(g)
-                else:
-                    print "En ofensive"
-                    #bot = Offensive.create(g)
             # random name generator for alliances
             haikunator = Haikunator()
             # create alliances
@@ -251,7 +244,24 @@ def make_game(request):
                 alliance = Alliance.create("-", g)
                 alliance.save()
             fst_alliance = Alliance.objects.filter(game=g).first()
-            # create planet
+            # create bots
+            for num_bot in range(1, bot_players):
+                alliances = Alliance.objects.all().order_by("num_players")
+                bot_alliance = alliances.first()
+                seed = randint(1, 90001)
+                if bot_mode ==  1:
+                    bot = Defensive.create(g)
+                else:
+                    print "En ofensive"
+                    #bot = Offensive.create(g)
+                # create planet.
+                bot_planet = Planet.create(player = None, bot = bot, game = g,
+                                           name = ('A' + str(bot.pk)),
+                                           seed = seed, alliance = bot_alliance)
+                bot_planet.save()
+                bot_alliance.add_player
+                g.connected_players = g.connected_players + 1
+                g.save()
             rseed = randint(1, 90001)
             planet_owner = request.user
             g.joinGame(planet_owner.id, planet_name, rseed)
