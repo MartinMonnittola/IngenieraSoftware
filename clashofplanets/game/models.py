@@ -231,6 +231,7 @@ class Game(models.Model):
             succesfull = False
         return succesfull
 
+
 class Alliance (models.Model):
     """
     Clase Alliance: Agrupa los planetas en alianzas si las hay en partida bajo
@@ -246,6 +247,41 @@ class Alliance (models.Model):
     num_players = models.IntegerField(default=0,
                                       verbose_name='Players Quantity')
     is_winner = models.BooleanField(default=False, verbose_name='Winner Of Game')
+
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def create(cls, name, game):
+        """
+        Create Alliance:
+        Permite crear una alianza (equipo-team)
+        INPUT: Nombre de la alianza, partida a la que pertenece
+        OUTPUT: La alianza
+        """
+        new_alliance = cls(name=name, game=game)
+        return new_alliance
+
+    def add_player(self):
+        """
+        Add Player:
+        Aumenta el contador de jugadores pertenecientes a la alianza
+        INPUT: Ninguno
+        OUTPUT: Ninguno
+        """
+        self.num_players += 1
+        self.save()
+
+    def remove_player(self):
+        """
+        Add Player:
+        Decrementa el contador de jugadores pertenecientes a la alianza
+        INPUT: Ninguno
+        OUTPUT: Ninguno
+        """
+        self.num_players -= 1
+        self.save()
+
 
 class Bot(models.Model):
     """
@@ -302,57 +338,6 @@ class Bot(models.Model):
         Decide aleatoriamente si modifica los recursos del planeta propio.
         """
         pass
-
-
-class Alliance (models.Model):
-    """
-    Clase Alliance: Agrupa los planetas en alianzas si las hay en partida bajo
-    un nombre.
-    """
-    name = models.CharField(max_length=30,
-                            default='Team',
-                            verbose_name='Alliance Name')
-    game = models.ForeignKey(Game,
-                             default=1,
-                             on_delete=models.CASCADE,
-                             verbose_name='Game Name')
-    num_players = models.IntegerField(default=0,
-                                      verbose_name='Players Quantity')
-
-    def __str__(self):
-        return self.name
-
-    @classmethod
-    def create(cls, name, game):
-        """
-        Create Alliance:
-        Permite crear una alianza (equipo-team)
-        INPUT: Nombre de la alianza, partida a la que pertenece
-        OUTPUT: La alianza
-        """
-        new_alliance = cls(name=name, game=game)
-        return new_alliance
-
-    def add_player(self):
-        """
-        Add Player:
-        Aumenta el contador de jugadores pertenecientes a la alianza
-        INPUT: Ninguno
-        OUTPUT: Ninguno
-        """
-        self.num_players += 1
-        self.save()
-
-    def remove_player(self):
-        """
-        Add Player:
-        Decrementa el contador de jugadores pertenecientes a la alianza
-        INPUT: Ninguno
-        OUTPUT: Ninguno
-        """
-        self.num_players -= 1
-        self.save()
-
 
 class Planet(models.Model):
     """

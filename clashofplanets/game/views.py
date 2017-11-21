@@ -279,7 +279,7 @@ def make_game(request):
                     bot = Defensive.create(g)
                 else:
                     print "En ofensive"
-                    #bot = Offensive.create(g)
+                    bot = Offensive.create(g)
                 # create planet.
                 bot_planet = Planet.create(player = None, bot = bot, game = g,
                                            name = ('A' + str(bot.pk)),
