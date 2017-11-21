@@ -4,13 +4,68 @@ function fillOutGame(game_num) {
     $('#planet_name').focus();
 }
 
+var gaps = [1];
+function transform(num) {
+    var pos = gaps.indexOf(num);
+    // skip value from gaps array
+    if (pos !== -1) {
+        return num - 1;
+    }
+    return num;
+}
+
+function max_Players_slider() {
+    var $range = $(".max_playersC-slider");
+    $range.ionRangeSlider({
+        type: 'single',
+        min: 2,
+        max: 50,
+        from: 2,
+    });
+    var slider = $(".max_playersC-slider").data("ionRangeSlider");
+    $(".range-slider-players").mouseleave(function(){
+      slider.dragging = false;
+    });
+}
+
+function num_Alliances_slider() {
+    var $range = $(".num_alliancesC-slider");
+    $range.ionRangeSlider({
+        type: 'single',
+        min: 1,
+        max: 10,
+        from: 1,
+        prettify: function(num) {
+            return transform(num);
+        },
+    });
+    var slider = $(".num_alliancesC-slider").data("ionRangeSlider");
+    $(".range-slider-alliances").mouseleave(function(){
+      slider.dragging = false;
+    });
+}
+
+function num_Bots_slider() {
+    var $range = $(".bot_playersC-slider");
+    $range.ionRangeSlider({
+        type: 'single',
+        min: 1,
+        max: 10,
+        from: 1,
+        prettify: function(num) {
+            return transform(num);
+        },
+    });
+    var slider = $(".bot_playersC-slider").data("ionRangeSlider");
+    $(".range-slider-bots").mouseleave(function(){
+      slider.dragging = false;
+    });
+}
+
 //List available games
 function listGames() {
-    var csrftoken2 = getCookie('csrftoken');
     $.ajax({
-        type: 'POST',
-        data: {csrfmiddlewaretoken: csrftoken2},
-        ifModified: true,
+        type: 'GET',
         url: "get_games/",
         success: function (json) {
             if (status != "notmodified") {
@@ -27,6 +82,7 @@ function listGames() {
                             + '<td class=\"game-'+glist[i].id+'\">' + glist[i].id + '</td>'
                             + '<td>' + glist[i].name + '</td>'
                             + '<td>' + glist[i].owner + '</td>'
+                            + '<td>' + glist[i].num_alliances + '</td>'
                             + '<td>' + glist[i].connected_players + '</td>'
                             + '<td>' + glist[i].max_players + '</td>'
                             + '</tr>');
@@ -52,7 +108,11 @@ function listGames() {
 //For doing AJAX post
 $(document).ready(function () {
     listGames();
-    //Create game is clicked
+    max_Players_slider();
+    num_Alliances_slider();
+    num_Bots_slider();
+
+
     $("#create").click(function (e) {
         console.log("creando");
         $("#join").prop('disabled', true);
@@ -61,10 +121,24 @@ $(document).ready(function () {
         var pname = $('#planet_nameC').val();
         var rname = $('#game_nameC').val();
         var max_players = $('#max_playersC').val();
+        var bot_players = $('#bot_playersC').val();
+        var num_alliances = $('#num_alliancesC').val();
+        var game_mode = $('#game_modesC').val();
+        var bot_mode = $('#id_bot_mode').val();
+
         //Ajax post
         $.ajax({
             type: 'POST',
-            data: {csrfmiddlewaretoken: csrftoken, pname: pname, rname: rname, max_players: max_players},
+            data: {
+                csrfmiddlewaretoken: csrftoken,
+                pname: pname,
+                rname: rname,
+                max_players: max_players,
+                bot_players: bot_players,
+                num_alliances: num_alliances,
+                game_mode: game_mode,
+                bot_mode: bot_mode,
+            },
             url: 'make_game/',
             success: function (json) {
                 //console.log(json);
