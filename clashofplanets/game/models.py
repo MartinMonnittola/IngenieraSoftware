@@ -443,7 +443,8 @@ class Defensive(Bot):
     def attack(self):
         planet = Planet.objects.get(bot = self)
         # Elegimos aleatoriamente el numero de misiles lanzados.
-        count_attack = numpy.random.binomial(planet.missiles_qty,(self.probability_attack)/51.0)
+        count_attack = numpy.random.binomial(planet.missiles_qty,
+                                             (self.probability_attack/51.0))
         planets_game = Planet.objects.filter(game=self.game).exclude(bot = self)
         planets_alive = planets_game.exclude(population_qty = 0)
         planets_rival = planets_alive.exclude(alliance = planet.alliance)
@@ -458,7 +459,6 @@ class Defensive(Bot):
                     planet_id = planets.count() - 1
                 planet.launch_missile(planets[abs(planet_id)])
                 planets[abs(planet_id)].save()
-                print planets[abs(planet_id)].name
 
     def change_distribution(self):
         # Obtenemos la cantidad de habitantes del planeta mas poblado.
