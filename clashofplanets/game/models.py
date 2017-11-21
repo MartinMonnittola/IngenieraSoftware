@@ -15,79 +15,39 @@ class Game(models.Model):
     Clase Game contiene informacion sobre las partidas en espera y en ejecucion.
     """
     # User creador de la partida.
-    user = models.ForeignKey(User,
-                             on_delete=models.CASCADE,
-                             verbose_name='Game user')
+    user = models.ForeignKey(User,on_delete=models.CASCADE, verbose_name='Game user')
     # Nombre de la partida.
-    game_name = models.CharField(max_length=20,
-                                 verbose_name='Game Name',
-                                 default='Default Name')
+    game_name = models.CharField(max_length=20, verbose_name='Game Name',default='Default Name')
     # Tiempo en el que se inicio la partida.
-    pub_date = models.DateTimeField(verbose_name='Date added',
-                                    default=timezone.now)
+    pub_date = models.DateTimeField(verbose_name='Date added',default=timezone.now)
     # Estado de la partida.
-    game_started = models.BooleanField(
-                                      default=0,
-                                      verbose_name='Game started (True/False)')
+    game_started = models.BooleanField(default=0, verbose_name='Game started (True/False)')
     # Juego finalizado
-    game_finished = models.BooleanField(
-                                      default=0,
-                                      verbose_name='Game Finished (True/False)')
+    game_finished = models.BooleanField(default=0, verbose_name='Game Finished (True/False)')
     # Numero de alianzas
-    num_alliances = models.IntegerField(default=1,
-                                      verbose_name='Number of Alliances',
-                                      blank=True,
-                                      validators=[MinValueValidator(0)])
+    num_alliances = models.IntegerField(default=1, verbose_name='Number of Alliances', blank=True, validators=[MinValueValidator(0)])
     # Numero maximo de jugadores.
-    max_players = models.IntegerField(default=0,
-                                      verbose_name='Game players limit',
-                                      blank=True,
-                                      validators=[MinValueValidator(2)])
+    max_players = models.IntegerField(default=0, verbose_name='Game players limit', blank=True, validators=[MinValueValidator(2)])
     # Numero de jugadores que se unieron a la partida.
-    connected_players = models.IntegerField(default=0,
-                                            verbose_name='Connected players',
-                                            validators=[MinValueValidator(0)])
-    # Numero de bots que se agregaron a la partida a la partida.
-    bot_def_num = models.IntegerField(default=0,
-                                      verbose_name='Amount of bot players (DEF)',
-                                      validators=[MinValueValidator(0)])
-
-    bot_ofc_num = models.IntegerField(default=0,
-                                      verbose_name='Amount of bot players (OFC)',
-                                      validators=[MinValueValidator(0)])
+    connected_players = models.IntegerField(default=0, verbose_name='Connected players', validators=[MinValueValidator(0)])
+    # Numero de bots defensivos que se agregaron a la partida a la partida.
+    bot_def_num = models.IntegerField(default=0, verbose_name='Amount of bot players (DEF)', validators=[MinValueValidator(0)])
+    # Numero de bots defensivos que se agregaron a la partida a la partida.
+    bot_ofc_num = models.IntegerField(default=0, verbose_name='Amount of bot players (OFC)', validators=[MinValueValidator(0)])
     # Tiempo de viaje del misil.
-    time_missile = models.IntegerField(default=10,
-                                       verbose_name='Missile Delay',
-                                       validators=[MinValueValidator(1)])
+    time_missile = models.IntegerField(default=10, verbose_name='Missile Delay', validators=[MinValueValidator(1)])
     # Poblacion inicial al comenzar la partida.
-    initial_population = models.IntegerField(default=1000,
-                                             verbose_name='Initial Population',
-                                             validators=[MinValueValidator(0)])
+    initial_population = models.IntegerField(default=1000, verbose_name='Initial Population', validators=[MinValueValidator(0)])
     # Procentaje de poblacion asignado al recurso poblacion.
-    const_population = models.IntegerField(
-                                  default=400,
-                                  verbose_name='Population Genration Constant',
-                                  validators=[MinValueValidator(1)])
+    const_population = models.IntegerField(default=400, verbose_name='Population Genration Constant', validators=[MinValueValidator(1)])
     # Procentaje de poblacion asignado al recurso escudo.
-    const_shield = models.IntegerField(
-                                     default=500,
-                                     verbose_name='Shield Generation Constant',
-                                     validators=[MinValueValidator(1)])
+    const_shield = models.IntegerField(default=500, verbose_name='Shield Generation Constant', validators=[MinValueValidator(1)])
     # Procentaje de poblacion asignado al recurso misil.
-    const_missile = models.IntegerField(
-                                    default=700,
-                                    verbose_name='Missile Generation Constant',
-                                    validators=[MinValueValidator(1)])
+    const_missile = models.IntegerField(default=700, verbose_name='Missile Generation Constant', validators=[MinValueValidator(1)])
     # DaÃ±o a la poblacion por misil.
-    hurt_to_population = models.IntegerField(
-                                  default=100,
-                                  verbose_name='Population damage per missile',
-                                  validators=[MinValueValidator(1)])
+    hurt_to_population = models.IntegerField(default=100, verbose_name='Population damage per missile', validators=[MinValueValidator(1)])
     # DaÃ±o a la escudo por misil.
-    hurt_to_shield = models.IntegerField(
-                                      default=10,
-                                      verbose_name='Shield damage per missile',
-                                      validators=[MinValueValidator(1)])
+    hurt_to_shield = models.IntegerField(default=10, verbose_name='Shield damage per missile', validators=[MinValueValidator(1)])
     FAST = 1
     SLOW = 2
     MODE_CHOICES = (
@@ -103,7 +63,6 @@ class Game(models.Model):
         'hurt_to_population': 500,
         'hurt_to_shield': 20
     }
-
     SLOW_CONSTANTS = {
         'time_missile': 10,
         'initial_population': 1000,
@@ -113,7 +72,6 @@ class Game(models.Model):
         'hurt_to_population': 100,
         'hurt_to_shield': 10
     }
-
     mode = models.CharField(
         max_length=1,
         choices=MODE_CHOICES,
@@ -243,15 +201,9 @@ class Alliance (models.Model):
     Clase Alliance: Agrupa los planetas en alianzas si las hay en partida bajo
     un nombre.
     """
-    name = models.CharField(max_length=30,
-                            default='Team',
-                            verbose_name='Alliance Name')
-    game = models.ForeignKey(Game,
-                             default=1,
-                             on_delete=models.CASCADE,
-                             verbose_name='Game Name')
-    num_players = models.IntegerField(default=0,
-                                      verbose_name='Players Quantity')
+    name = models.CharField(max_length=30, default='Team', verbose_name='Alliance Name')
+    game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE, verbose_name='Game Name')
+    num_players = models.IntegerField(default=0, verbose_name='Players Quantity')
     is_winner = models.BooleanField(default=False, verbose_name='Winner Of Game')
 
     def __str__(self):
@@ -293,23 +245,15 @@ class Bot(models.Model):
     """
     Clase abstracta que representa a los bot.
     """
-
     # Probabilidad de decidir atacar.
-    probability_attack = models.IntegerField(default=99,
-                                      help_text='probability of attack',
-                                      blank=False)
+    probability_attack = models.IntegerField(default=99, help_text='probability of attack', blank=False)
 
     # Probabilidad de decidir modificar los recursos.
-    probability_modify_resources = models.IntegerField(default=60,
-                                 help_text='probability of modifying resources',
-                                 blank=False)
+    probability_modify_resources = models.IntegerField(default=60, help_text='probability of modifying resources', blank=False)
     # Probabilidad de enviar poblacion a otro planeta.
-    probability_send_population = models.IntegerField(default=60,
-                                 help_text='probability of send population',
-                                 blank=False)
+    probability_send_population = models.IntegerField(default=60, help_text='probability of send population', blank=False)
     # Partida a la que pertenece el bot.
     game = models.ForeignKey(Game, default = 1, on_delete = models.CASCADE)
-
     # Nombre del bot.
     name = models.CharField(max_length=20, blank=False, verbose_name='Bot name')
 
@@ -356,32 +300,16 @@ class Planet(models.Model):
     player = models.ForeignKey(User, null = True, on_delete=models.CASCADE)
     bot = models.ForeignKey(Bot, null = True, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, default=1, on_delete=models.CASCADE)
-    alliance = models.ForeignKey(Alliance,
-    							 default = 1,
-    							 on_delete=models.CASCADE)
-    name = models.CharField(max_length=20,
-                            default='Default Name',
-                            verbose_name='Planet name')
+    alliance = models.ForeignKey(Alliance, default = 1, on_delete=models.CASCADE)
+    name = models.CharField(max_length=20, default='Default Name', verbose_name='Planet name')
     is_alive = models.BooleanField(default=True, verbose_name='Planet Alive')
     seed = models.BigIntegerField(default=0, verbose_name='Planet seed')
-    population_qty = models.IntegerField(default=5000,
-                                         verbose_name='Population Amout',
-                                         validators=[MinValueValidator(0)])
-    missiles_qty = models.IntegerField(default=0,
-                                       verbose_name='Missile Amount',
-                                       validators=[MinValueValidator(0)])
-    shield_perc = models.IntegerField(default=100,
-                                      verbose_name='Shield Amount',
-                                      validators=[MinValueValidator(0)])
-    population_distr = models.IntegerField(default=100,
-                                           verbose_name='Planet Population %',
-                                           validators=[MinValueValidator(0)])
-    shield_distr = models.IntegerField(default=0,
-                                       verbose_name='Planet Shield %',
-                                       validators=[MinValueValidator(0)])
-    missile_distr = models.IntegerField(default=0,
-                                        verbose_name='Planet Missile %',
-                                        validators=[MinValueValidator(0)])
+    population_qty = models.IntegerField(default=5000, verbose_name='Population Amout', validators=[MinValueValidator(0)])
+    missiles_qty = models.IntegerField(default=0, verbose_name='Missile Amount', validators=[MinValueValidator(0)])
+    shield_perc = models.IntegerField(default=100, verbose_name='Shield Amount', validators=[MinValueValidator(0)])
+    population_distr = models.IntegerField(default=100, verbose_name='Planet Population %', validators=[MinValueValidator(0)])
+    shield_distr = models.IntegerField(default=0, verbose_name='Planet Shield %', validators=[MinValueValidator(0)])
+    missile_distr = models.IntegerField(default=0, verbose_name='Planet Missile %', validators=[MinValueValidator(0)])
 
     def __str__(self):
         return self.name
@@ -486,10 +414,8 @@ class Planet(models.Model):
         """
         missiles = Missile.objects.all().filter(owner=self)
         times = {}
-
         for missile in missiles:
             times[missile.target.name] = missile.time_to_target()
-
         return times
 
     def send_population(self, target_planet):
@@ -507,7 +433,6 @@ class Planet(models.Model):
             send_pop_message = 1
         else:
             send_pop_message = 0
-
         return send_pop_message
 
 
@@ -518,19 +443,13 @@ class Defensive(Bot):
     def attack(self):
         planet = Planet.objects.get(bot = self)
         # Elegimos aleatoriamente el numero de misiles lanzados.
-        print planet.missiles_qty
-        print numpy.random.binomial(planet.missiles_qty,(self.probability_attack)/31)
-        count_attack = numpy.random.binomial(planet.missiles_qty,(self.probability_attack)/31)
-        print "attack", count_attack
-
+        count_attack = numpy.random.binomial(planet.missiles_qty,(self.probability_attack)/51.0)
         planets_game = Planet.objects.filter(game=self.game).exclude(bot = self)
         planets_alive = planets_game.exclude(population_qty = 0)
         planets_rival = planets_alive.exclude(alliance = planet.alliance)
-
         # Ordenamos los planetas a atacar segun su poblacion y escudo en orden
         # creciente.
         planets = planets_rival.order_by('population_qty', 'shield_perc')
-
         # Seleccionamos aleatoriamente los planetas a atacar.
         planets_attack = numpy.random.poisson(1.5, count_attack)
         if not (planets is None):
@@ -545,11 +464,9 @@ class Defensive(Bot):
         # Obtenemos la cantidad de habitantes del planeta mas poblado.
         planets = Planet.objects.filter(game=self.game).exclude(bot = self)
         planet_max = planets.order_by('-population_qty').first()
-
         # Calculamos la cantidad maxima de poblacion que se tomara como
         # referencia.
         max_popult = planet_max.population_qty + planet_max.population_qty * 0.6
-
         # Calculamos la nueva distribucion de cada atributo.
         planet = Planet.objects.get(bot = self)
         if planet.population_qty < max_popult :
@@ -571,7 +488,6 @@ class Defensive(Bot):
         if shield_distr < 0:
             shield_distr = 0
         missile_distr = 100 - (shield_distr + population_distr)
-
         planet.population_distr = population_distr
         planet.shield_distr = shield_distr
         planet.missile_distr = missile_distr
@@ -580,24 +496,17 @@ class Defensive(Bot):
 
     def send_population(self):
         planet = Planet.objects.get(bot = self)
-
         # Obtenemos la cantidad de habitantes del planeta mas poblado.
         planets_popult = Planet.objects.filter(game=self.game)
         planet_max = planets_popult.order_by('-population_qty').first()
-
         # Calculamos la cantidad maxima de poblacion que se tomara como
         # referencia para estimar la pobabiidad de enviar pobladores.
         max_popult = planet_max.population_qty
-
-        probability_send_population = ((planet.population_qty / max_popult) *
-                                       self.probability_send_population)
-
+        probability_send_population = ((planet.population_qty / max_popult) * self.probability_send_population)
         planets_game = Planet.objects.filter(game=self.game).exclude(bot = self)
         planets_friends = planets_game.filter(alliance = planet.alliance)
-        planets = planets_friends.exclude(population_qty = 0).order_by(
-                                                               'population_qty')
-        count_send = numpy.random.binomial(planets.count(),
-                                           (probability_send_population/ 999.0))
+        planets = planets_friends.exclude(population_qty = 0).order_by('population_qty')
+        count_send = numpy.random.binomial(planets.count(),(probability_send_population/ 999.0))
         planets_sends = numpy.random.poisson(1.5, count_send)
         if not (planets is None):
             for planet_id in planets_sends:

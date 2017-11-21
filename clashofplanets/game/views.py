@@ -161,15 +161,15 @@ def game_closed(request):
 
 # game room inside view
 @login_required
-def game_room(request, game_room_num):
+def game_room(request, game_num):
     """
     Room view after join
     :param request: Request Object
-    :param game_room_num: Number of game
+    :param game_num: Number of game
     :return: HTTPResponse Object
     """
     # Game ID =/= Game room num, find the game that has the same room num
-    g = Game.objects.filter(id=game_room_num)
+    g = Game.objects.filter(id=game_num)
     # Using g, we can find the players in the game properly since game compares
     #  id's
     planets = Planet.objects.filter(game=g)
@@ -311,13 +311,12 @@ def make_game(request):
     return JsonResponse(data, safe=False)
 
 # send a list of players as a json to js file
-def send_planets(request):
+def send_planets(request, game_num):
     """
     Send list of planets
     :return: JSON Response object
     """
     if request.method == 'GET' and request.is_ajax():
-        game_num = request.GET.get('num')
         g = Game.objects.get(id=game_num)
         planets = Planet.objects.filter(game=game_num)  # players in game
         plist = []
@@ -390,12 +389,11 @@ def send_games(request):
 
 
 # send the game room state of current as a json to js file
-def send_game_state(request):
+def send_game_state(request, game_num):
     """
     Send game room state
     """
     if request.method == 'GET' and request.is_ajax():
-        game_num = request.GET.get('num')
         room = Game.objects.get(pk=game_num)  # players in game
         current_room_state = room.game_started
         players_in_room = room.connected_players
@@ -430,7 +428,7 @@ def start_game(request, game_num):
 
 
 # Allow players to change their resources generation rate
-def change_distribution(request):
+def change_distribution(request, game_num):
     """
     Change distribution view
     """
@@ -451,7 +449,7 @@ def change_distribution(request):
 
 
 # Allow players to attack their enemies
-def send_attack(request):
+def send_attack(request, game_num):
     """
     View to attack enemy planets
     """
@@ -486,7 +484,7 @@ def send_attack(request):
 
 
 # Allow players to attack their enemies
-def send_pop(request):
+def send_pop(request, game_num):
     """
     View to send pop to ally planets
     """
@@ -513,7 +511,7 @@ def send_pop(request):
 
 
 # Show destination of active missiles
-def missiles_status(request):
+def missiles_status(request, game_num):
     """
     :param request:
     :return: Json Response with destination of active missiles
