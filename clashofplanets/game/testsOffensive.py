@@ -9,7 +9,8 @@ class OffensiveModelTestsCase(TestCase):
                     email="dvdfv@gmail.com", password="Aa12345678")
         user.save()
 
-        game = Game.create(name = "GuerraPlanetaria", max_players = 20,
+        game = Game.create(name = "GuerraPlanetaria", max_players = 20, bot_def = 2,
+                           bot_ofc = 4,mode = 1,
                            owner = user, num_alliances = 2)
         game.save()
 
@@ -24,7 +25,7 @@ class OffensiveModelTestsCase(TestCase):
                         )
         bot.save()
 
-        planet = Planet.create(player = None, game = game, name = "Tierra",
+        planet = Planet.create(player = None, bot = bot, game = game, name = "Tierra",
                                seed =1, alliance = allianceb)
         planet.bot = bot
         planet.save()
