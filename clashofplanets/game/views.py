@@ -454,16 +454,15 @@ def send_attack(request, game_num):
     """
     if request.method == 'POST' and request.is_ajax():
         # get game room data
-        planet_gameroom = int(request.POST.get('game_num'))
-        game = Game.objects.get(pk=planet_gameroom)
+        game = Game.objects.get(pk=game_num)
         # get planet target data
         planet_target_id = int(request.POST.get('planet_id'))
         planet_target = Planet.objects.get(pk=planet_target_id,
-                                           game=planet_gameroom)
+                                           game=game_num)
         # get planet attacker data
         planet_attacker_owner = request.user
         planet_attacker = Planet.objects.get(player=planet_attacker_owner,
-                                             game=planet_gameroom)
+                                             game=game_num)
         # attack data
         if planet_attacker.missiles_qty > 0: # planet has missiles to launch
             m = Missile.create(owner=planet_attacker,target=planet_target)
@@ -489,16 +488,15 @@ def send_pop(request, game_num):
     """
     if request.method == 'POST' and request.is_ajax():
         # get game room data
-        planet_gameroom = int(request.POST.get('game_num'))
         game = Game.objects.get(pk=planet_gameroom)
         # get planet target data
         planet_target_id = int(request.POST.get('planet_id'))
         planet_target = Planet.objects.get(pk=planet_target_id,
-                                           game=planet_gameroom)
+                                           game=game_num)
         # get planet pop data
         planet_sending_owner = request.user
         planet_sending = Planet.objects.get(player=planet_sending_owner,
-                                             game=planet_gameroom)
+                                             game=game_num)
         # planet data
         send_pop_message = planet_sending.send_population(planet_target)
         send_pop_dict = {'origin_id': planet_sending.id,
@@ -516,12 +514,9 @@ def missiles_status(request, game_num):
     :return: Json Response with destination of active missiles
     """
     if request.method == 'POST' and request.is_ajax():
-        game_id = int(request.POST.get("game_id"))
-        if game_id:
-            planet = Planet.objects.get(game_id=game_id,
-                                        player_id=request.user.id)
-            missiles = Missile.objects.filter(owner__exact=planet,
-                                              is_active__exact=True)
+        if game_num:
+            planet = Planet.objects.get(game_id=game_num, player_id=request.user.id)
+            missiles = Missile.objects.filter(owner__exact=planet, is_active__exact=True)
         else:
             data = {'error': 'game_id missing'}
             return JsonResponse(data, safe=False)
