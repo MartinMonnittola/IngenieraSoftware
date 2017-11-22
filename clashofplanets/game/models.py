@@ -57,7 +57,7 @@ class Game(models.Model):
     FAST_CONSTANTS = {
         'time_missile': 1,
         'initial_population': 1000,
-        'const_missile': 50000,
+        'const_missile': 3000,
         'const_population': 50,
         'const_shield': 1500,
         'hurt_to_population': 500,
@@ -522,7 +522,7 @@ class Offensive(Bot):
 
     def attack(self):
         planet = Planet.objects.get(bot = self)
-        planets=Planet.objects.filter(game=self.game).exclude(pk=planet.id,population_qty=0)
+        planets=Planet.objects.filter(game=self.game, is_alive=True).exclude(bot=self)
         psorted=planets.order_by('shield_perc','population_qty')
 
         planets_to_attack=psorted[:planet.missiles_qty]
@@ -532,8 +532,15 @@ class Offensive(Bot):
 
     def change_distribution(self):
         planet = Planet.objects.get(bot = self)
-        if planet.population_qty < 50:
-            planet.assign_perc_rate(40, 10, 50)
+        game_in = Game.objects.get(pk=planet.game.id)
+        game_cm = game_in.const_missile
+        game_cp = game_in.const_population
+        if planet.population_qty < game_cm:
+            planet.assign_perc_rate(100, 0, 0)
+        elif planet.population_qty > game_cm and planet.missiles_qty == 0:
+            planet.assign_perc_rate(0, 0, 100)
+        elif planet.shield_perc <= 0:
+            planet.assign_perc_rate(20, 80, 0)
         else:
             planet.assign_perc_rate(10, 10, 80)
 
