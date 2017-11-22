@@ -41,7 +41,11 @@
                             <tr>
                                 <td>{{p.planet.id}}</td>
                                 <td>{{p.planet.name}}</td>
-                                <td>{{p.planet.player}}</td>
+                                {% if p.planet.bot == None %}
+                                    <td>{{p.planet.player}}</td>
+                                {% else %}
+                                    <td>{{p.planet.bot}}</td>
+                                {% endif %}
                                 <td>{{p.planet.alliance}}</td>
                                 <td>
                                     {% if p.planet.is_alive %}
