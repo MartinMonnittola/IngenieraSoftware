@@ -1,2 +1,4 @@
 Django==1.11.6
+haikunator==2.1.0
 pytz==2017.2
+numpy

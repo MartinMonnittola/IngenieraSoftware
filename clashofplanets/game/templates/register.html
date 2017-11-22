@@ -1,24 +1,27 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-    <h2>Sign up</h2>
-    <hr>
-    <form method="post">
-        {% csrf_token %}
-        {% for field in form %}
-        <p>
-            {{ field.label_tag }}
-            <br>
-            {{ field }}
-            {% if field.help_text %}
-                <small style="color: grey">{{ field.help_text }}</small>
-            {% endif %}
-            {% for error in field.errors %}
-                <p style="color: red">{{ error }}</p>
-            {% endfor %}
-        </p>
-        {% endfor %}
-        <hr>
-        <button type="submit" class="metal" >Sign up</button>
-    </form>
+    <div class="row">
+        <div class="col metal-effect2">
+            <h2 class="top15">Sign up</h2>
+            <hr class="style1">
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                <p>
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="help-text">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p style="color: red">{{ error }}</p>
+                    {% endfor %}
+                </p>
+                {% endfor %}
+                <hr class="style1">
+                <button type="submit" class="metal bot15">Sign up</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

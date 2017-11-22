@@ -25,7 +25,7 @@ main() {
             h )  usage
                  exit 0
                  ;;
-            \? ) usage 
+            \? ) usage
                  exit 1
                  ;;
         esac
@@ -37,12 +37,13 @@ main() {
         trap ctrl_c INT
 
         # Execute the game
-        /usr/bin/python manage.py runserver $HOST &
+        python manage.py runserver $HOST &
 
         # Wait for UPDATE_TIME seconds and run the updates
         while true
         do
             sleep $UPDATE_TIME
+            python manage.py missiles
             python manage.py generate_resources
         done
     else

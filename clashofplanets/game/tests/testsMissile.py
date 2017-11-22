@@ -23,18 +23,24 @@ class MissileModelTestCase(TestCase):
                        email="arch@enemy.com",
                        password="oponent123")
         oponent.save()
-        
-        game = Game.create(user, "TestGame", 4)
+
+        game = Game.create(user, "TestGame", 4, 2, 1, 0, 0)
         game.save()
-        
-        origin = Planet.create(user, game, "TestLand", 1234)
+
+        team1 = Alliance.create("Team 1", game)
+        team1.save()
+
+        team2 = Alliance.create("Team 2", game)
+        team2.save()
+
+        origin = Planet.create(user, None, game, "TestLand", 1234, team1)
         origin.save()
-        target = Planet.create(oponent, game, "GonnaLose", 4321)
+        target = Planet.create(oponent, None, game, "GonnaLose", 4321, team2)
         target.save()
-        
+
         missile = Missile.create(origin, target)
         missile.save()
-    
+
     def test_missile_has_target(self):
         origin = Planet.objects.get(pk=1)
         target = Planet.objects.get(pk=2)
@@ -51,16 +57,18 @@ class MissileModelTestCase(TestCase):
         missile = Missile.objects.get(pk=1)
         missile.deal_damage()
         self.assertLess(Planet.objects.get(pk=2).shield_perc, 100)
-    
+
     def test_damage_dealt_on_pop(self):
         target = Planet.objects.get(pk=2)
         target.decrease_shield(100)
         target.save()
         missile = Missile.objects.get(pk=1)
         missile.deal_damage()
-        self.assertLess(Planet.objects.get(pk=2).population_qty, 5000)
+        planet = Planet.objects.get(pk=2)
+        self.assertLess(planet.population_qty,
+                        planet.game.initial_population)
 
     def test_time_to_target_returns_right_value(self):
         missile = Missile.objects.get(pk=1)
         time = missile.time_to_target()
-        self.assertLess(timezone.timedelta(seconds=missile.owner.game.time_missile), time)
+        self.assertLess(time, timezone.timedelta(seconds=missile.owner.game.time_missile))

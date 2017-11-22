@@ -4,29 +4,26 @@
 
 {% block main_content %}
 
-<script src="{% static 'js/ingame.js' %}?v=00003" type="text/javascript"/></script>
-<script src="{% static 'js/ion.rangeSlider.js' %}"/></script>
+<script src="{% static 'js/ingame.js' %}?v=00003" type="text/javascript"></script>
 
-<div class="container">
     <div class="row text-center">
         <div class="col">
             <h1>
-                Welcome {% if request.user.is_authenticated %}<span class="text-primary" >{{request.user.username}}</span> to {% endif %}
-                Game Room ID: <span id="gamenum">{{game}}</span>
+                Game Name: <span class="neon-effect">{{game.game_name}}</span> | ID: <span class="neon-effect" id="gamenum">{{game.id}}</span>
             </h1>
         </div>
     </div>
-    <div class="row text-center top30">
-        <div class="col table-responsive">
+    <div class="row top30">
+        <div class="col col-game table-responsive">
             <table class="table metal-effect2">
                 <thead>
                     <tr>
                         <th class="text-center">Planet ID</th>
                         <th class="text-center">Planet Name</th>
-                        <th class="text-center">Planet Owner</th>
+                        <th class="text-center">Alliance Name</th>
                         <th class="text-center">Planet Pop</th>
                         <th class="text-center">Planet Shield</th>
-                        <th class="text-center">Attack Order</th>
+                        <th class="text-center">Planet Orders</th>
                     </tr>
                 </thead>
                 <tbody class="text-center">
@@ -34,16 +31,30 @@
                     <tr id="planet-{{p.id}}" class="planet-row">
                         <td class="tb_planet_id">{{p.id}}</td>
                         <td class="tb_planet_name">{{p.name}}</td>
-                        <td class="tb_planet_owner">{{p.player}}</td>
+                        <td class="tb_planet_alliance">{{p.alliance}}</td>
                         <td class="tb_planet_pop"></td>
                         <td class="tb_planet_shield"></td>
                         <td class="tb_attack_order">
-                            {% if p.player == request.user %}
+                            {% if p == your_planet %}
                                 YOUR PLANET!!!
+                            {% elif p.alliance == your_planet.alliance %}
+                                {% if game.num_alliances >= 2 %}
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{p.id}}" name="name_of_var_1">
+                                        <input class="send-pop-planet metal" type="submit" value="send pop"/>
+                                    </form>
+                                {% else %}
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{p.id}}" name="name_of_var_2">
+                                        <input class="attack-planet metal" type="submit" value="Attack"/>
+                                    </form>
+                                {% endif %}
                             {% else %}
                                 <form action="" method="post">
                                     {% csrf_token %}
-                                    <input type="hidden" value="{{p.id}}" name="name_of_var">
+                                    <input type="hidden" value="{{p.id}}" name="name_of_var_2">
                                     <input class="attack-planet metal" type="submit" value="Attack"/>
                                 </form>
                             {% endif %}
@@ -65,7 +76,9 @@
 
             <div class="row align-items-center">
                 <div class="col">
-                    <p> Population: <span id="mypopAvailable"></span> | Missiles: <span id="mymissilesAvailable"></span></p>
+                    Population: <span id="mypopAvailable" class="population"></span> | Missiles: <span id="mymissilesAvailable" class="missiles"></span>
+                    | <span style="padding: 5px" id="missilesStatus" class="button missilesStatus">Missiles Status</span>
+                    <div id="attackError"></div>
                 </div>
             </div>
 
@@ -74,16 +87,18 @@
                     <p class="planet-var-title">POPULATION</p>
                     <img src="{% static "img/pop_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate population"  title="Amount Of population destinated to generate population" />
                     <div>
-                        <output id="population_range" class="inp js-from">100</output>%
+                        <output id="population_range" class="inp js-from">0</output>%
                     </div>
+                    <div id="pop_per_second"></div>
                 </div>
 
                 <div class="col">
                     <p class="planet-var-title">SHIELD</p>
                     <img src="{% static "img/shield_var.png" %}" class="img-fluid planet-var" alt="Amount Of population destinated to generate shield" title="Amount Of population destinated to generate shield" />
                     <div>
-                        <output id="shield_range" class="inp js-middle">0</output>%
+                        <output id="shield_range" class="inp js-middle">100</output>%
                     </div>
+                    <div id="shield_per_second"></div>
                 </div>
 
                 <div class="col">
@@ -93,6 +108,7 @@
                         <span class="highlight"></span>
                         <output id="missiles_range" class="inp js-to">0</output>%
                     </div>
+                    <div id="missiles_per_second"></div>
                 </div>
 
             </div>
@@ -104,12 +120,15 @@
             <hr class="style1">
             </form>
         </div>
-
-        <div class="col-md-5 offset-md-1 metal-effect2">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-5 metal-effect2">
             <h2 class="custom-h2">Battle Log</h2>
             <hr class="style1">
-            <div id="console-log" style="overflow: auto; height: 260px; background-color: #000;"></div>
+            <div id="console-log"></div>
         </div>
+
+
     </div>
 
     <div class="row text-center top30">
@@ -120,7 +139,5 @@
             </form>
         </div>
     </div>
-</div>
-
 
 {% endblock %}

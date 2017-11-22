@@ -1,41 +1,84 @@
-//LOBBY JS
-//For getting CSRF token
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-var scrollFunction = function (idstring) {
-    $('html, body').animate({
-        scrollTop: $(idstring).offset().top
-    }, 400);
-};
-
 function fillOutGame(game_num) {
     $('#JoinError').empty();
-    $('#room_num').val(game_num);
-    scrollFunction('.cardb');
+    $('#game_num').val(game_num);
     $('#planet_name').focus();
 }
 
+var gaps = [1];
+function transform(num) {
+    var pos = gaps.indexOf(num);
+    // skip value from gaps array
+    if (pos !== -1) {
+        return num - 1;
+    }
+    return num;
+}
+
+function max_Players_slider() {
+    var $range = $(".max_playersC-slider");
+    $range.ionRangeSlider({
+        type: 'single',
+        min: 2,
+        max: 50,
+        from: 2,
+    });
+    var slider = $(".max_playersC-slider").data("ionRangeSlider");
+    $(".range-slider-players").mouseleave(function(){
+      slider.dragging = false;
+    });
+}
+
+function num_Alliances_slider() {
+    var $range = $(".num_alliancesC-slider");
+    $range.ionRangeSlider({
+        type: 'single',
+        min: 1,
+        max: 10,
+        from: 1,
+        prettify: function(num) {
+            return transform(num);
+        },
+    });
+    var slider = $(".num_alliancesC-slider").data("ionRangeSlider");
+    $(".range-slider-alliances").mouseleave(function(){
+      slider.dragging = false;
+    });
+}
+
+function bot_def_slider() {
+    var $range = $(".bot_ofcC-slider");
+    $range.ionRangeSlider({
+        type: 'single',
+        min: 0,
+        max: 10,
+        from: 0,
+    });
+    var slider = $(".bot_ofcC-slider").data("ionRangeSlider");
+    $(".range-slider-bots-ofc").mouseleave(function(){
+      slider.dragging = false;
+    });
+}
+
+
+function bot_ofc_slider() {
+    var $range = $(".bot_defC-slider");
+    $range.ionRangeSlider({
+        type: 'single',
+        min: 0,
+        max: 10,
+        from: 0,
+    });
+    var slider = $(".bot_defC-slider").data("ionRangeSlider");
+    $(".range-slider-bots-def").mouseleave(function(){
+      slider.dragging = false;
+    });
+}
+
+
 //List available games
 function listGames() {
-    var csrftoken2 = getCookie('csrftoken');
     $.ajax({
-        type: 'POST',
-        data: {csrfmiddlewaretoken: csrftoken2},
-        ifModified: true,
+        type: 'GET',
         url: "get_games/",
         success: function (json) {
             if (status != "notmodified") {
@@ -49,13 +92,17 @@ function listGames() {
                         var num = glist[i];
                         buildListElementItem = $(
                             '<tr>'
-                            + '<td>' + glist[i].id + '</td>'
+                            + '<td class=\"game-'+glist[i].id+' neon-effect\">' + glist[i].id + '</td>'
                             + '<td>' + glist[i].name + '</td>'
                             + '<td>' + glist[i].owner + '</td>'
+                            + '<td>' + glist[i].num_alliances + '</td>'
                             + '<td>' + glist[i].connected_players + '</td>'
                             + '<td>' + glist[i].max_players + '</td>'
                             + '</tr>');
                         $("#openGames").append(buildListElementItem)
+                        $(".game-"+glist[i].id).bind('click', function (){
+                            fillOutGame($(this).text());
+                        });
                     }
                 }
                 else {
@@ -74,7 +121,10 @@ function listGames() {
 //For doing AJAX post
 $(document).ready(function () {
     listGames();
-    //Create game is clicked
+    max_Players_slider();
+    num_Alliances_slider();
+    bot_def_slider();
+    bot_ofc_slider();
     $("#create").click(function (e) {
         console.log("creando");
         $("#join").prop('disabled', true);
@@ -83,14 +133,33 @@ $(document).ready(function () {
         var pname = $('#planet_nameC').val();
         var rname = $('#game_nameC').val();
         var max_players = $('#max_playersC').val();
+        var bot_def_num = $('#bot_defC').val();
+        var bot_ofc_num = $('#bot_ofcC').val();
+        var num_alliances = $('#num_alliancesC').val();
+        var game_mode = $('#game_modesC').val();
+
         //Ajax post
         $.ajax({
             type: 'POST',
-            data: {csrfmiddlewaretoken: csrftoken, pname: pname, rname: rname, max_players: max_players},
+            data: {
+                csrfmiddlewaretoken: csrftoken,
+                pname: pname,
+                rname: rname,
+                max_players: max_players,
+                bot_def_num: bot_def_num,
+                bot_ofc_num: bot_ofc_num,
+                num_alliances: num_alliances,
+                game_mode: game_mode,
+            },
             url: 'make_game/',
             success: function (json) {
                 //console.log(json);
-                window.location.href = json.gameNumber;
+                if (parseInt(json.gameNumber) === -3) {
+                    $('#createError').append(json.message);
+                }
+                else {
+                    window.location.href = json.gameNumber;
+                }
             },
             error: function (xhr, errmsg, err) {
                 console.log(xhr.status + ": " + xhr.responseText);

@@ -4,38 +4,38 @@
 
 {% block main_content %}
 
-<div class="container">
+    <script src="{% static "/js/main.js" %}" type="text/javascript"></script>
+
     <div class="row">
         <div class="col-lg-12 col-md-12 text-center">
             <h2 class="custom-h2">List of Open Game Rooms</h2>
         </div>
     </div>
-</div>
-<br>
+    <br>
 
-<div class="container">
-    <div class="row" id="games">
-        <div class="col table-responsive text-center">
+    <div class="row">
+        <div class="col table-responsive">
             <table class="table metal-effect2">
                 <thead>
                     <tr>
                         <th class="text-center">Game ID</th>
                         <th class="text-center">Game Room Name</th>
                         <th class="text-center">Game Room Owner</th>
+                        <th class="text-center">Number Of Alliances</th>
                         <th class="text-center">Players Connected</th>
                         <th class="text-center">Max Players Allowed</th>
                     </tr>
                 </thead>
                 <tbody id="openGames" class="openGamesC text-center">
-
                 {% if latest_game_list %}
                     {% for latest_game in latest_game_list %}
                         <tr>
-                            <td class="text-center">{{ latest_game.id}}</td>
-                            <td class="text-center">{{ latest_game.game_name}}</td>
-                            <td class="text-center">{{ latest_game.user}}</td>
-                            <td class="text-center">{{ latest_game.connected_players}}</td>
-                            <td class="text-center">{{ latest_game.max_players}}</td>
+                            <td class="text-center neon-effect">{{latest_game.id}}</td>
+                            <td class="text-center">{{latest_game.game_name}}</td>
+                            <td class="text-center">{{latest_game.user}}</td>
+                            <td class="text-center">{{latest_game.num_alliances}}</td>
+                            <td class="text-center">{{latest_game.connected_players}}</td>
+                            <td class="text-center">{{latest_game.max_players}}</td>
                         </tr>
                    {% endfor %}
                 {% else %}
@@ -93,27 +93,37 @@
                     </div>
                     {% endfor %}
                     <hr class="style1">
-                    <input type="submit" value="join game" id="join" class="metal" >
+                    <input type="submit" value="join game" id="join" class="metal">
                 </form>
-                <p id="JoinError" style="color: #ef3245"></p>
+                <div id="JoinError"></div>
             </div>
         </div>
         <div class="col-md-6 text-center">
             <div class="cardr">
                 <h2 class="custom-h2">Create Game</h2>
                 <hr class="style1">
-                <form method="post" onsubmit="myButton.disabled=true; return true;">
+                <form method="post">
                     {% csrf_token %}
                     {% for field in game_form %}
                         <div class="row top30">
                             <div class="col">
                             {{ field.label_tag }}
                             {% if field == game_form.max_players %}
-                            <div id="slider">
-                                <span class="highlight"></span>
-                                <output id="rangevalue">2</output>
-                            </div>
-                            {{ field }}
+                                <div class="range-slider-players">
+                                 {{field}}
+                                </div>
+                            {% elif field == game_form.num_alliances %}
+                                <div class="range-slider-alliances">
+                                 {{field}}
+                                </div>
+                            {% elif field == game_form.bot_def_num %}
+                                <div class="range-slider-bots-def">
+                                 {{field}}
+                                </div>
+                            {% elif field == game_form.bot_ofc_num %}
+                                <div class="range-slider-bots-ofc">
+                                 {{field}}
+                                </div>
                             {% else %}
                                 {{ field }}
                             {% endif %}
@@ -131,11 +141,10 @@
                     <hr class="style1">
                     <input type="submit" class="metal" value="create game" id="create">
                 </form>
+                <div id="createError"></div>
             </div>
         </div>
     </div>
-</div>
 
-        <script src="{% static "/js/main.js" %}" type="text/javascript"></script>
 
 {% endblock %}
