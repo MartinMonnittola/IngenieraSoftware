@@ -47,7 +47,6 @@ class Command(BaseCommand):
                 bots_def = Defensive.objects.filter(game = g)
                 for bot in bots_def:
                     planet = Planet.objects.get(bot = bot)
-                    print planet, g
                     if planet.population_qty > 0:
                         bot.attack()
                         #print "Estamos cambiando la distribucion."
