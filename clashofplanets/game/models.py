@@ -522,9 +522,12 @@ class Offensive(Bot):
 
     def attack(self):
         planet = Planet.objects.get(bot = self)
-        planets=Planet.objects.filter(game=self.game, is_alive=True).exclude(bot=self)
+        game_in = Game.objects.get(pk=planet.game.id)
+        if game_in.num_alliances < 2:
+            planets=Planet.objects.filter(game=self.game, is_alive=True).exclude(bot=self)
+        else:
+            planets=Planet.objects.filter(game=self.game, is_alive=True, alliance=planet.alliance).exclude(bot=self)
         psorted=planets.order_by('shield_perc','population_qty')
-
         planets_to_attack=psorted[:planet.missiles_qty]
         if len(planets_to_attack) > 0:
             for p in planets_to_attack:
@@ -535,17 +538,27 @@ class Offensive(Bot):
         game_in = Game.objects.get(pk=planet.game.id)
         game_cm = game_in.const_missile
         game_cp = game_in.const_population
-        if planet.population_qty < game_cm:
+        if planet.population_qty < game_cm and planet.shield_perc > 50:
             planet.assign_perc_rate(100, 0, 0)
         elif planet.population_qty > game_cm and planet.missiles_qty == 0:
-            planet.assign_perc_rate(0, 0, 100)
-        elif planet.shield_perc <= 0:
-            planet.assign_perc_rate(20, 80, 0)
+            planet.assign_perc_rate(10, 0, 90)
+        elif planet.shield_perc <= 50:
+            planet.assign_perc_rate(20, 70, 10)
         else:
-            planet.assign_perc_rate(10, 10, 80)
+            planet.assign_perc_rate(10, 10, 70)
 
     def send_population(self):
-        pass
+        planet = Planet.objects.get(bot = self)
+        planets=Planet.objects.filter(game=self.game, is_alive=True, alliance=planet.alliance).exclude(pk=planet.id)
+        psorted=planets.order_by('shield_perc','population_qty')
+        game_in = Game.objects.get(pk=planet.game.id)
+        game_cm = game_in.const_missile
+        game_cp = game_in.const_population
+        planets_to_send=psorted[:planet.population_qty]
+        if len(planets_to_send) > 0:
+            for p in planets_to_send:
+                if (planet.population_qty > (game_cm+100) and (p.population_qty < game_cp/2)):
+                    planet.send_population(p)
 
 
 class Missile (models.Model):
