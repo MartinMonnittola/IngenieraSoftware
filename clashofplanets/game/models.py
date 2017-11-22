@@ -57,8 +57,8 @@ class Game(models.Model):
     FAST_CONSTANTS = {
         'time_missile': 1,
         'initial_population': 1000,
-        'const_missile': 3000,
-        'const_population': 50,
+        'const_missile': 900,
+        'const_population': 25,
         'const_shield': 1500,
         'hurt_to_population': 500,
         'hurt_to_shield': 20
