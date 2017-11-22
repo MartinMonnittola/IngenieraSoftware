@@ -32,3 +32,6 @@ urlpatterns = [
     url(r'^game_rooms/(?P<game_num>[0-9]+)/game/missiles_status/$', missiles_status, name='missiles_status'),
     url(r'^game_rooms/(?P<game_num>[0-9]+)/game/stats/$', game_status, name='game_status')
 ]
+
+handler404 = error_404
+handler500 = error_500

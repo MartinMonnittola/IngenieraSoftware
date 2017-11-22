@@ -235,13 +235,9 @@ function sendPopPlanet() {
 function missilesStatus(){
     $('#missilesStatus').on("click", function (event) {
         event.preventDefault();
-        var csrftoken = getCookie('csrftoken');
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "missiles_status/",
-            data: {
-                csrfmiddlewaretoken: csrftoken,
-            },
             success: function (data) {
                 if("error" in data){
                     battleLog(data['error']);

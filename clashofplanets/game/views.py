@@ -488,7 +488,7 @@ def send_pop(request, game_num):
     """
     if request.method == 'POST' and request.is_ajax():
         # get game room data
-        game = Game.objects.get(pk=planet_gameroom)
+        game = Game.objects.get(pk=game_num)
         # get planet target data
         planet_target_id = int(request.POST.get('planet_id'))
         planet_target = Planet.objects.get(pk=planet_target_id,
@@ -513,7 +513,7 @@ def missiles_status(request, game_num):
     :param request:
     :return: Json Response with destination of active missiles
     """
-    if request.method == 'POST' and request.is_ajax():
+    if request.method == 'GET' and request.is_ajax():
         if game_num:
             planet = Planet.objects.get(game_id=game_num, player_id=request.user.id)
             missiles = Missile.objects.filter(owner__exact=planet, is_active__exact=True)
@@ -532,3 +532,11 @@ def missiles_status(request, game_num):
         data = {'error': 'bad_request'}
 
     return JsonResponse(data, safe=False)
+
+def error_404(request):
+    data = {}
+    return render(request,'error_404.html', data)
+
+def error_500(request):
+    data = {}
+    return render(request,'error_500.html', data)
