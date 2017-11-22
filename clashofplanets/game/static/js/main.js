@@ -155,6 +155,7 @@ $(document).ready(function () {
             success: function (json) {
                 //console.log(json);
                 if (parseInt(json.gameNumber) === -3) {
+                    $('#createError').empty();
                     $('#createError').append(json.message);
                 }
                 else {
