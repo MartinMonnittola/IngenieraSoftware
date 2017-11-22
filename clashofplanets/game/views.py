@@ -511,12 +511,15 @@ def send_pop(request, game_num):
 def missiles_status(request, game_num):
     """
     :param request:
+    :param game_num: game actually playing
     :return: Json Response with destination of active missiles
     """
     if request.method == 'GET' and request.is_ajax():
         if game_num:
-            planet = Planet.objects.get(game_id=game_num, player_id=request.user.id)
-            missiles = Missile.objects.filter(owner__exact=planet, is_active__exact=True)
+            planet = Planet.objects.get(game_id=game_num,
+                                        player_id=request.user.id)
+            missiles = Missile.objects.filter(owner__exact=planet,
+                                              is_active__exact=True)
         else:
             data = {'error': 'game_id missing'}
             return JsonResponse(data, safe=False)
@@ -533,9 +536,11 @@ def missiles_status(request, game_num):
 
     return JsonResponse(data, safe=False)
 
+
 def error_404(request):
     data = {}
     return render(request,'error_404.html', data)
+
 
 def error_500(request):
     data = {}

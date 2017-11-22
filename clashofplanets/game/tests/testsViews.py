@@ -305,7 +305,7 @@ class InGameViewsTest(TestCase):
         data = {
             'game_id': 1
         }
-        response = self.client.post(
+        response = self.client.get(
             '/game_rooms/1/game/missiles_status/',
             data,
             **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'})
