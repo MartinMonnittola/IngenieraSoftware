@@ -545,7 +545,7 @@ class Offensive(Bot):
         elif planet.shield_perc <= 50:
             planet.assign_perc_rate(20, 70, 10)
         else:
-            planet.assign_perc_rate(10, 10, 70)
+            planet.assign_perc_rate(20, 10, 70)
 
     def send_population(self):
         planet = Planet.objects.get(bot = self)
