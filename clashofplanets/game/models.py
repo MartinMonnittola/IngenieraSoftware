@@ -493,9 +493,7 @@ class Defensive(Bot):
         if shield_distr < 0:
             shield_distr = 0
         missile_distr = 100 - (shield_distr + population_distr)
-        planet.population_distr = population_distr
-        planet.shield_distr = shield_distr
-        planet.missile_distr = missile_distr
+        planet.assign_perc_rate(population_distr, shield_distr, missile_distr)
         planet.save()
 
 
