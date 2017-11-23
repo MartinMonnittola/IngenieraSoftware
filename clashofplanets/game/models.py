@@ -446,10 +446,15 @@ class Defensive(Bot):
         count_attack = numpy.random.binomial(planet.missiles_qty,
                                              (self.probability_attack/51.0))
         planets_game = Planet.objects.filter(game=self.game).exclude(bot = self)
-        planets_alive = planets_game.exclude(population_qty = 0)
-        planets_rival = planets_alive.exclude(alliance = planet.alliance)
+        planets_alive = planets_game.exclude(is_alive=False)
+        if 2 <= self.game.num_alliances:
+            planets_rival = planets_alive.exclude(alliance = planet.alliance)
+        else:
+            planets_rival = planets_alive
+
         # Ordenamos los planetas a atacar segun su poblacion y escudo en orden
         # creciente.
+
         planets = planets_rival.order_by('population_qty', 'shield_perc')
         # Seleccionamos aleatoriamente los planetas a atacar.
         planets_attack = numpy.random.poisson(1.5, count_attack)
