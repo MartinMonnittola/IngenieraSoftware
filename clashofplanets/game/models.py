@@ -526,7 +526,7 @@ class Offensive(Bot):
         if game_in.num_alliances < 2:
             planets=Planet.objects.filter(game=self.game, is_alive=True).exclude(bot=self)
         else:
-            planets=Planet.objects.filter(game=self.game, is_alive=True, alliance=planet.alliance).exclude(bot=self)
+            planets=Planet.objects.filter(game=self.game, is_alive=True).exclude(bot=self, alliance=planet.alliance)
         psorted=planets.order_by('shield_perc','population_qty')
         planets_to_attack=psorted[:planet.missiles_qty]
         if len(planets_to_attack) > 0:
